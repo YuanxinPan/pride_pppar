@@ -1,10 +1,10 @@
 !
 !! read_dcb.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -16,53 +16,53 @@
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
 !! purpose  : read dcb bias
-!! parameter:          
+!! parameter:
 !!    output: dcb -- dcb bias
 !! author   : Geng J, Chen X
 !! created  : Jan 4 2016
 !
 subroutine read_dcb(dcb)
-implicit none
-include '../header/const.h'
+  implicit none
+  include '../header/const.h'
 
-integer*4 lfnp1,lfnp2
-real*8 dcb(MAXSAT,2)
+  integer*4 lfnp1, lfnp2
+  real*8 dcb(MAXSAT, 2)
 !
 !! local variables
-integer*4 ierr,prn0
-character*256 line
+  integer*4 ierr, prn0
+  character*256 line
 !
 !! function used
-integer*4 get_valid_unit
+  integer*4 get_valid_unit
 !
 !! dcb(P1C1)
-lfnp1=get_valid_unit(10)
-open(lfnp1,file='P1C1.dcb',status='old',iostat=ierr)
-if(ierr.ne.0) then
-  write(*,'(2a)') '###WARNING(lsq): open file ','P1C1.dcb'
-  goto 50
-endif
-  do while(.true.)
-    read(lfnp1,'(a)',end=50) line
-    if(line(1:1).eq.'G' .and. line(2:3).ne.'  ') then
-       read(line,'(1x,i2,20x,f12.3)')  prn0,dcb(prn0,1)
+  lfnp1 = get_valid_unit(10)
+  open (lfnp1, file='P1C1.dcb', status='old', iostat=ierr)
+  if (ierr .ne. 0) then
+    write (*, '(2a)') '###WARNING(lsq): open file ', 'P1C1.dcb'
+    goto 50
+  endif
+  do while (.true.)
+    read (lfnp1, '(a)', end=50) line
+    if (line(1:1) .eq. 'G' .and. line(2:3) .ne. '  ') then
+      read (line, '(1x,i2,20x,f12.3)') prn0, dcb(prn0, 1)
     endif
   enddo
 !
 !! dcb(P2C2)
-50 lfnp2=get_valid_unit(10)
-open(lfnp2,file='P2C2.dcb',status='old',iostat=ierr)
-if(ierr.ne.0) then
-  write(*,'(2a)') '###WARNING(lsq): open file ','P2C2.dcb'
-  goto 100
-endif
-  do while(.true.)
-    read(lfnp2,'(a)',end=100) line
-    if(line(1:1).eq.'G' .and. line(2:3).ne.'  ') then
-       read(line,'(1x,i2,20x,f12.3)')  prn0,dcb(prn0,2)
+50 lfnp2 = get_valid_unit(10)
+  open (lfnp2, file='P2C2.dcb', status='old', iostat=ierr)
+  if (ierr .ne. 0) then
+    write (*, '(2a)') '###WARNING(lsq): open file ', 'P2C2.dcb'
+    goto 100
+  endif
+  do while (.true.)
+    read (lfnp2, '(a)', end=100) line
+    if (line(1:1) .eq. 'G' .and. line(2:3) .ne. '  ') then
+      read (line, '(1x,i2,20x,f12.3)') prn0, dcb(prn0, 2)
     endif
   enddo
-100 close(lfnp1)
-    close(lfnp2)
-    return
+100 close (lfnp1)
+  close (lfnp2)
+  return
 end

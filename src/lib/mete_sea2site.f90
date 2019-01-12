@@ -1,10 +1,10 @@
 !!
 !! mete_sea2site.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -21,7 +21,7 @@
 !!    input:  ts,ps,hs --- temperature, pressure, humidity(%) on sea level
 !!              height --- distance from the ellipesoid to the station (m)
 !!
-!!   output:     t,p,h --- temperature,pressure,humidity(%) at height 
+!!   output:     t,p,h --- temperature,pressure,humidity(%) at height
 !!
 !! author   : Ge Maorong
 !!            Tsinghua University
@@ -29,27 +29,27 @@
 !!
 !! created  : 1990-05-20
 !!
-subroutine mete_sea2site(lsea,ps,ts,hs,height,p,t,h)
-implicit none
+subroutine mete_sea2site(lsea, ps, ts, hs, height, p, t, h)
+  implicit none
 
-logical*1 lsea
-real*8 ts,ps,hs,height,t,p,h
+  logical*1 lsea
+  real*8 ts, ps, hs, height, t, p, h
 
-if(height.gt.-1.d4.and.height.lt.2.d4) then
-  if(lsea) then
-    p=ps*(1.d0-2.26d-5*height)**5.225d0
-    t=ts-height*0.0065d0
-    h=hs*exp(-6.396d-4*height)
+  if (height .gt. -1.d4 .and. height .lt. 2.d4) then
+    if (lsea) then
+      p = ps*(1.d0 - 2.26d-5*height)**5.225d0
+      t = ts - height*0.0065d0
+      h = hs*exp(-6.396d-4*height)
+    else
+      p = ps/(1.d0 - 2.26d-5*height)**5.225d0
+      t = ts + height*0.0065d0
+      h = hs/exp(-6.396d-4*height)
+    endif
   else
-    p=ps/(1.d0-2.26d-5*height)**5.225d0
-    t=ts+height*0.0065d0
-    h=hs/exp(-6.396d-4*height)
+    p = ps
+    t = ts
+    h = hs
   endif
-else
-  p=ps
-  t=ts
-  h=hs
-endif
 
-return
+  return
 end

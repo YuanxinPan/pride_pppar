@@ -1,10 +1,10 @@
 !
 !! pointer_int.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -17,30 +17,30 @@
 !!
 !! purpose  : return the FIRST position of an element appears in an integer
 !!            array.
-!!            
+!!
 !! parameter: n -- number of elements in the array
 !!            int_array -- integer array
-!!            inti      -- the element 
+!!            inti      -- the element
 !!            point_int -- position of the element in the array.
 !!                         zere is it is not in the array
-!! 
+!!
 !! author   : Maorong Ge
 !!
 !! last mod.: 31-May-2003 by Maorong Ge, CLEAN
 !!
-integer*4 function pointer_int(n,int_array,inti)
-implicit none
-integer*4 n,int_array(1:*),inti
+integer*4 function pointer_int(n, int_array, inti)
+  implicit none
+  integer*4 n, int_array(1:*), inti
 !
 !! local
-integer*4 i
+  integer*4 i
 
-pointer_int=0
-do i=1,n
-  if(inti.eq.int_array(i)) then
-    pointer_int=i
-    exit   
-  endif
-enddo
-return
+  pointer_int = 0
+  do i = 1, n
+    if (inti .eq. int_array(i)) then
+      pointer_int = i
+      exit
+    endif
+  enddo
+  return
 end

@@ -1,10 +1,10 @@
 !
 !! ut1ut1r.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -22,29 +22,29 @@
 !! author   : Ge Maorong, Geng J
 !! notice   : if ut1. table is UT1, dut1 must be subtracted for interpolation.
 !!            dut1 must be added to the interpolated UT1R for coordinate trans.
-!    
-subroutine ut1ut1r(rmjd,dut1)
-implicit none
-include 'ut1tid.h'
+!
+subroutine ut1ut1r(rmjd, dut1)
+  implicit none
+  include 'ut1tid.h'
 
-real*8 rmjd,dut1
+  real*8 rmjd, dut1
 !
 !! local
-integer*4 i,j
-real*8 argu(5),arg
+  integer*4 i, j
+  real*8 argu(5), arg
 !
 !! get arguement
-call fund_arg_nutation(rmjd,argu)
-dut1=0.d0
-do i=1,62
-  arg=0.d0
-  do j=1,5
-    arg=arg+mi(j,i)*argu(j)
+  call fund_arg_nutation(rmjd, argu)
+  dut1 = 0.d0
+  do i = 1, 62
+    arg = 0.d0
+    do j = 1, 5
+      arg = arg + mi(j, i)*argu(j)
+    enddo
+    dut1 = dut1 + sc(1, i)*dsin(arg) + sc(2, i)*dcos(arg)
   enddo
-  dut1=dut1+sc(1,i)*dsin(arg)+sc(2,i)*dcos(arg)
-enddo
 !
 !! 0.1 mimiseconds to rad.
-dut1=dut1*1d-4
-return
+  dut1 = dut1*1d-4
+  return
 end

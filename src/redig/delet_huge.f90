@@ -1,10 +1,10 @@
 !
 !! delet_huge.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -26,36 +26,36 @@
 !! author   : Geng J
 !! created  : July 2, 2009
 !
-subroutine delet_huge(lupd,xres,nepo,flag,resi,trsi)
-implicit none
-include '../header/const.h'
-include 'data_flag.h'
+subroutine delet_huge(lupd, xres, nepo, flag, resi, trsi)
+  implicit none
+  include '../header/const.h'
+  include 'data_flag.h'
 
-logical*1 lupd
-integer*4 nepo,flag(1:*)
-real*8 xres,resi(1:*)
-character*27 trsi(1:*)
+  logical*1 lupd
+  integer*4 nepo, flag(1:*)
+  real*8 xres, resi(1:*)
+  character*27 trsi(1:*)
 !
 !! local
-integer*4 i,j
+  integer*4 i, j
 !
 !! function used
-logical*1 istrue
+  logical*1 istrue
 
-do i=1,nepo
-  if(.not.istrue(flag(i),'OK')) cycle
-  if(dabs(resi(i)).gt.xres) then
-    if(istrue(flag(i),'AMB')) then
-      if(i.lt.nepo) then
-        call find_flag(i+1,nepo,flag,'OK',j)
-        if(j.gt.0.and.istrue(flag(j),'GOOD')) flag(j)=flag(i)
+  do i = 1, nepo
+    if (.not. istrue(flag(i), 'OK')) cycle
+    if (dabs(resi(i)) .gt. xres) then
+      if (istrue(flag(i), 'AMB')) then
+        if (i .lt. nepo) then
+          call find_flag(i + 1, nepo, flag, 'OK', j)
+          if (j .gt. 0 .and. istrue(flag(j), 'GOOD')) flag(j) = flag(i)
+        endif
       endif
+      lupd = .true.
+      flag(i) = DELBAD
+      write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as huge residual'
     endif
-    lupd=.true.
-    flag(i)=DELBAD
-    write(oscr,'(4x,a4,a27,a,i6,a)') 'TIM ',trsi(i),' Epo ',i,' deleted as huge residual'
-  endif
-enddo
+  enddo
 
-return
+  return
 end

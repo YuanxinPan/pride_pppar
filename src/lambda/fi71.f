@@ -15,13 +15,13 @@ c*par Chic   input    Chi squared
 c*par MaxCan input    number of minimum integer vectors requiered
 c*par n      input    dimension of matrix
 c*par a      input    the vector with real valued estimates \hat{a} (float
-c*                    solution) 
+c*                    solution)
 c*par D      input    | diagonal matrix           -1        *
 c*par L      input    | lower triangular matrix: Q   = L D L
 c*                    | although L is lower triangular, in this example
-c*                    | program L is stored column-wise in a 2-dimensional 
-c*                    | array, to avoid the necessity of a dedicated 
-c*                    | storage scheme. 
+c*                    | program L is stored column-wise in a 2-dimensional
+c*                    | array, to avoid the necessity of a dedicated
+c*                    | storage scheme.
 c*par lef    work     dp work vector with length = n
 c*par left   work     dp work vector with length = n+1
 c*par right  work     dp work vector with length = n+1
@@ -32,26 +32,26 @@ c*par dq     work     dp work vector with length = n
 c*par ncan   output   number of integer vectors found
 c*par cands  output   | 2-dimensional array to store the candidates
 c*par disall output   | according squared norms \hat{a}-\check{a}
-c*par ipos   output   column number in 'cands' where the candidate 
+c*par ipos   output   column number in 'cands' where the candidate
 c*                    belonging to the minimum distance is stored
 
       implicit double precision (a-h, o-z)
 
       double precision
-     +  L (n,n), D (n), a (n), lef (n), left (n+1), right (n+1), 
+     +  L (n,n), D (n), a (n), lef (n), left (n+1), right (n+1),
      +  dist (n), end (n), dq (n), disall (MaxCan), cands (n,MaxCan)
-      logical 
+      logical
      +  ende
 
       if (MaxCan.lt.1) then
-         write(*,'(a)') 
+         write(*,'(a)')
      +   '***ERROR(FI71): number of requested candidates < 1'
          call exit(1)
       else if (n.lt.2) then
          write(*,'(a)') '***ERROR(FI71): dimension of system < 2'
          call exit(1)
       endif
-      
+
       ende=.false.
       right (n+1) = Chic
       left (n+1) = 0d0
@@ -72,16 +72,16 @@ c*                    belonging to the minimum distance is stored
             lef(i) = DINKi (n, L, dist, i)
          endif
          iold = i                             ! keep track
-         
+
          right(i) = (right(i+1)-left(i+1)) * dq(i)
          reach = dsqrt (right(i))
-         
-c*       delta=a(i)-reach-lef(i) is the left border 
+
+c*       delta=a(i)-reach-lef(i) is the left border
 c*       JNT2 (delta) is the left most integer in the interval
 c*       dist(i) is the distance of this left most integer to the a_hat
 
          delta = a(i) - reach - lef(i)
-         dist(i) = JNT2 (delta) - a(i)  
+         dist(i) = JNT2 (delta) - a(i)
 
          if (dist(i) .gt. reach-lef(i)) then  ! there is nothing at this level
             call BACKTs (n, i, end, dist, lef, left, ende) ! so, ... back track
@@ -89,9 +89,9 @@ c*       dist(i) is the distance of this left most integer to the a_hat
             end(i) = reach - lef(i) - 1d0     ! set the right 'border'
             left(i) = (dist(i)+lef(i))**2
          endif
-         
+
          if (i .eq. 1) then
-            call COLLECTs (n, MaxCan, D(1), lef(1), left(1), right(1), 
+            call COLLECTs (n, MaxCan, D(1), lef(1), left(1), right(1),
      +        Chic, dist, end(1), ncan, disall, cands, tmax, imax)
             call BACKTs (n, i, end, dist, lef, left, ende)
          endif
@@ -107,7 +107,7 @@ c*    the candidate vectors are computed
          do j = 1, n
             cands(j,i) = cands(j,i) + a(j)
          end do
-      end do 
+      end do
 
       return
       end

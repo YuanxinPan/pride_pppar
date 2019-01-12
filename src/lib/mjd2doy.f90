@@ -1,10 +1,10 @@
 !
 !! mjd2doy.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -24,19 +24,19 @@
 !! created  : Maorong GE
 !!
 
-subroutine mjd2doy(jd,iyear,idoy)
-implicit none
-integer*4 jd,iyear,idoy
+subroutine mjd2doy(jd, iyear, idoy)
+  implicit none
+  integer*4 jd, iyear, idoy
 !
 !! local
-integer*4 modified_julday
+  integer*4 modified_julday
 
-iyear=(jd+678940)/365
-idoy=jd-modified_julday(1,1,iyear)
-do while(idoy.le.0) 
-  iyear=iyear-1
-  idoy=jd-modified_julday(1,1,iyear)+1 
-enddo
+  iyear = (jd + 678940)/365
+  idoy = jd - modified_julday(1, 1, iyear)
+  do while (idoy .le. 0)
+    iyear = iyear - 1
+    idoy = jd - modified_julday(1, 1, iyear) + 1
+  enddo
 
-return
+  return
 end

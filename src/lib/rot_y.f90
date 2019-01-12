@@ -1,10 +1,10 @@
 !
 !! ROT_Y.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -14,7 +14,7 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-SUBROUTINE ROT_Y ( THETA, R )
+SUBROUTINE ROT_Y(THETA, R)
 !+
 !
 !  Rotate an r-matrix about the y-axis.
@@ -37,31 +37,31 @@ SUBROUTINE ROT_Y ( THETA, R )
 !
 !-----------------------------------------------------------------------
 
-IMPLICIT NONE
+  IMPLICIT NONE
 
-REAL*8 THETA, R(3,3)
+  REAL*8 THETA, R(3, 3)
 !
 !! LOCAL
-INTEGER*4 I
-REAL*8 S, C, A(3,3)
+  INTEGER*4 I
+  REAL*8 S, C, A(3, 3)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 !  Matrix representing new rotation.
-S = SIN(THETA)
-C = COS(THETA)
-A = 0.D0
-DO I=1,3
-  A(I,I)=1.D0
-ENDDO
-A(1,1) = C
-A(3,1) = S
-A(1,3) = -S
-A(3,3) = C
+  S = SIN(THETA)
+  C = COS(THETA)
+  A = 0.D0
+  DO I = 1, 3
+    A(I, I) = 1.D0
+  ENDDO
+  A(1, 1) = C
+  A(3, 1) = S
+  A(1, 3) = -S
+  A(3, 3) = C
 
 !  Rotate.
-CALL MATMPY(A,R,R,3,3,3)
+  CALL MATMPY(A, R, R, 3, 3, 3)
 
 !  Finished.
-RETURN
+  RETURN
 END

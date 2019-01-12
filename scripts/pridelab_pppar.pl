@@ -12,7 +12,7 @@ if (scalar(@ARGV) != 4) {
     my $help = <<EOD;
  -----------------------------------------------------------------------
   Purpose  :      GPS Standard Precise Point Positioning(PPP) and Ambiguity Resolution(AR)
-  Created  :      Xingyu chen,  chenxingyu@whu.edu.cn    
+  Created  :      Xingyu chen,  chenxingyu@whu.edu.cn
   Copyright:      GNSS Research Center, Wuhan University, 2018
   Usage    :      pridelab_pppar.pl ctrl_file YYYYMMDD(Start) YYYYMMDD(End) AR/FR
   Example  :      pridelab_pppar.pl ses.ppp 20160101 20160101 AR/FR
@@ -24,9 +24,9 @@ EOD
     exit;
 }
 
- use strict;
- use File::Copy;
- use Cwd;
+use strict;
+use File::Copy;
+use Cwd;
 
 ##########  Assignment Script Command Line Arguments  ################
 # ctrl file
@@ -57,7 +57,7 @@ my $edtres  = 'redig';
 my $lsq     = 'lsq';
 my $pppar   = 'arsig';
 # Parameters for redig
- my @jump   = (400,200,100,50,50,50,50);
+my @jump   = (400,200,100,50,50,50,50);
 
 ########### process #############
 while($k <= $end_mjd){
@@ -75,7 +75,7 @@ while($k <= $end_mjd){
     print "Control file directory: ${tbdir}${ctrl_file}\n";
     copy("${tbdir1}${ctrl_file}", "./$doy");
     # Change directory to working directory
-    chdir("$doy");                         
+    chdir("$doy");
     print "PROCESSING $ydoy DATA...\n";
     my $month = ydoy2md($year4,$doy);
     my @month = split(' ',$month);
@@ -91,27 +91,27 @@ while($k <= $end_mjd){
     my @tstart  = split(' ',$tstart);
 
     if($#tstart<6){
-      print "\n Warnning: PANDA-PPP control file (Session time formal error)\n";
-      $hour    = 00;
-      $minute  = 00;
-      $second  = 00;
-      $session = 86360;
-    }
-    else {
-      if ($tstart[3]<0 || $tstart[4]<0 || $tstart[5]<0 || $tstart[6]<0
-        || $tstart[3]>23 || $tstart[4]>59 || $tstart[5]>59 || $tstart[6]>86360){
-          print "\n Warnning: PANDA-PPP control file (Session time formal error)\n";
+        print "\n Warnning: PANDA-PPP control file (Session time formal error)\n";
         $hour    = 00;
         $minute  = 00;
-         $second  = 00;
-          $session = 86360;
-      }
-      else {
-        $hour    = $tstart[3];
-        $minute  = $tstart[4];
-        $second  = $tstart[5];
-        $session = $tstart[6];
-      }
+        $second  = 00;
+        $session = 86360;
+    }
+    else {
+        if ($tstart[3]<0 || $tstart[4]<0 || $tstart[5]<0 || $tstart[6]<0
+            || $tstart[3]>23 || $tstart[4]>59 || $tstart[5]>59 || $tstart[6]>86360){
+            print "\n Warnning: PANDA-PPP control file (Session time formal error)\n";
+            $hour    = 00;
+            $minute  = 00;
+            $second  = 00;
+            $session = 86360;
+        }
+        else {
+            $hour    = $tstart[3];
+            $minute  = $tstart[4];
+            $second  = $tstart[5];
+            $session = $tstart[6];
+        }
     }
     update_ctrlfile($ctrl_file,$doy,$year4,$month,$day,$hour,$minute,$second,$session);
 
@@ -129,40 +129,40 @@ while($k <= $end_mjd){
     $dirsp3 = substr($dirsp3,0,(length($dirsp3)-1));
     $dirrnx = substr($dirrnx,0,(length($dirrnx)-1));
     if(! -d $dirtbl){
-      print "\nPANDA tables directory does not exist!\n";
-      print $dirtbl;
-      exit;
+        print "\nPANDA tables directory does not exist!\n";
+        print $dirtbl;
+        exit;
     }
     if(! -d $dirsp3){
-      print "\nPANDA sp3 directory does not exist!\n";
-      exit;
+        print "\nPANDA sp3 directory does not exist!\n";
+        exit;
     }
     if(! -d $dirrnx){
-      print "\nGPS rinex directory does not exist!\n";
-      exit;
+        print "\nGPS rinex directory does not exist!\n";
+        exit;
     }
-########## calculate prio coordinate #########
+    ########## calculate prio coordinate #########
     if(! -e  "${dirrnx}/sit.xyz") {
-       `rtk2xyz.sh $dirrnx`;
+        `rtk2xyz.sh $dirrnx`;
     }
 
-########## update station lale ###############
+    ########## update station lale ###############
     `mkdir problem`;
     my $station_name_path="${dirrnx}/station_name.txt";
     update_ctrlfile_table($ctrl_file,$station_name_path,"S");
     #update_ctrlfile_table($ctrl_file2,$station_name_path,"F");
-    
-##########  Data Preparation  ################
+
+    ##########  Data Preparation  ################
     # Copy table files to the working directory
     print "Link the panda tables\n";
     copy_tables($ctrl_file);
     # make the initial orb: use code eph
     print "initial orbit file\n";
     sp3orb_staclk($k);
-##########  Data Pre-processing  ################
+    ##########  Data Pre-processing  ################
     print "Pre-process the observation data file\n";
     turboedit($ctrl_file);
-######### Data Cleaning ############
+    ######### Data Cleaning ############
     my $repeat=0;
     open(my $flhdl1, "$ctrl_file")
         or die "Cannt open control file : $ctrl_file" ;
@@ -192,76 +192,6 @@ while($k <= $end_mjd){
         if(-e "pos_${year4}${doy}"){ unlink("pos_${year4}${doy}"); }
         # delete the con file
         if(-e "con_${year4}${doy}"){ unlink("con_${year4}${doy}"); }
-          my $name1 = lc $sitename1[$numsite];
-          my $pos  = "pos_${year4}${doy}";
-          my $pos1 = "pos_${year4}${doy}_$name1";
-          my $stt  = "stt_${year4}${doy}";
-          my $stt1 = "stt_${year4}${doy}_$name1";
-          my $res  = "res_${year4}${doy}";
-          my $res1 = "res_${year4}${doy}_$name1";
-          my $ztd = "ztd_${year4}${doy}";
-          my $ztd1 = "ztd_${year4}${doy}_$name1";
-          my $rck = "rck_${year4}${doy}";
-          my $rck1 = "rck_${year4}${doy}_$name1";
-          my $htg = "htg_${year4}${doy}";
-          my $htg1 = "htg_${year4}${doy}_$name1";
-          update_ctrlfile_single($ctrl_file1,$name1,"S");
-          $repeat=0;
-          while ($repeat<scalar(@jump)) {
-               ########## Parameters estimation using LSQ estimator  #################
-               # delete the rck file
-               if (-e "rck_${year4}${doy}") { unlink("rck_${year4}${doy}"); }
-               # delete the ztd file
-               if (-e "ztd_${year4}${doy}") { unlink("ztd_${year4}${doy}"); }
-               # delete the amb file
-               if (-e "amb_${year4}${doy}") { unlink("amb_${year4}${doy}"); }
-               `$lsq $ctrl_file1`;
-               #system("$lsq", "$ctrl_file1")==0 or die "###ERROR: $lsq $ctrl_file1";
-               my $interval = `get_ctrl $ctrl_file1 "Interval"`;
-               my $short = 600/$interval;
-               # edit lsq output residual file for next lsq
-               system("$edtres","res_${year4}${doy}","-jmp","$jump[$repeat]", "-sht", "$short")==0;
-               rename("$stt","$stt1");
-               # Update repeat point for parameter estimation
-               $repeat=$repeat+1;
-         }
-         $numsite = $numsite + 1;
-    }
-    `rm $ctrl_file1`;
-##########  Data Processing  ################
-if ($position_mode eq 'FR'){
-    my $repeat=0;
-    open(my $flhdl1, "$ctrl_file")
-    or die "Cannt open PANDA control file : $ctrl_file" ;
-    my @sitename1 = ();
-
-    while (<$flhdl1>){
-      if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
-          push @sitename1, substr($_,1,4);
-      }
-    }
-    close($flhdl1);
-
-    `cp $ctrl_file $ctrl_file1`;
-    my $numsite = 0;
-    while($numsite < scalar(@sitename1)){
-    # delete the amb file
-        if(-e "amb_${year4}${doy}"){ unlink("amb_${year4}${doy}"); }
-        # delete the recclk file
-        if(-e "rck_${year4}${doy}"){ unlink("rck_${year4}${doy}"); }
-        # delete the ztd file
-        if(-e "ztd_${year4}${doy}"){ unlink("ztd_${year4}${doy}"); }
-        # delete the ztd file
-        if(-e "htg_${year4}${doy}"){ unlink("htg_${year4}${doy}"); }
-        # delete the stt file
-        if(-e "stt_${year4}${doy}"){ unlink("stt_${year4}${doy}"); }
-        # delete the res file
-        if(-e "res_${year4}${doy}"){ unlink("res_${year4}${doy}"); }
-        # delete the pos file
-        if(-e "pos_${year4}${doy}"){ unlink("pos_${year4}${doy}"); }
-        # delete the pos file
-        if(-e "con_${year4}${doy}"){ unlink("con_${year4}${doy}"); }
-      
         my $name1 = lc $sitename1[$numsite];
         my $pos  = "pos_${year4}${doy}";
         my $pos1 = "pos_${year4}${doy}_$name1";
@@ -275,89 +205,159 @@ if ($position_mode eq 'FR'){
         my $rck1 = "rck_${year4}${doy}_$name1";
         my $htg = "htg_${year4}${doy}";
         my $htg1 = "htg_${year4}${doy}_$name1";
-        my $amb = "amb_${year4}${doy}";
-        my $amb1 = "amb_${year4}${doy}_$name1";
+        update_ctrlfile_single($ctrl_file1,$name1,"S");
+        $repeat=0;
+        while ($repeat<scalar(@jump)) {
+            ########## Parameters estimation using LSQ estimator  #################
+            # delete the rck file
+            if (-e "rck_${year4}${doy}") { unlink("rck_${year4}${doy}"); }
+            # delete the ztd file
+            if (-e "ztd_${year4}${doy}") { unlink("ztd_${year4}${doy}"); }
+            # delete the amb file
+            if (-e "amb_${year4}${doy}") { unlink("amb_${year4}${doy}"); }
+            `$lsq $ctrl_file1`;
+            #system("$lsq", "$ctrl_file1")==0 or die "###ERROR: $lsq $ctrl_file1";
+            my $interval = `get_ctrl $ctrl_file1 "Interval"`;
+            my $short = 600/$interval;
+            # edit lsq output residual file for next lsq
+            system("$edtres","res_${year4}${doy}","-jmp","$jump[$repeat]", "-sht", "$short")==0;
+            rename("$stt","$stt1");
+            # Update repeat point for parameter estimation
+            $repeat=$repeat+1;
+        }
+        $numsite = $numsite + 1;
+    }
+    `rm $ctrl_file1`;
+    ##########  Data Processing  ################
+    if ($position_mode eq 'FR'){
+        my $repeat=0;
+        open(my $flhdl1, "$ctrl_file")
+            or die "Cannt open PANDA control file : $ctrl_file" ;
+        my @sitename1 = ();
 
-       update_ctrlfile_single($ctrl_file1,$name1,"S");    #if you need processing mode "K", then you should change the "S" to "K"
-       `$lsq $ctrl_file1`;
-       #system("$lsq", "$ctrl_file1")==0 or die "###ERROR: $lsq $ctrl_file1";  
-       
-       rename("$pos","$pos1");
-       rename("$res","$res1");
-       rename("$ztd","$ztd1");
-       rename("$rck","$rck1");
-       rename("$htg","$htg1");
-       rename("$amb","$amb1");
-       $numsite = $numsite + 1;
+        while (<$flhdl1>){
+            if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
+                push @sitename1, substr($_,1,4);
+            }
+        }
+        close($flhdl1);
+
+        `cp $ctrl_file $ctrl_file1`;
+        my $numsite = 0;
+        while($numsite < scalar(@sitename1)){
+            # delete the amb file
+            if(-e "amb_${year4}${doy}"){ unlink("amb_${year4}${doy}"); }
+            # delete the recclk file
+            if(-e "rck_${year4}${doy}"){ unlink("rck_${year4}${doy}"); }
+            # delete the ztd file
+            if(-e "ztd_${year4}${doy}"){ unlink("ztd_${year4}${doy}"); }
+            # delete the ztd file
+            if(-e "htg_${year4}${doy}"){ unlink("htg_${year4}${doy}"); }
+            # delete the stt file
+            if(-e "stt_${year4}${doy}"){ unlink("stt_${year4}${doy}"); }
+            # delete the res file
+            if(-e "res_${year4}${doy}"){ unlink("res_${year4}${doy}"); }
+            # delete the pos file
+            if(-e "pos_${year4}${doy}"){ unlink("pos_${year4}${doy}"); }
+            # delete the pos file
+            if(-e "con_${year4}${doy}"){ unlink("con_${year4}${doy}"); }
+
+            my $name1 = lc $sitename1[$numsite];
+            my $pos  = "pos_${year4}${doy}";
+            my $pos1 = "pos_${year4}${doy}_$name1";
+            my $stt  = "stt_${year4}${doy}";
+            my $stt1 = "stt_${year4}${doy}_$name1";
+            my $res  = "res_${year4}${doy}";
+            my $res1 = "res_${year4}${doy}_$name1";
+            my $ztd = "ztd_${year4}${doy}";
+            my $ztd1 = "ztd_${year4}${doy}_$name1";
+            my $rck = "rck_${year4}${doy}";
+            my $rck1 = "rck_${year4}${doy}_$name1";
+            my $htg = "htg_${year4}${doy}";
+            my $htg1 = "htg_${year4}${doy}_$name1";
+            my $amb = "amb_${year4}${doy}";
+            my $amb1 = "amb_${year4}${doy}_$name1";
+
+            update_ctrlfile_single($ctrl_file1,$name1,"S");    #if you need processing mode "K", then you should change the "S" to "K"
+            `$lsq $ctrl_file1`;
+            #system("$lsq", "$ctrl_file1")==0 or die "###ERROR: $lsq $ctrl_file1";
+
+            rename("$pos","$pos1");
+            rename("$res","$res1");
+            rename("$ztd","$ztd1");
+            rename("$rck","$rck1");
+            rename("$htg","$htg1");
+            rename("$amb","$amb1");
+            $numsite = $numsite + 1;
+        }
     }
-}
-elsif($position_mode eq "AR"){
-    my $repeat=0;
-    open(my $flhdl1, "$ctrl_file")
-    or die "Cannt open PANDA control file : $ctrl_file" ;
-    my @sitename1 = ();
-    while (<$flhdl1>){
-      if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
-        push @sitename1, substr($_,1,4);
-      }
+    elsif($position_mode eq "AR"){
+        my $repeat=0;
+        open(my $flhdl1, "$ctrl_file")
+            or die "Cannt open PANDA control file : $ctrl_file" ;
+        my @sitename1 = ();
+        while (<$flhdl1>){
+            if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
+                push @sitename1, substr($_,1,4);
+            }
+        }
+        close($flhdl1);
+        `mkdir kin`;
+        `mkdir kin_ar`;
+        `cp $ctrl_file $ctrl_file1`;
+        my $numsite = 0;
+        while($numsite < scalar(@sitename1)){
+            # delete the amb file
+            if(-e "amb_${year4}${doy}"){ unlink("amb_${year4}${doy}"); }
+            # delete the recclk file
+            if(-e "rck_${year4}${doy}"){ unlink("rck_${year4}${doy}"); }
+            # delete the ztd file
+            if(-e "ztd_${year4}${doy}"){ unlink("ztd_${year4}${doy}"); }
+            # delete the ztd file
+            if(-e "htg_${year4}${doy}"){ unlink("htg_${year4}${doy}"); }
+            # delete the stt file
+            if(-e "stt_${year4}${doy}"){ unlink("stt_${year4}${doy}"); }
+            # delete the res file
+            if(-e "res_${year4}${doy}"){ unlink("res_${year4}${doy}"); }
+            # delete the pos file
+            if(-e "pos_${year4}${doy}"){ unlink("pos_${year4}${doy}"); }
+            # delete the pos file
+            if(-e "con_${year4}${doy}"){ unlink("con_${year4}${doy}"); }
+            my $name1 = lc $sitename1[$numsite];
+            my $pos  = "pos_${year4}${doy}";
+            my $pos1 = "pos_${year4}${doy}_$name1";
+            my $stt  = "stt_${year4}${doy}";
+            my $stt1 = "stt_${year4}${doy}_$name1";
+            my $res  = "res_${year4}${doy}";
+            my $res1 = "res_${year4}${doy}_$name1";
+            my $ztd = "ztd_${year4}${doy}";
+            my $ztd1 = "ztd_${year4}${doy}_$name1";
+            my $rck = "rck_${year4}${doy}";
+            my $rck1 = "rck_${year4}${doy}_$name1";
+            my $htg = "htg_${year4}${doy}";
+            my $htg1 = "htg_${year4}${doy}_$name1";
+            my $con = "con_${year4}${doy}";
+            my $con1 = "con_${year4}${doy}_$name1";
+            update_ctrlfile_single($ctrl_file1,$name1,"S");
+            `$lsq $ctrl_file1`;
+            #system("$lsq", "$ctrl_file1")==0 or die "###ERROR: $lsq $ctrl_file1";
+            `cp -f kin_${year4}${doy}_${name1} kin/`;
+            system("$pppar","$ctrl_file1")==0 or die "###ERROR: $pppar $ctrl_file1";
+            `$lsq $ctrl_file1`;
+            #system("$lsq", "$ctrl_file1")==0 or die "###ERROR: $lsq $ctrl_file1";
+            `cp -f kin_${year4}${doy}_${name1} kin_ar/`;
+            rename("$pos","$pos1");
+            rename("$stt","$stt1");
+            rename("$res","$res1");
+            rename("$ztd","$ztd1");
+            rename("$rck","$rck1");
+            rename("$htg","$htg1");
+            $numsite = $numsite + 1;
+        }
     }
-    close($flhdl1);
-    `mkdir kin`;
-    `mkdir kin_ar`;
-    `cp $ctrl_file $ctrl_file1`;
-    my $numsite = 0;
-    while($numsite < scalar(@sitename1)){
-      # delete the amb file
-      if(-e "amb_${year4}${doy}"){ unlink("amb_${year4}${doy}"); }
-      # delete the recclk file
-      if(-e "rck_${year4}${doy}"){ unlink("rck_${year4}${doy}"); }
-      # delete the ztd file
-      if(-e "ztd_${year4}${doy}"){ unlink("ztd_${year4}${doy}"); }
-      # delete the ztd file
-      if(-e "htg_${year4}${doy}"){ unlink("htg_${year4}${doy}"); }
-      # delete the stt file
-      if(-e "stt_${year4}${doy}"){ unlink("stt_${year4}${doy}"); }
-      # delete the res file
-      if(-e "res_${year4}${doy}"){ unlink("res_${year4}${doy}"); }
-      # delete the pos file
-      if(-e "pos_${year4}${doy}"){ unlink("pos_${year4}${doy}"); }
-      # delete the pos file
-      if(-e "con_${year4}${doy}"){ unlink("con_${year4}${doy}"); }
-      my $name1 = lc $sitename1[$numsite];
-      my $pos  = "pos_${year4}${doy}";
-      my $pos1 = "pos_${year4}${doy}_$name1";
-      my $stt  = "stt_${year4}${doy}";
-      my $stt1 = "stt_${year4}${doy}_$name1";
-      my $res  = "res_${year4}${doy}";
-      my $res1 = "res_${year4}${doy}_$name1";
-      my $ztd = "ztd_${year4}${doy}";
-      my $ztd1 = "ztd_${year4}${doy}_$name1";
-      my $rck = "rck_${year4}${doy}";
-      my $rck1 = "rck_${year4}${doy}_$name1";
-      my $htg = "htg_${year4}${doy}";
-      my $htg1 = "htg_${year4}${doy}_$name1";
-      my $con = "con_${year4}${doy}";
-      my $con1 = "con_${year4}${doy}_$name1";
-      update_ctrlfile_single($ctrl_file1,$name1,"S");
-      `$lsq $ctrl_file1`;
-      #system("$lsq", "$ctrl_file1")==0 or die "###ERROR: $lsq $ctrl_file1";
-      `cp -f kin_${year4}${doy}_${name1} kin/`;
-      system("$pppar","$ctrl_file1")==0 or die "###ERROR: $pppar $ctrl_file1";
-      `$lsq $ctrl_file1`;
-      #system("$lsq", "$ctrl_file1")==0 or die "###ERROR: $lsq $ctrl_file1";
-      `cp -f kin_${year4}${doy}_${name1} kin_ar/`;
-      rename("$pos","$pos1");
-      rename("$stt","$stt1");
-      rename("$res","$res1");
-      rename("$ztd","$ztd1");
-      rename("$rck","$rck1");
-      rename("$htg","$htg1");
-      $numsite = $numsite + 1;
-    }
-  }
-  $k=$k+1;
-  chdir("..");        ########## Return to the parent directory
-  chdir("..");        ########## Return to the parent directory
+    $k=$k+1;
+    chdir("..");        ########## Return to the parent directory
+    chdir("..");        ########## Return to the parent directory
 }
 print "********SUCESSFUL!!!********";
 
@@ -367,116 +367,116 @@ print "********SUCESSFUL!!!********";
 #--------------------------------------------------------------------
 #--------------------------------------------------------------------
 sub MOD {
-  my ($a1, $a2) = @_ ;
-  return ($a1 - int($a1 / $a2) * $a2);
+    my ($a1, $a2) = @_ ;
+    return ($a1 - int($a1 / $a2) * $a2);
 }
 #--------------------------------------------------------------------
 #                Transformation from YMD to MJD
 #--------------------------------------------------------------------
 sub ymd2mjd {
-  my ($year,$month,$day) = @_;
-  if( $month <= 2 ){
-    $month = $month + 12 ;
-    $year = $year - 1 ;
-  }
-  my $mjd  = $year*365.25 - MOD( $year*365.25 , 1 ) - 679006;
-  $mjd += int(30.6001*($month+1)) + 2 - int($year/100) + int($year/400) + $day ;
-  return $mjd ;
+    my ($year,$month,$day) = @_;
+    if( $month <= 2 ){
+        $month = $month + 12 ;
+        $year = $year - 1 ;
+    }
+    my $mjd  = $year*365.25 - MOD( $year*365.25 , 1 ) - 679006;
+    $mjd += int(30.6001*($month+1)) + 2 - int($year/100) + int($year/400) + $day ;
+    return $mjd ;
 }
 #--------------------------------------------------------------------
 #           Transformation from MJD to YEAY and DOY
 #--------------------------------------------------------------------
 sub mjd2ydoy {
-  my $mjd =shift;
-  # Set default variables
-  my @doys = (366,365,365,365);
-  my $day52 = 34012;
-  my $styr = 1952;
-  my $year = $styr; my $day = ($mjd+1)-$day52; my $i = 0; while($day >
-  $doys[$i]){ $day = $day-$doys[$i]; $year = $year+1; $i = ($year%4)+0; } my
-  $doy = $day; if($doy < 10){ $doy = '00'.$doy; } if($doy > 9 && $doy < 100){
-  $doy = '0'.$doy; } return "$year $doy"; 
+    my $mjd =shift;
+    # Set default variables
+    my @doys = (366,365,365,365);
+    my $day52 = 34012;
+    my $styr = 1952;
+    my $year = $styr; my $day = ($mjd+1)-$day52; my $i = 0; while($day >
+        $doys[$i]){ $day = $day-$doys[$i]; $year = $year+1; $i = ($year%4)+0; } my
+    $doy = $day; if($doy < 10){ $doy = '00'.$doy; } if($doy > 9 && $doy < 100){
+        $doy = '0'.$doy; } return "$year $doy";
 }
 #--------------------------------------------------------------------
 #           Transformation from MYD to GPS WEEK
 #--------------------------------------------------------------------
 sub ydoy2wkdow {
-  my $year = shift;
-  my $month = shift;
-  my $day = shift;
-  # Set default variables: 1980.01.05 mjd = 44243
-  my $mjd0 = 44243;
-  my $mjd = ymd2mjd($year,$month,$day);
-  my $difmjd = $mjd-$mjd0-1;
-  my $week = int($difmjd/7);
-  my $dow = $difmjd%7;
-  return "$week $dow";
+    my $year = shift;
+    my $month = shift;
+    my $day = shift;
+    # Set default variables: 1980.01.05 mjd = 44243
+    my $mjd0 = 44243;
+    my $mjd = ymd2mjd($year,$month,$day);
+    my $difmjd = $mjd-$mjd0-1;
+    my $week = int($difmjd/7);
+    my $dow = $difmjd%7;
+    return "$week $dow";
 }
 #--------------------------------------------------------------------
 #           Transformation from YEAR and DOY to YMD
 #--------------------------------------------------------------------
 sub ydoy2md{
-  my $iyear = shift;
-  my $idoy = shift;
-  my @days_in_month = (31,28,31,30,31,30,31,31,30,31,30,31);
-  my $iday = "0";
-  if(MOD($iyear,4) == 0 && (MOD($iyear,100) != 0 || MOD($iyear,400)==0)) {
-    $days_in_month[1]=29;
-  }
-  my $id  = $idoy;
-  my $imonth =0;
-  foreach my $tmon (@days_in_month){
-   $id = $id - $tmon;
-   $imonth = $imonth + 1;
-   if($id > 0) {next;}
-   $iday = $id + $tmon;
-   last;
- }
- return "$imonth $iday" ;
+    my $iyear = shift;
+    my $idoy = shift;
+    my @days_in_month = (31,28,31,30,31,30,31,31,30,31,30,31);
+    my $iday = "0";
+    if(MOD($iyear,4) == 0 && (MOD($iyear,100) != 0 || MOD($iyear,400)==0)) {
+        $days_in_month[1]=29;
+    }
+    my $id  = $idoy;
+    my $imonth =0;
+    foreach my $tmon (@days_in_month){
+        $id = $id - $tmon;
+        $imonth = $imonth + 1;
+        if($id > 0) {next;}
+        $iday = $id + $tmon;
+        last;
+    }
+    return "$imonth $iday" ;
 }
 #--------------------------------------------------------------------
-#           Update the control file with station table 
+#           Update the control file with station table
 #--------------------------------------------------------------------
 sub update_ctrlfile_table {
     my ($ctrlfile,$path,$site_type) = @_;
     my $th=0;
 
     open(my $flhdl1, "${path}")
-    or die "Cannt open station_name.txt in data directory" ;
+        or die "Cannt open station_name.txt in data directory" ;
     my @sitename11 = ();
     while (<$flhdl1>){
-       if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
-          if(!(substr($_,1,4)~~@sitename11)){
-            push @sitename11, substr($_,1,4);
-          }
-       }
+        if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
+            if(!(substr($_,1,4)~~@sitename11)){
+                push @sitename11, substr($_,1,4);
+            }
+        }
     }
     close($flhdl1);
     open(my $oldfile, "$ctrlfile")
-    or die "Couldn't open $ctrlfile for reading: $!";
+        or die "Couldn't open $ctrlfile for reading: $!";
     open(my $newfile, ">${ctrlfile}.back")
-    or die "Couldn't open ${ctrlfile}.back for writing: $!";
+        or die "Couldn't open ${ctrlfile}.back for writing: $!";
     while(<$oldfile>){
-      my $key = "+Station used ";
-      if($_=~ /^\*NAME/){
-        print $newfile $_;
-        my $numsite11 = 0;
-        while($numsite11 < scalar(@sitename11)){
-            my $station_name = lc $sitename11[$numsite11];
-            print $newfile " $station_name $site_type  GMF 9000  7 0.20 .020 .005 .002 3.00 .006 10.00 10.00 10.00 10.00 10.00 10.00 1.000 1.000 1.000\n";
-            $numsite11 = $numsite11 + 1;
+        my $key = "+Station used ";
+        if($_=~ /^\*NAME/){
+            print $newfile $_;
+            my $numsite11 = 0;
+            while($numsite11 < scalar(@sitename11)){
+                my $station_name = lc $sitename11[$numsite11];
+                print $newfile " $station_name $site_type  GMF 9000  7 0.20 .020 .005 .002 3.00 .006 10.00 10.00 10.00 10.00 10.00 10.00 1.000 1.000 1.000\n";
+                $numsite11 = $numsite11 + 1;
+            }
+            print $newfile "-Station used\n";
+            goto OVER;
         }
-        print $newfile "-Station used\n";
-        goto OVER;
-     }
-     else{
-         print $newfile $_;
-     }
-   }
-   OVER:
-   close($oldfile);
-   close($newfile);
-   rename("${ctrlfile}.back","$ctrlfile");
+        else{
+            print $newfile $_;
+        }
+    }
+    OVER:
+    close($oldfile);
+    close($newfile);
+    rename("${ctrlfile}.back","$ctrlfile");
 }
 #--------------------------------------------------------------------
 #           Update the control file for sigle station
@@ -485,27 +485,27 @@ sub update_ctrlfile_single {
     my ($ctrlfile,$station_name,$site_type) = @_;
     my $th=0;
     open(my $oldfile, "$ctrlfile")
-    or die "Couldn't open $ctrlfile for reading: $!";
+        or die "Couldn't open $ctrlfile for reading: $!";
 
     open(my $newfile, ">${ctrlfile}.back")
-    or die "Couldn't open ${ctrlfile}.back for writing: $!";
+        or die "Couldn't open ${ctrlfile}.back for writing: $!";
 
     while(<$oldfile>){
-      my $key = "+Station used ";
-      if($_=~ /^*NAME/){
-        print $newfile $_;
-        print $newfile " $station_name $site_type  GMF 9000  7 0.20 .020 .005 .002 3.00 .006 10.00 10.00 10.00 10.00 10.00 10.00 1.000 1.000 1.000\n";
-        print $newfile "-Station used\n";
-        goto OVER;
-     }
-     else{
-       print $newfile $_;
-     }
-   }
-   OVER:
-   close($oldfile);
-   close($newfile);
-   rename("${ctrlfile}.back","$ctrlfile");
+        my $key = "+Station used ";
+        if($_=~ /^*NAME/){
+            print $newfile $_;
+            print $newfile " $station_name $site_type  GMF 9000  7 0.20 .020 .005 .002 3.00 .006 10.00 10.00 10.00 10.00 10.00 10.00 1.000 1.000 1.000\n";
+            print $newfile "-Station used\n";
+            goto OVER;
+        }
+        else{
+            print $newfile $_;
+        }
+    }
+    OVER:
+    close($oldfile);
+    close($newfile);
+    rename("${ctrlfile}.back","$ctrlfile");
 }
 #--------------------------------------------------------------------
 #           Update the control file for useful station
@@ -514,19 +514,19 @@ sub update_ctrlfile_delsta {
     my ($ctrlfile,$station_name) = @_;
     my $th=0;
     open(my $oldfile, "$ctrlfile")
-    or die "Couldn't open $ctrlfile for reading: $!";
+        or die "Couldn't open $ctrlfile for reading: $!";
     open(my $newfile, ">${ctrlfile}.back")
-    or die "Couldn't open ${ctrlfile}.back for writing: $!";
+        or die "Couldn't open ${ctrlfile}.back for writing: $!";
     while(<$oldfile>){
-       if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
-          if($_=~ $station_name){}
-          else{
-             print $newfile $_;
-          }
-       }
-       else{
-         print $newfile $_;
-       }
+        if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
+            if($_=~ $station_name){}
+            else{
+                print $newfile $_;
+            }
+        }
+        else{
+            print $newfile $_;
+        }
     }
     close($oldfile);
     close($newfile);
@@ -540,10 +540,10 @@ sub update_ctrlfile {
     my ($ctrlfile,$doy,$year,$month,$day,$hour,$minute,$sec,$session) = @_;
     my $th=0;
     open(my $oldfile, "$ctrlfile")
-    or die "Couldn't open $ctrlfile for reading: $!";
+        or die "Couldn't open $ctrlfile for reading: $!";
 
     open(my $newfile, ">${ctrlfile}.back")
-    or die "Couldn't open ${ctrlfile}.back for writing: $!";
+        or die "Couldn't open ${ctrlfile}.back for writing: $!";
 
     while(<$oldfile>) {
         if($_=~ /^Session time/){
@@ -584,7 +584,7 @@ sub update_ctrlfile {
 sub copy_tables {
     my $ctrl_file = shift;
     my @tables = ( "jpleph_de405" , "leap.sec" , "oceanload" ,
-       "file_name" , "abs_igs.atx");
+        "file_name" , "abs_igs.atx");
     my $dirtbl = '';
     $dirtbl = `get_ctrl $ctrl_file "Table directory"`;
     $dirtbl = substr($dirtbl,0,length($dirtbl)-1);
@@ -598,11 +598,11 @@ sub copy_tables {
         }
     }
     else{
-       print "\nThe PANDA table derectory does not exit\n";
-       print " Derectory : $dirtbl";
+        print "\nThe PANDA table derectory does not exit\n";
+        print " Derectory : $dirtbl";
     }
-    my $dirrnx1 = `get_ctrl $ctrl_file "Rinex directory"`;                             
-    $dirrnx1 = substr($dirrnx1,0,(length($dirrnx1)-1));                                
+    my $dirrnx1 = `get_ctrl $ctrl_file "Rinex directory"`;
+    $dirrnx1 = substr($dirrnx1,0,(length($dirrnx1)-1));
     if(-d $dirrnx1){
         copy("${dirrnx1}/sit.xyz","./");
     }
@@ -671,7 +671,7 @@ sub turboedit {
     else{
         system("$wget", "-nv", "-nc","-t 3","--connect-timeout=10","--read-timeout=60",
             "ftp://igs.gnsswhu.cn/pub/gps/data/daily/${year4}/$doy/${year2}n/brdc${doy}0.${year2}n.Z", "-P", "$dirbrdc") ==0
-              or die "###ERROR: brdc file not find, ftp://igs.gnsswhu.cn/pub/gps/data/daily/${year4}/$doy/${year2}n/brdc${doy}0.${year2}n.Z\n";
+            or die "###ERROR: brdc file not find, ftp://igs.gnsswhu.cn/pub/gps/data/daily/${year4}/$doy/${year2}n/brdc${doy}0.${year2}n.Z\n";
         $brdc = "$dirbrdc/brdc${doy}0.${year2}n.Z";
         `$unzip -cd $brdc > "$dirbrdc/brdc${doy}0.${year2}n"`;
         $brdc = "$dirbrdc/brdc${doy}0.${year2}n";
@@ -682,7 +682,7 @@ sub turboedit {
     $interval = substr($interval,0,length($interval)-1);
 
     open(my $flhdl, "$ctrl_file")
-            or die "Cannt open PANDA control file : $ctrl_file" ;
+        or die "Cannt open PANDA control file : $ctrl_file" ;
     my @sitename = ();
     my @sitetype = ();
     my @siteelev = ();
@@ -691,10 +691,10 @@ sub turboedit {
     my @z        = ();
 
     while (<$flhdl>){
-    if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
-          push @sitename, substr($_,1,4);
-          push @sitetype, substr($_,6,1);
-          push @siteelev, substr($_,18,2);
+        if($_ =~ m/^\s(\w{4})\s\w{1}\s{2}\w{3}/){
+            push @sitename, substr($_,1,4);
+            push @sitetype, substr($_,6,1);
+            push @siteelev, substr($_,18,2);
         }
     }
     close($flhdl);
@@ -725,7 +725,7 @@ sub turboedit {
         print "***WARNING*** station $sitename no position!\n";
         update_ctrlfile_delsta($ctrl_file,$sitename);
         goto ADD;
-OUT:
+        OUT:
         close($flhdl);
         if(-e "${rnxflnam}o"){
             $rinexdata = "${rnxflnam}o";
@@ -794,7 +794,7 @@ OUT:
                         update_ctrlfile_delsta($ctrl_file,$sitename);
                         `rm $logflnam`;
                         goto ADD;
-                    } 
+                    }
                 }
                 if($_ =~ "EFF EPO/SUM/NEW"){
                     my @line = split(' ', $_);
@@ -813,8 +813,8 @@ OUT:
             }
             close($flhdl);
         }
-#################################################################################
-ADD:
+        #################################################################################
+        ADD:
         $numsite = $numsite + 1;
     }
     # Come to the end
@@ -825,302 +825,302 @@ ADD:
 #             Produce igs-file and clock bias file
 #--------------------------------------------------------------------
 sub sp3orb_staclk{
-   my $mjd   = shift;
-   # Program names for GPS sp3 orbit
-   my $sp3orb    = 'sp3orb';
-   my $wget      = 'wget';
-   my $mergesp3  = 'mergesp3';
-   my $mergeerp  = 'mergeerp';
-   my $unzip     = 'gzip';
-   # compute the date of mjd day
-   my $ydoy  = mjd2ydoy($mjd);
-   my @ydoy  = split(' ',$ydoy);
-   my $year4 = $ydoy[0];                                # 4 digital year
-   my $year2 = substr($year4,2,2);                      # 2 digital year 
-   my $doy   = $ydoy[1];                                # day of year
-   my $month = ydoy2md($year4,$doy);
-   my @month = split(' ',$month);
-      $month = $month[0];
-   my $day   = $month[1];
-   # Compute the date of mjd-1 day for mergeing sp3
-   my $ydoy2  = mjd2ydoy($mjd- 1);                      # year and doy of last day
-   my @ydoy2  = split(' ',$ydoy2);
-   my $year42 = $ydoy2[0];                              # year of last day
-   my $doy2   = $ydoy2[1];                              # doy of last day
-   my $month2 = ydoy2md($year42,$doy2);
-   my @month2 = split(' ',$month2);
-      $month2 = $month2[0];
-   my $day2   = $month2[1];
+    my $mjd   = shift;
+    # Program names for GPS sp3 orbit
+    my $sp3orb    = 'sp3orb';
+    my $wget      = 'wget';
+    my $mergesp3  = 'mergesp3';
+    my $mergeerp  = 'mergeerp';
+    my $unzip     = 'gzip';
+    # compute the date of mjd day
+    my $ydoy  = mjd2ydoy($mjd);
+    my @ydoy  = split(' ',$ydoy);
+    my $year4 = $ydoy[0];                                # 4 digital year
+    my $year2 = substr($year4,2,2);                      # 2 digital year
+    my $doy   = $ydoy[1];                                # day of year
+    my $month = ydoy2md($year4,$doy);
+    my @month = split(' ',$month);
+    $month = $month[0];
+    my $day   = $month[1];
+    # Compute the date of mjd-1 day for mergeing sp3
+    my $ydoy2  = mjd2ydoy($mjd- 1);                      # year and doy of last day
+    my @ydoy2  = split(' ',$ydoy2);
+    my $year42 = $ydoy2[0];                              # year of last day
+    my $doy2   = $ydoy2[1];                              # doy of last day
+    my $month2 = ydoy2md($year42,$doy2);
+    my @month2 = split(' ',$month2);
+    $month2 = $month2[0];
+    my $day2   = $month2[1];
 
-   # Compute the date of mjd+1 day for mergeing sp3
-   my $ydoy1  = mjd2ydoy($mjd+1);                       # year and doy of next day
-   my @ydoy1  = split(' ',$ydoy1);
-   my $year41 = $ydoy1[0];                              # year of next day
-   my $doy1   = $ydoy1[1];                              # doy of next day
-   my $month1 = ydoy2md($year41,$doy1);
-   my @month1 = split(' ',$month1);
-      $month1 = $month1[0];
-   my $day1   = $month1[1];
-   # Compute the date of mjd-7 day for mergeing sp3
-   my $ydoy22  = mjd2ydoy($mjd-7);                      # year and doy of last day
-   my @ydoy22  = split(' ',$ydoy22);
-   my $year422 = $ydoy22[0];                              # year of last day
-   my $doy22   = $ydoy22[1];                              # doy of last day
-   my $month22 = ydoy2md($year422,$doy22);
-   my @month22 = split(' ',$month22);
-      $month22 = $month22[0];
-   my $day22   = $month22[1];
-   # Compute the date of mjd+7 day for mergeing sp3
-   my $ydoy11  = mjd2ydoy($mjd+7);                       # year and doy of next day
-   my @ydoy11  = split(' ',$ydoy11);
-   my $year411 = $ydoy11[0];                              # year of next day
-   my $doy11   = $ydoy11[1];                              # doy of next day
-   my $month11 = ydoy2md($year411,$doy11);
-   my @month11 = split(' ',$month11);
-      $month11 = $month11[0];
-   my $day11   = $month11[1];
+    # Compute the date of mjd+1 day for mergeing sp3
+    my $ydoy1  = mjd2ydoy($mjd+1);                       # year and doy of next day
+    my @ydoy1  = split(' ',$ydoy1);
+    my $year41 = $ydoy1[0];                              # year of next day
+    my $doy1   = $ydoy1[1];                              # doy of next day
+    my $month1 = ydoy2md($year41,$doy1);
+    my @month1 = split(' ',$month1);
+    $month1 = $month1[0];
+    my $day1   = $month1[1];
+    # Compute the date of mjd-7 day for mergeing sp3
+    my $ydoy22  = mjd2ydoy($mjd-7);                      # year and doy of last day
+    my @ydoy22  = split(' ',$ydoy22);
+    my $year422 = $ydoy22[0];                              # year of last day
+    my $doy22   = $ydoy22[1];                              # doy of last day
+    my $month22 = ydoy2md($year422,$doy22);
+    my @month22 = split(' ',$month22);
+    $month22 = $month22[0];
+    my $day22   = $month22[1];
+    # Compute the date of mjd+7 day for mergeing sp3
+    my $ydoy11  = mjd2ydoy($mjd+7);                       # year and doy of next day
+    my @ydoy11  = split(' ',$ydoy11);
+    my $year411 = $ydoy11[0];                              # year of next day
+    my $doy11   = $ydoy11[1];                              # doy of next day
+    my $month11 = ydoy2md($year411,$doy11);
+    my @month11 = split(' ',$month11);
+    $month11 = $month11[0];
+    my $day11   = $month11[1];
 
-   # Compute GPS week
-   my $weekdow  = ydoy2wkdow($year4,$month,$day);            # week and dayofweek
-   my @weekdow  = split(' ',$weekdow);
-   my $week     = $weekdow[0];                               # GPS week
-   my $dow      = $weekdow[1];                               # dayofweek
+    # Compute GPS week
+    my $weekdow  = ydoy2wkdow($year4,$month,$day);            # week and dayofweek
+    my @weekdow  = split(' ',$weekdow);
+    my $week     = $weekdow[0];                               # GPS week
+    my $dow      = $weekdow[1];                               # dayofweek
 
-   my $weekdow2 = ydoy2wkdow($year42,$month2,$day2);         # week and dayofweek of last day
-   my @weekdow2 = split(' ',$weekdow2);
-   my $week2    = $weekdow2[0];                              # GPS week of last day
-   my $dow2     = $weekdow2[1];                              # dayofweek of last day
+    my $weekdow2 = ydoy2wkdow($year42,$month2,$day2);         # week and dayofweek of last day
+    my @weekdow2 = split(' ',$weekdow2);
+    my $week2    = $weekdow2[0];                              # GPS week of last day
+    my $dow2     = $weekdow2[1];                              # dayofweek of last day
 
-   my $weekdow1 = ydoy2wkdow($year41,$month1,$day1);         # week and dayofweek of next day
-   my @weekdow1 = split(' ',$weekdow1);
-   my $week1    = $weekdow1[0];                              # GPS week of next day
-   my $dow1     = $weekdow1[1];                              # dayofweek of next day
+    my $weekdow1 = ydoy2wkdow($year41,$month1,$day1);         # week and dayofweek of next day
+    my @weekdow1 = split(' ',$weekdow1);
+    my $week1    = $weekdow1[0];                              # GPS week of next day
+    my $dow1     = $weekdow1[1];                              # dayofweek of next day
 
-   my $weekdow22 = ydoy2wkdow($year422,$month22,$day22);         # week and dayofweek of last day
-   my @weekdow22 = split(' ',$weekdow22);
-   my $week22    = $weekdow22[0];                              # GPS week of last day
-   my $dow22     = $weekdow22[1];                              # dayofweek of last day
+    my $weekdow22 = ydoy2wkdow($year422,$month22,$day22);         # week and dayofweek of last day
+    my @weekdow22 = split(' ',$weekdow22);
+    my $week22    = $weekdow22[0];                              # GPS week of last day
+    my $dow22     = $weekdow22[1];                              # dayofweek of last day
 
-   my $weekdow11 = ydoy2wkdow($year411,$month11,$day11);         # week and dayofweek of next day
-   my @weekdow11 = split(' ',$weekdow11);
-   my $week11    = $weekdow11[0];                              # GPS week of next day
-   my $dow11     = $weekdow11[1];                              # dayofweek of next day
+    my $weekdow11 = ydoy2wkdow($year411,$month11,$day11);         # week and dayofweek of next day
+    my @weekdow11 = split(' ',$weekdow11);
+    my $week11    = $weekdow11[0];                              # GPS week of next day
+    my $dow11     = $weekdow11[1];                              # dayofweek of next day
 
-   # Precision orbit sp3 and satellite clock bias
-   my $GpsRefer  = "igs${week}${dow}.sp3";
-   my $erprefer  = "igs${week}${dow}.erp";
-   my $erprefer7   = "igs${week}7.erp";
-   my $erprefer71  = "igs${week11}7.erp";
-   my $erprefer72  = "igs${week22}7.erp";
-   if($month<10){$month="0$month";}
-   my $dcbrefer  = "P1C1${year2}${month}_RINEX.DCB";
-   my $dcbrefer1 = "P2C2${year2}${month}_RINEX.DCB";                        
-   my $erprefer1 = "igs${week11}${dow1}.erp";
-   my $erprefer2 = "igs${week22}${dow2}.erp";
-   my $GpsRefer2 = "igs${week2}${dow2}.sp3";
-   my $GpsRefer1 = "igs${week1}${dow1}.sp3";
-   my $GpsSatclk = "igs${week}${dow}.clk"; 
-   my $FCB = "PRL0IGSFIN_${year4}${doy}0000_01D_01D_ABS.BIA";                
+    # Precision orbit sp3 and satellite clock bias
+    my $GpsRefer  = "igs${week}${dow}.sp3";
+    my $erprefer  = "igs${week}${dow}.erp";
+    my $erprefer7   = "igs${week}7.erp";
+    my $erprefer71  = "igs${week11}7.erp";
+    my $erprefer72  = "igs${week22}7.erp";
+    if($month<10){$month="0$month";}
+    my $dcbrefer  = "P1C1${year2}${month}_RINEX.DCB";
+    my $dcbrefer1 = "P2C2${year2}${month}_RINEX.DCB";
+    my $erprefer1 = "igs${week11}${dow1}.erp";
+    my $erprefer2 = "igs${week22}${dow2}.erp";
+    my $GpsRefer2 = "igs${week2}${dow2}.sp3";
+    my $GpsRefer1 = "igs${week1}${dow1}.sp3";
+    my $GpsSatclk = "igs${week}${dow}.clk";
+    my $FCB = "PRL0IGSFIN_${year4}${doy}0000_01D_01D_ABS.BIA";
 
-   # Get PANDA sp3 file path
-   my $dirsp3 = `get_ctrl $ctrl_file "Sp3 directory"`;
-      $dirsp3 = substr($dirsp3,0,(length($dirsp3)-1));
+    # Get PANDA sp3 file path
+    my $dirsp3 = `get_ctrl $ctrl_file "Sp3 directory"`;
+    $dirsp3 = substr($dirsp3,0,(length($dirsp3)-1));
 
-   # Produce initial orbit file and ics-file
-   if(! -e "$GpsRefer"){
-       copy("${dirsp3}/cod${week}${dow}.eph","./");
-       rename("cod${week}${dow}.eph","$GpsRefer");             
-       if(! -e "$GpsRefer"){   
-           system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60",
-                   "ftp://igs.gnsswhu.cn/pub/gps/products/${week}/cod${week}${dow}.eph.Z");
-           if(! -e "cod${week}${dow}.eph.Z"){   
-               system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60","ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.EPH.Z") == 0
-                   or die "###ERROR: Satelite eph file not find, $GpsRefer!\n ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.EPH.Z\n";
-               rename("COD${week}${dow}.EPH.Z","cod${week}${dow}.eph.Z");
-           }
-           my $eph = "cod${week}${dow}.eph.Z";                     
-           `$unzip -cd $eph > "cod${week}${dow}.eph"`;             
-           `rm "cod${week}${dow}.eph.Z"`;                          
-           copy("cod${week}${dow}.eph","${dirsp3}/");
-           rename("cod${week}${dow}.eph","$GpsRefer");             
-       }
-   }
-   
-   if(! -e "$erprefer"){                                    ##### the day #####
-        copy("${dirsp3}/$erprefer","./");      
-        if(! -e "$erprefer"){
-           `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.ERP.Z`; 
-               if(! -e "COD${week}${dow}.ERP.Z"){
-                   if(${dow}>0 & ${dow}<6){
-                       if(! -e "$erprefer7"){
-                           copy("${dirsp3}/$erprefer7","./");
-                           if(! -e "$erprefer7"){
-                               system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60","ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}7.ERP.Z") == 0 or die "###ERROR: Satellite erp file not find, $erprefer7!\n ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}7.ERP.Z\n";
-                               my $erp = "COD${week}7.ERP.Z";
-                               `$unzip -cd $erp > "COD${week}7.ERP"`;
-                               `rm "COD${week}7.ERP.Z"`;
-                               `mv 'COD${week}7.ERP' $erprefer`;
-                           }
-                           else{
-                               `mv "$erprefer7" $erprefer`;
-                           }
-                       }
-                       else{
-                           `mv "$erprefer7" $erprefer`;
-                       }
-                   }
-                   else{
-                       if(! -e "$erprefer7"){
-                           copy("${dirsp3}/$erprefer7","./");
-                           if(! -e "$erprefer7"){
-                               system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60","ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}7.ERP.Z") == 0 or die "###ERROR: Satellite erp file not find, $erprefer7!\n ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}7.ERP.Z\n";
-                               my $erp = "COD${week}7.ERP.Z";
-                               `$unzip -cd $erp > "COD${week}7.ERP"`;                        
-                               `rm "COD${week}7.ERP.Z"`;
-                               `mv 'COD${week}7.ERP' $erprefer7`;
-                           }
-                       }
-                       if(! -e "$erprefer71"){    ## next week erp
-                           copy("${dirsp3}/$erprefer71","./");
-                           if(! -e "$erprefer71"){
-                               system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60","ftp://ftp.aiub.unibe.ch/CODE/${year411}/COD${week11}7.ERP.Z") == 0 or die "###ERROR: Satellite erp file not find, $erprefer71!\n ftp://ftp.aiub.unibe.ch/CODE/${year411}/COD${week11}7.ERP.Z\n";
-                               my $erp = "COD${week11}7.ERP.Z";
-                               `$unzip -cd $erp > "COD${week11}7.ERP"`;                        
-                               `rm "COD${week11}7.ERP.Z"`;
-                               `mv 'COD${week11}7.ERP' $erprefer71`;
-                           }
-                       }
-                       if(! -e "$erprefer72"){
-                           copy("${dirsp3}/$erprefer72","./");
-                           if(! -e "$erprefer72"){
-                               system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60", "ftp://ftp.aiub.unibe.ch/CODE/${year422}/COD${week22}7.ERP.Z") == 0 or die "###ERROR: Satellite erp file not find, $erprefer72!\n ftp://ftp.aiub.unibe.ch/CODE/${year422}/COD${week22}7.ERP.Z\n";
-                               my $erp = "COD${week22}7.ERP.Z";
-                               `$unzip -cd $erp > "COD${week22}7.ERP"`;
-                               `rm "COD${week22}7.ERP.Z"`;
-                               `mv 'COD${week22}7.ERP' $erprefer72`;
-                           }
-                       }
-                       #######  mergeerp to meger erp file  ######
-                       system("$mergeerp","$erprefer72","$erprefer7","$erprefer71","mer${erprefer}")==0 or die "###ERROR:$mergeerp $erprefer72 $erprefer7 $erprefer71 mer${erprefer}\n";
-                       rename("mer${erprefer}","$erprefer");
-                       unlink("$GpsRefer2");
-                       unlink("$GpsRefer1");
-                   }
-               }
-            else{
-                my $erp = "COD${week}${dow}.ERP.Z";                               
-                `$unzip -cd $erp > "COD${week}${dow}.ERP"`;                        
-                `rm "COD${week}${dow}.ERP.Z"`;
-                `mv 'COD${week}${dow}.ERP' $erprefer`;      
-            }                    
-            copy("$erprefer","${dirsp3}/");  
-       }
-   }
-   rename("$erprefer","igserp");  
-
-   if(! -e "P1C1.dcb"){                                    ##### the Month P1C1#####
-        copy("${dirsp3}/$dcbrefer","./");      
-        if(! -e "$dcbrefer"){
-           `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/P1C1${year2}${month}_RINEX.DCB.Z`;
-            if(! -e "P1C1${year2}${month}_RINEX.DCB.Z"){
-               die "###ERROR: Satelite dcb P1C1 file not find, ftp://ftp.aiub.unibe.ch/CODE/${year4}/P1C1${year2}${month}_RINEX.DCB.Z\n";
+    # Produce initial orbit file and ics-file
+    if(! -e "$GpsRefer"){
+        copy("${dirsp3}/cod${week}${dow}.eph","./");
+        rename("cod${week}${dow}.eph","$GpsRefer");
+        if(! -e "$GpsRefer"){
+            system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60",
+                "ftp://igs.gnsswhu.cn/pub/gps/products/${week}/cod${week}${dow}.eph.Z");
+            if(! -e "cod${week}${dow}.eph.Z"){
+                system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60","ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.EPH.Z") == 0
+                    or die "###ERROR: Satelite eph file not find, $GpsRefer!\n ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.EPH.Z\n";
+                rename("COD${week}${dow}.EPH.Z","cod${week}${dow}.eph.Z");
             }
-            my $dcb = "$dcbrefer.Z";                               
-            `$unzip -cd $dcb > "$dcbrefer"`;                        
-            `rm "$dcbrefer.Z"`;                          
-            copy("$dcbrefer","${dirsp3}/");   
+            my $eph = "cod${week}${dow}.eph.Z";
+            `$unzip -cd $eph > "cod${week}${dow}.eph"`;
+            `rm "cod${week}${dow}.eph.Z"`;
+            copy("cod${week}${dow}.eph","${dirsp3}/");
+            rename("cod${week}${dow}.eph","$GpsRefer");
         }
-     `mv $dcbrefer "P1C1.dcb"`; 
-   }
+    }
 
-   if(! -e "P2C2.dcb"){                                    ##### the Month P2C2#####
-        copy("${dirsp3}/$dcbrefer1","./");      
+    if(! -e "$erprefer"){                                    ##### the day #####
+        copy("${dirsp3}/$erprefer","./");
+        if(! -e "$erprefer"){
+            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.ERP.Z`;
+            if(! -e "COD${week}${dow}.ERP.Z"){
+                if(${dow}>0 & ${dow}<6){
+                    if(! -e "$erprefer7"){
+                        copy("${dirsp3}/$erprefer7","./");
+                        if(! -e "$erprefer7"){
+                            system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60","ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}7.ERP.Z") == 0 or die "###ERROR: Satellite erp file not find, $erprefer7!\n ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}7.ERP.Z\n";
+                            my $erp = "COD${week}7.ERP.Z";
+                            `$unzip -cd $erp > "COD${week}7.ERP"`;
+                            `rm "COD${week}7.ERP.Z"`;
+                            `mv 'COD${week}7.ERP' $erprefer`;
+                        }
+                        else{
+                            `mv "$erprefer7" $erprefer`;
+                        }
+                    }
+                    else{
+                        `mv "$erprefer7" $erprefer`;
+                    }
+                }
+                else{
+                    if(! -e "$erprefer7"){
+                        copy("${dirsp3}/$erprefer7","./");
+                        if(! -e "$erprefer7"){
+                            system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60","ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}7.ERP.Z") == 0 or die "###ERROR: Satellite erp file not find, $erprefer7!\n ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}7.ERP.Z\n";
+                            my $erp = "COD${week}7.ERP.Z";
+                            `$unzip -cd $erp > "COD${week}7.ERP"`;
+                            `rm "COD${week}7.ERP.Z"`;
+                            `mv 'COD${week}7.ERP' $erprefer7`;
+                        }
+                    }
+                    if(! -e "$erprefer71"){    ## next week erp
+                        copy("${dirsp3}/$erprefer71","./");
+                        if(! -e "$erprefer71"){
+                            system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60","ftp://ftp.aiub.unibe.ch/CODE/${year411}/COD${week11}7.ERP.Z") == 0 or die "###ERROR: Satellite erp file not find, $erprefer71!\n ftp://ftp.aiub.unibe.ch/CODE/${year411}/COD${week11}7.ERP.Z\n";
+                            my $erp = "COD${week11}7.ERP.Z";
+                            `$unzip -cd $erp > "COD${week11}7.ERP"`;
+                            `rm "COD${week11}7.ERP.Z"`;
+                            `mv 'COD${week11}7.ERP' $erprefer71`;
+                        }
+                    }
+                    if(! -e "$erprefer72"){
+                        copy("${dirsp3}/$erprefer72","./");
+                        if(! -e "$erprefer72"){
+                            system("$wget", "-nv","-nc","-t 3","--connect-timeout=10","--read-timeout=60", "ftp://ftp.aiub.unibe.ch/CODE/${year422}/COD${week22}7.ERP.Z") == 0 or die "###ERROR: Satellite erp file not find, $erprefer72!\n ftp://ftp.aiub.unibe.ch/CODE/${year422}/COD${week22}7.ERP.Z\n";
+                            my $erp = "COD${week22}7.ERP.Z";
+                            `$unzip -cd $erp > "COD${week22}7.ERP"`;
+                            `rm "COD${week22}7.ERP.Z"`;
+                            `mv 'COD${week22}7.ERP' $erprefer72`;
+                        }
+                    }
+                    #######  mergeerp to meger erp file  ######
+                    system("$mergeerp","$erprefer72","$erprefer7","$erprefer71","mer${erprefer}")==0 or die "###ERROR:$mergeerp $erprefer72 $erprefer7 $erprefer71 mer${erprefer}\n";
+                    rename("mer${erprefer}","$erprefer");
+                    unlink("$GpsRefer2");
+                    unlink("$GpsRefer1");
+                }
+            }
+            else{
+                my $erp = "COD${week}${dow}.ERP.Z";
+                `$unzip -cd $erp > "COD${week}${dow}.ERP"`;
+                `rm "COD${week}${dow}.ERP.Z"`;
+                `mv 'COD${week}${dow}.ERP' $erprefer`;
+            }
+            copy("$erprefer","${dirsp3}/");
+        }
+    }
+    rename("$erprefer","igserp");
+
+    if(! -e "P1C1.dcb"){                                    ##### the Month P1C1#####
+        copy("${dirsp3}/$dcbrefer","./");
+        if(! -e "$dcbrefer"){
+            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/P1C1${year2}${month}_RINEX.DCB.Z`;
+            if(! -e "P1C1${year2}${month}_RINEX.DCB.Z"){
+                die "###ERROR: Satelite dcb P1C1 file not find, ftp://ftp.aiub.unibe.ch/CODE/${year4}/P1C1${year2}${month}_RINEX.DCB.Z\n";
+            }
+            my $dcb = "$dcbrefer.Z";
+            `$unzip -cd $dcb > "$dcbrefer"`;
+            `rm "$dcbrefer.Z"`;
+            copy("$dcbrefer","${dirsp3}/");
+        }
+        `mv $dcbrefer "P1C1.dcb"`;
+    }
+
+    if(! -e "P2C2.dcb"){                                    ##### the Month P2C2#####
+        copy("${dirsp3}/$dcbrefer1","./");
         if(! -e "$dcbrefer1"){
-           `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/P2C2${year2}${month}_RINEX.DCB.Z`;
-           my $dcb = "$dcbrefer1.Z";                               
-           `$unzip -cd $dcb > "$dcbrefer1"`;                        
-           `rm "$dcbrefer1.Z"`;                          
-           copy("$dcbrefer1","${dirsp3}/");   
-       }
-        rename("$dcbrefer1","P2C2.dcb"); 
-   }
-
-   rename("$erprefer","igserp");
-
-   if(! -e "$GpsRefer2"){
-      copy("${dirsp3}/cod${week2}${dow2}.eph","./");
-      rename("cod${week2}${dow2}.eph","$GpsRefer2");             
-      if(! -e "$GpsRefer2"){ 
-         `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://igs.gnsswhu.cn/pub/gps/products/${week2}/cod${week2}${dow2}.eph.Z`;
-       if(! -e "cod${week}${dow}.eph.Z"){   
-          `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year42}/COD${week2}${dow2}.EPH.Z`;
-              if(! -e "COD${week2}${dow2}.EPH.Z"){ 
-                 die "###ERROR: Satelite erp file not find, $$GpsRefer2!\n ftp://ftp.aiub.unibe.ch/CODE/${year42}/COD${week2}${dow2}.EPH.Z\n";
-              }
-          rename("COD${week2}${dow2}.EPH.Z","cod${week2}${dow2}.eph.Z");
-     }
-           my $eph2 = "cod${week2}${dow2}.eph.Z";                     
-           `$unzip -cd $eph2 > "cod${week2}${dow2}.eph"`;             
-           `rm "cod${week2}${dow2}.eph.Z"`;                          
-           copy("cod${week2}${dow2}.eph","${dirsp3}/");
-          rename("cod${week2}${dow2}.eph","$GpsRefer2");             
-      }
-   }
-   if(! -e "$GpsRefer1"){
-      copy("${dirsp3}/cod${week1}${dow1}.eph","./");
-      rename("cod${week1}${dow1}.eph","$GpsRefer1");             
-      if(! -e "$GpsRefer1"){
-      `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://igs.gnsswhu.cn/pub/gps/products/${week1}/cod${week1}${dow1}.eph.Z`;
-        if(! -e "cod${week}${dow}.eph.Z"){   
-       `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year41}/COD${week1}${dow1}.EPH.Z`;
-           if(! -e "COD${week1}${dow1}.EPH.Z"){
-              die "###ERROR: Satelite erp file not find, $GpsRefer1!\n ftp://ftp.aiub.unibe.ch/CODE/${year41}/COD${week1}${dow1}.EPH.Z\n";
-           }
-        rename("COD${week1}${dow1}.EPH.Z","cod${week1}${dow1}.eph.Z");
+            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/P2C2${year2}${month}_RINEX.DCB.Z`;
+            my $dcb = "$dcbrefer1.Z";
+            `$unzip -cd $dcb > "$dcbrefer1"`;
+            `rm "$dcbrefer1.Z"`;
+            copy("$dcbrefer1","${dirsp3}/");
         }
-       my $eph1 = "cod${week1}${dow1}.eph.Z";                     
-       `$unzip -cd $eph1 > "cod${week1}${dow1}.eph"`;             
-      `rm "cod${week1}${dow1}.eph.Z"`;                          
-      copy("cod${week1}${dow1}.eph","${dirsp3}/");
-      rename("cod${week1}${dow1}.eph","$GpsRefer1");             
-      }
-   }
+        rename("$dcbrefer1","P2C2.dcb");
+    }
 
-   ##### mergesp3 to meger sp3 file  ######
-   system("$mergesp3","$GpsRefer2","$GpsRefer","$GpsRefer1","mer${GpsRefer}")==0
+    rename("$erprefer","igserp");
+
+    if(! -e "$GpsRefer2"){
+        copy("${dirsp3}/cod${week2}${dow2}.eph","./");
+        rename("cod${week2}${dow2}.eph","$GpsRefer2");
+        if(! -e "$GpsRefer2"){
+            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://igs.gnsswhu.cn/pub/gps/products/${week2}/cod${week2}${dow2}.eph.Z`;
+            if(! -e "cod${week}${dow}.eph.Z"){
+                `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year42}/COD${week2}${dow2}.EPH.Z`;
+                if(! -e "COD${week2}${dow2}.EPH.Z"){
+                    die "###ERROR: Satelite erp file not find, $$GpsRefer2!\n ftp://ftp.aiub.unibe.ch/CODE/${year42}/COD${week2}${dow2}.EPH.Z\n";
+                }
+                rename("COD${week2}${dow2}.EPH.Z","cod${week2}${dow2}.eph.Z");
+            }
+            my $eph2 = "cod${week2}${dow2}.eph.Z";
+            `$unzip -cd $eph2 > "cod${week2}${dow2}.eph"`;
+            `rm "cod${week2}${dow2}.eph.Z"`;
+            copy("cod${week2}${dow2}.eph","${dirsp3}/");
+            rename("cod${week2}${dow2}.eph","$GpsRefer2");
+        }
+    }
+    if(! -e "$GpsRefer1"){
+        copy("${dirsp3}/cod${week1}${dow1}.eph","./");
+        rename("cod${week1}${dow1}.eph","$GpsRefer1");
+        if(! -e "$GpsRefer1"){
+            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://igs.gnsswhu.cn/pub/gps/products/${week1}/cod${week1}${dow1}.eph.Z`;
+            if(! -e "cod${week}${dow}.eph.Z"){
+                `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year41}/COD${week1}${dow1}.EPH.Z`;
+                if(! -e "COD${week1}${dow1}.EPH.Z"){
+                    die "###ERROR: Satelite erp file not find, $GpsRefer1!\n ftp://ftp.aiub.unibe.ch/CODE/${year41}/COD${week1}${dow1}.EPH.Z\n";
+                }
+                rename("COD${week1}${dow1}.EPH.Z","cod${week1}${dow1}.eph.Z");
+            }
+            my $eph1 = "cod${week1}${dow1}.eph.Z";
+            `$unzip -cd $eph1 > "cod${week1}${dow1}.eph"`;
+            `rm "cod${week1}${dow1}.eph.Z"`;
+            copy("cod${week1}${dow1}.eph","${dirsp3}/");
+            rename("cod${week1}${dow1}.eph","$GpsRefer1");
+        }
+    }
+
+    ##### mergesp3 to meger sp3 file  ######
+    system("$mergesp3","$GpsRefer2","$GpsRefer","$GpsRefer1","mer${GpsRefer}")==0
         or die "###ERROR:$mergesp3 $GpsRefer2 $GpsRefer $GpsRefer1 mer${GpsRefer}\n";
-   rename("mer${GpsRefer}","$GpsRefer");
-   unlink("$GpsRefer2");
-   unlink("$GpsRefer1");
-   print "$sp3orb $GpsRefer -cfg $ctrl_file";
-   system("$sp3orb","$GpsRefer","-cfg","$ctrl_file")==0 or die "###ERROR:$sp3orb $GpsRefer -cfg $ctrl_file\n";
+    rename("mer${GpsRefer}","$GpsRefer");
+    unlink("$GpsRefer2");
+    unlink("$GpsRefer1");
+    print "$sp3orb $GpsRefer -cfg $ctrl_file";
+    system("$sp3orb","$GpsRefer","-cfg","$ctrl_file")==0 or die "###ERROR:$sp3orb $GpsRefer -cfg $ctrl_file\n";
 
-   # precise satellite phase clock products from pride_lab in wuhan Univercity
-   if(! -e "sck_${year4}${doy}"){
-      #copy("${dirsp3}/cod${week}${dow}.clk","./");
-      #rename("cod${week}${dow}.clk","$GpsSatclk");            
-      if(! -e "cck_${year4}${doy}"){
-        `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://192.168.111.19/cck_${year4}${doy}`;
-     #`$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://igs.gnsswhu.cn/pub/gps/products/${week}/cod${week}${dow}.clk.Z`;
-        #if(! -e "cod${week}${dow}.clk.Z"){   
-        #   `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.CLK.Z`;
-        #   if(! -e 'COD${week}${dow}.CLK.Z'){
-        #      die "###ERROR: Satelite clk file not find, $GpsSatclk!\n ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.CLK.Z\n";
-        #   }
-     #      rename("COD${week}${dow}.CLK.Z","cod${week}${dow}.clk.Z");
-     #}
-     #my $clk = "cod${week}${dow}.clk.Z";                     
-     #`$unzip -cd $clk > "cod${week}${dow}.clk"`;             
-     #`rm "cod${week}${dow}.clk.Z"`;                          
-     #copy("cod${week}${dow}.clk","${dirsp3}/");
-     #rename("cod${week}${dow}.clk","$GpsSatclk");            
-      }
-      rename("cck_${year4}${doy}","sck_${year4}${doy}");
-   }
-  if(! -e "fcb_${year4}${doy}"){ 
-     if(! -e "$FCB"){
-       `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://192.168.111.19/${FCB}`;
-     }
-     rename("$FCB","fcb_${year4}${doy}");
-  }
+    # precise satellite phase clock products from pride_lab in wuhan Univercity
+    if(! -e "sck_${year4}${doy}"){
+        #copy("${dirsp3}/cod${week}${dow}.clk","./");
+        #rename("cod${week}${dow}.clk","$GpsSatclk");
+        if(! -e "cck_${year4}${doy}"){
+            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://192.168.111.19/cck_${year4}${doy}`;
+            #`$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://igs.gnsswhu.cn/pub/gps/products/${week}/cod${week}${dow}.clk.Z`;
+            #if(! -e "cod${week}${dow}.clk.Z"){
+            #   `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.CLK.Z`;
+            #   if(! -e 'COD${week}${dow}.CLK.Z'){
+            #      die "###ERROR: Satelite clk file not find, $GpsSatclk!\n ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.CLK.Z\n";
+            #   }
+            #      rename("COD${week}${dow}.CLK.Z","cod${week}${dow}.clk.Z");
+            #}
+            #my $clk = "cod${week}${dow}.clk.Z";
+            #`$unzip -cd $clk > "cod${week}${dow}.clk"`;
+            #`rm "cod${week}${dow}.clk.Z"`;
+            #copy("cod${week}${dow}.clk","${dirsp3}/");
+            #rename("cod${week}${dow}.clk","$GpsSatclk");
+        }
+        rename("cck_${year4}${doy}","sck_${year4}${doy}");
+    }
+    if(! -e "fcb_${year4}${doy}"){
+        if(! -e "$FCB"){
+            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://192.168.111.19/${FCB}`;
+        }
+        rename("$FCB","fcb_${year4}${doy}");
+    }
 }

@@ -1,10 +1,10 @@
 !
 !! lsq_cnt_prmt.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -16,69 +16,69 @@
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!! purpose   : count number of the three types of parameters
 !!             process, state and determinated parameters
-!! 
+!!
 !! paraemters:
 !!
 !! author    : Maorong GE
 !! modified  : 7/24/2006.Geng J.H. nc,np
-!!             8/02/2006.Geng J.H. nkbr 
+!!             8/02/2006.Geng J.H. nkbr
 !
-subroutine lsq_cnt_prmt(LCF,SITE,NM)
-implicit none
-include '../header/const.h'
-include '../header/station.h'
-include 'lsqcfg.h'
-include 'lsq.h'
+subroutine lsq_cnt_prmt(LCF, SITE, NM)
+  implicit none
+  include '../header/const.h'
+  include '../header/station.h'
+  include 'lsqcfg.h'
+  include 'lsq.h'
 
-type(station) SITE
-type(lsqcfg) LCF
-type(norm) NM
+  type(station) SITE
+  type(lsqcfg) LCF
+  type(norm) NM
 !
-!! local 
-integer*4 i
+!! local
+  integer*4 i
 
-NM%nc=0
-NM%np=0
-NM%ns=0
+  NM%nc = 0
+  NM%np = 0
+  NM%ns = 0
 !
 !! STATION PARAMETERS
 !! We only estimate position, troposphere and clock parameters for stations
 !
 !! STATIC means only estimating 3 positions as constant parameters
-if(SITE%skd(1:1).eq.'S') then
-   NM%nc=NM%nc+3
+  if (SITE%skd(1:1) .eq. 'S') then
+    NM%nc = NM%nc + 3
 !! K means more state paramters to be estimated including x as p parameters
-else if(SITE%skd(1:1).eq.'K') then
-   NM%np=NM%np+3
-else if(SITE%skd(1:1).ne.'F') then
-  write(*,'(2a,a2)') '***ERROR(lsq_cnt_prmt): unknown site type ',SITE%name,SITE%skd
-  call exit(1)
-endif
+  else if (SITE%skd(1:1) .eq. 'K') then
+    NM%np = NM%np + 3
+  else if (SITE%skd(1:1) .ne. 'F') then
+    write (*, '(2a,a2)') '***ERROR(lsq_cnt_prmt): unknown site type ', SITE%name, SITE%skd
+    call exit(1)
+  endif
 !
 !! atmospheric parameters is process parameters
-if(LCF%ztdmod(1:3).eq.'PWC'.or.LCF%ztdmod(1:3).eq.'STO') then
-  NM%np=NM%np+1
-else if(LCF%ztdmod(1:3).ne.'FIX') then
-  write(*,'(2a)') '***ERROR(lsq_cnt_prmt): ztd mode ',LCF%ztdmod
-  call exit(1)
-endif
-if(LCF%htgmod(1:3).eq.'PWC'.or.LCF%htgmod(1:3).eq.'STO') then
-    NM%np=NM%np+2
-else if(LCF%htgmod(1:3).ne.'NON'.and.LCF%htgmod(1:3).ne.'FIX') then
-    write(*,'(2a)') '***ERROR(lsq_cnt_prmt): htg mode ',LCF%htgmod
+  if (LCF%ztdmod(1:3) .eq. 'PWC' .or. LCF%ztdmod(1:3) .eq. 'STO') then
+    NM%np = NM%np + 1
+  else if (LCF%ztdmod(1:3) .ne. 'FIX') then
+    write (*, '(2a)') '***ERROR(lsq_cnt_prmt): ztd mode ', LCF%ztdmod
     call exit(1)
-endif
-!          
+  endif
+  if (LCF%htgmod(1:3) .eq. 'PWC' .or. LCF%htgmod(1:3) .eq. 'STO') then
+    NM%np = NM%np + 2
+  else if (LCF%htgmod(1:3) .ne. 'NON' .and. LCF%htgmod(1:3) .ne. 'FIX') then
+    write (*, '(2a)') '***ERROR(lsq_cnt_prmt): htg mode ', LCF%htgmod
+    call exit(1)
+  endif
+!
 !! receiver clock offset
-NM%np=NM%np+1
+  NM%np = NM%np + 1
 
-NM%imtx=NM%nc+NM%np
+  NM%imtx = NM%nc + NM%np
 !
 !! check consistence
-if(NM%imtx.gt.MAXPAR) then
-  write(*,'(a,i8)') '***ERROR(lsq_cnt_prmt): too many parameters ',NM%imtx
-  call exit(1)
-endif
+  if (NM%imtx .gt. MAXPAR) then
+    write (*, '(a,i8)') '***ERROR(lsq_cnt_prmt): too many parameters ', NM%imtx
+    call exit(1)
+  endif
 
-return
-end 
+  return
+end

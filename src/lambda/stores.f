@@ -1,4 +1,4 @@
-      subroutine STOREs (ican, ipos, imax, t, tmax, dist, disall, cands, 
+      subroutine STOREs (ican, ipos, imax, t, tmax, dist, disall, cands,
      +  MaxCan, n)
 
 c*ver version 1, dd. 19-05-95
@@ -12,13 +12,13 @@ c     ------ -------- --------------------------------------------------
 c*par ican   input    Min (number of vectors found until now, MaxCan)
 c*par ipos   input    position in disall/cands to put the new found vector
 c*par imax   output   position in disall/cands of the vector with the
-c*                    largest distance of the ican vectors with minimum 
+c*                    largest distance of the ican vectors with minimum
 c*                    distance found until now
-c*par t      input    distance of the new found vector    
-c*par tmax   output   the largest distance of the ican vectors with 
-c*                    minimum distance found until now 
+c*par t      input    distance of the new found vector
+c*par tmax   output   the largest distance of the ican vectors with
+c*                    minimum distance found until now
 c*par dist   input    difference between the integer tried and \hat{a}_n
-c*par cands  in/out   2d-array to store the integer vectors 
+c*par cands  in/out   2d-array to store the integer vectors
 c*par disall in/out   distance of the MaxCan integer vectors
 c*par MaxCan input    number of integer vectors required
 c*par n      input    dimension of the system (number of DD ambiguities)
@@ -27,7 +27,7 @@ c*par n      input    dimension of the system (number of DD ambiguities)
 
       double precision
      +  dist (n), disall (MaxCan), cands (n,MaxCan)
-                      
+
       do i = 1, n
          cands (i, ipos) = dist (i)
       end do

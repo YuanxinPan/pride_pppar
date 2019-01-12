@@ -1,10 +1,10 @@
 !
 !! MATMPY.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !
-SUBROUTINE MATMPY(A,B,C,NROW,NCOLA,NCOLB)
+SUBROUTINE MATMPY(A, B, C, NROW, NCOLA, NCOLB)
 !
 !     PREMULTIPLY MATRIX B BY MATRIX A WITH RESULTS IN MATRIX C
 !
@@ -27,33 +27,33 @@ SUBROUTINE MATMPY(A,B,C,NROW,NCOLA,NCOLB)
 !          NCOLA   I  NUMBER OF COLUMNS OF MATRIX A
 !          NCOLB   I  NUMBER OF COLUMNS OF MATRIX B
 !
-implicit none
-INTEGER*4 NROW,NCOLA,NCOLB
-REAL*8  A(NROW,NCOLA),B(NCOLA,NCOLB),C(NROW,NCOLB)
+  implicit none
+  INTEGER*4 NROW, NCOLA, NCOLB
+  REAL*8 A(NROW, NCOLA), B(NCOLA, NCOLB), C(NROW, NCOLB)
 !
 !! local
-INTEGER*4 I,J,K
-REAL*8 SUM
-REAL*8,POINTER :: C1(:,:)
+  INTEGER*4 I, J, K
+  REAL*8 SUM
+  REAL*8, POINTER :: C1(:, :)
 
-ALLOCATE(C1(1:NROW,1:NCOLB))
+  ALLOCATE (C1(1:NROW, 1:NCOLB))
 !
-DO I=1,NROW
-  DO J=1,NCOLB
-    SUM = 0.D0
-    DO k=1,NCOLA
-      SUM = SUM + A(I,k)*B(k,J)
+  DO I = 1, NROW
+    DO J = 1, NCOLB
+      SUM = 0.D0
+      DO k = 1, NCOLA
+        SUM = SUM + A(I, k)*B(k, J)
+      enddo
+      C1(I, J) = SUM
     enddo
-    C1(I,J) = SUM
   enddo
-enddo
 
-DO I=1,NROW
-  DO J=1,NCOLB
-    C(I,J)=C1(I,J)
+  DO I = 1, NROW
+    DO J = 1, NCOLB
+      C(I, J) = C1(I, J)
+    ENDDO
   ENDDO
-ENDDO
 !
-DEALLOCATE(C1)
-RETURN
+  DEALLOCATE (C1)
+  RETURN
 END

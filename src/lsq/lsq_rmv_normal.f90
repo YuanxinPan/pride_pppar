@@ -1,10 +1,10 @@
 !
 !! lsq_rmv_normal.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -21,41 +21,41 @@
 !!            NM,PM         -- normal matrix & PAR table
 !! author   : Geng J
 !
-subroutine lsq_rmv_normal(lfncid,lfnrem,ncol,icol,NM,PM)
-implicit none
-include '../header/const.h'
-include 'lsq.h'
+subroutine lsq_rmv_normal(lfncid, lfnrem, ncol, icol, NM, PM)
+  implicit none
+  include '../header/const.h'
+  include 'lsq.h'
 
-integer*4 lfncid,lfnrem,ncol,icol(1:*)
-type(norm) NM
-type(prmt) PM(1:*)
+  integer*4 lfncid, lfnrem, ncol, icol(1:*)
+  type(norm) NM
+  type(prmt) PM(1:*)
 !
 !! local
-integer*4 ipar,ib,i
+  integer*4 ipar, ib, i
 
-do ib=1,ncol
-  ipar=icol(ib)
-  if(ipar.ne.NM%iptp(PM(ipar)%ipt)) then
-    write(oscr,'(a)') '***ERROR(lsq_rmv_normal): index not consistent '
-    call exit(1)
-  endif
-  call lsq_rmv_prmt(.true.,lfncid,lfnrem,ipar,NM,PM,NM%norx)
-  do i=1,NM%ipm
-    if(PM(i)%ipt.gt.PM(ipar)%ipt) PM(i)%ipt=PM(i)%ipt-1
+  do ib = 1, ncol
+    ipar = icol(ib)
+    if (ipar .ne. NM%iptp(PM(ipar)%ipt)) then
+      write (oscr, '(a)') '***ERROR(lsq_rmv_normal): index not consistent '
+      call exit(1)
+    endif
+    call lsq_rmv_prmt(.true., lfncid, lfnrem, ipar, NM, PM, NM%norx)
+    do i = 1, NM%ipm
+      if (PM(i)%ipt .gt. PM(ipar)%ipt) PM(i)%ipt = PM(i)%ipt - 1
+    enddo
+    do i = PM(ipar)%ipt + 1, NM%imtx
+      NM%iptp(i - 1) = NM%iptp(i)
+    enddo
+    if (PM(ipar)%ptype .eq. 'P') then
+      PM(ipar)%ipt = -1        ! act as a flag
+      NM%np = NM%np - 1
+    else
+      PM(ipar)%ipt = 0
+      NM%ns = NM%ns - 1
+    endif
+    NM%iptp(NM%imtx) = 0
+    NM%imtx = NM%imtx - 1
   enddo
-  do i=PM(ipar)%ipt+1,NM%imtx
-    NM%iptp(i-1)=NM%iptp(i)
-  enddo
-  if(PM(ipar)%ptype.eq.'P') then
-    PM(ipar)%ipt=-1        ! act as a flag
-    NM%np=NM%np-1
-  else
-    PM(ipar)%ipt=0
-    NM%ns=NM%ns-1
-  endif
-  NM%iptp(NM%imtx)=0
-  NM%imtx=NM%imtx-1
-enddo
 
-return
+  return
 end

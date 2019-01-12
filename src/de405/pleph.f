@@ -1,12 +1,12 @@
 C
       SUBROUTINE PLEPH ( ET, NTARG, NCENT, RRD )
-C 
+C
 C  For de405, set KSIZE to 2036  NOTE : Over the years, different versions of PLEPH have had a fifth argument:
 C  sometimes, an error return statement number; sometimes, a logical denoting
-C  whether or not the requested  
-C  For  de405, set KSIZE to 2036 
+C  whether or not the requested
+C  For  de405, set KSIZE to 2036
 C  For  de405, set KSIZE to 2036 date is covered by the ephemeris.  We apologize
-C  for this inconsistency; in this present version, we use only the four necessary 
+C  for this inconsistency; in this present version, we use only the four necessary
 C  arguments and do the testing outside of the subroutine.
 C
 C     THIS SUBROUTINE READS THE JPL PLANETARY EPHEMERIS
@@ -19,7 +19,7 @@ C       ET = D.P. JULIAN EPHEMERIS DATE AT WHICH INTERPOLATION
 C            IS WANTED.
 C
 C       ** NOTE THE ENTRY DPLEPH FOR A DOUBLY-DIMENSIONED TIME **
-C          THE REASON FOR THIS OPTION IS DISCUSSED IN THE 
+C          THE REASON FOR THIS OPTION IS DISCUSSED IN THE
 C          SUBROUTINE STATE
 C
 C     NTARG = INTEGER NUMBER OF 'TARGET' POINT.
@@ -54,7 +54,7 @@ C
 
       DIMENSION RRD(6),ET2Z(2),ET2(2),PV(6,13)
       DIMENSION PVSUN(6)
-      
+
       LOGICAL BSAVE,BARY,FIRST1
 
       INTEGER LIST(12)
@@ -71,7 +71,7 @@ C     INITIALIZE ET2 FOR 'STATE' AND SET UP COMPONENT COUNT
       ET2(2)=0.D0
       GO TO 11
 
-C     ENTRY POINT 'DPLEPH' FOR DOUBLY-DIMENSIONED TIME ARGUMENT 
+C     ENTRY POINT 'DPLEPH' FOR DOUBLY-DIMENSIONED TIME ARGUMENT
 C          (SEE THE DISCUSSION IN THE SUBROUTINE STATE)
 
       ENTRY DPLEPH(ET2Z,NTARG,NCENT,RRD)
@@ -95,7 +95,7 @@ C     CHECK FOR NUTATION CALL
         LIST(11)=2
         CALL STATE(ET2,LIST,PV,RRD)
         RETURN
-     
+
 C     CHECK FOR LIBRATIONS
 
   97  IF(NTARG.NE.15) GO TO 98

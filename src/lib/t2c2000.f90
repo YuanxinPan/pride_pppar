@@ -1,10 +1,10 @@
 !
 !! T2C2000.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -14,7 +14,7 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-SUBROUTINE T2C2000 ( RPOM, THETA, RBPN, RMAT, RT2C )
+SUBROUTINE T2C2000(RPOM, THETA, RBPN, RMAT, RT2C)
 !+
 !  - - - - - - - -
 !   T 2 C 2 0 0 0
@@ -34,7 +34,7 @@ SUBROUTINE T2C2000 ( RPOM, THETA, RBPN, RMAT, RT2C )
 !  or alternatively (for the classical, equinox-based, transformation):
 !     THETA      d      Greenwich Sidereal Time (radians)
 !     RBPN     d(3,3)   true-to-celestial matrix
-! 
+!
 !     RMAT     d(3,3)   rate matrix
 !
 !  Returned:
@@ -46,35 +46,35 @@ SUBROUTINE T2C2000 ( RPOM, THETA, RBPN, RMAT, RT2C )
 !
 !-----------------------------------------------------------------------
 
-IMPLICIT NONE
-INCLUDE '../header/const.h'
+  IMPLICIT NONE
+  INCLUDE '../header/const.h'
 
-REAL*8 RPOM(3,3), THETA, RBPN(3,3), RMAT(3,3), RT2C(3,3)
+  REAL*8 RPOM(3, 3), THETA, RBPN(3, 3), RMAT(3, 3), RT2C(3, 3)
 !
 !! LOCAL
-REAL*8 SG,CG,R(3,3)
+  REAL*8 SG, CG, R(3, 3)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ! Rate matrix
-RMAT=0.d0
-SG=DSIN(THETA)
-CG=DCOS(THETA)
-RMAT(1,1) = -SG*OMEGA
-RMAT(2,1) =  CG*OMEGA
-RMAT(1,2) = -CG*OMEGA
-RMAT(2,2) = -SG*OMEGA
+  RMAT = 0.d0
+  SG = DSIN(THETA)
+  CG = DCOS(THETA)
+  RMAT(1, 1) = -SG*OMEGA
+  RMAT(2, 1) = CG*OMEGA
+  RMAT(1, 2) = -CG*OMEGA
+  RMAT(2, 2) = -SG*OMEGA
 
 !  Polar motion.
-R = RPOM
-CALL MATMPY(RMAT,R,RMAT,3,3,3)
+  R = RPOM
+  CALL MATMPY(RMAT, R, RMAT, 3, 3, 3)
 
 !  Earth rotation.
-CALL ROT_Z ( -THETA, R )
+  CALL ROT_Z(-THETA, R)
 
 !  CIP motion.
-CALL MATMPY(RBPN, R, RT2C, 3, 3, 3)
-CALL MATMPY(RBPN, RMAT, RMAT, 3, 3, 3)
+  CALL MATMPY(RBPN, R, RT2C, 3, 3, 3)
+  CALL MATMPY(RBPN, RMAT, RMAT, 3, 3, 3)
 
-RETURN
+  RETURN
 END

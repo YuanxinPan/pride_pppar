@@ -1,10 +1,10 @@
 !
 !! ambslv.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -24,25 +24,25 @@
 !! author   : Geng J
 !! created  : Mar. 16, 2008
 !
-subroutine ambslv(ncad,q22,bias,disall)
-implicit none
+subroutine ambslv(ncad, q22, bias, disall)
+  implicit none
 
-integer*4 ncad
-real*8 q22(1:*),bias(1:*),disall(1:*)
+  integer*4 ncad
+  real*8 q22(1:*), bias(1:*), disall(1:*)
 !
 !! local
-real*8 dump
+  real*8 dump
 
-if(ncad.gt.1) then
-  call lambda4(ncad,q22,bias,disall)
-else
-  dump=bias(1)
-  bias(1)=nint(bias(1))*1.d0
-  dump=bias(1)-dump
-  disall(1)=dump/q22(1)*dump
-  dump=1.d0-dabs(dump)
-  disall(2)=dump/q22(1)*dump
-endif
+  if (ncad .gt. 1) then
+    call lambda4(ncad, q22, bias, disall)
+  else
+    dump = bias(1)
+    bias(1) = nint(bias(1))*1.d0
+    dump = bias(1) - dump
+    disall(1) = dump/q22(1)*dump
+    dump = 1.d0 - dabs(dump)
+    disall(2) = dump/q22(1)*dump
+  endif
 
-return
+  return
 end

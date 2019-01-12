@@ -1,10 +1,10 @@
 !!
 !! upper_string.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -26,29 +26,29 @@
 !! last mod.: 31-Mai-2003 by Maorong GE, CLEAN
 !!
 character*(*) function upper_string(string)
-implicit none
-character*(*) string
+  implicit none
+  character*(*) string
 !
 !! local
-integer*4 i,length,iadd
+  integer*4 i, length, iadd
 !
 !! ascii code difference between upper case and lower case
-iadd=ichar('A')-ichar('a')
+  iadd = ichar('A') - ichar('a')
 
-length = min(len(string),len(upper_string))
-do i=1,length
-  if (lge(string(i:i),'a') .and. lle(string(i:i),'z')) then
-    upper_string(i:i)=char(ichar(string(i:i))+iadd)
-  else
-    upper_string(i:i)=string(i:i)
-  endif
-enddo
+  length = min(len(string), len(upper_string))
+  do i = 1, length
+    if (lge(string(i:i), 'a') .and. lle(string(i:i), 'z')) then
+      upper_string(i:i) = char(ichar(string(i:i)) + iadd)
+    else
+      upper_string(i:i) = string(i:i)
+    endif
+  enddo
 !
 !! put SPACE for the rest
-do i=length+1,len(upper_string)
-  upper_string(i:i)=' '
-enddo
+  do i = length + 1, len(upper_string)
+    upper_string(i:i) = ' '
+  enddo
 
-      return
-      end
+  return
+end
 

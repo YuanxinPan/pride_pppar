@@ -1,10 +1,10 @@
 !
 !! dot.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -23,19 +23,19 @@
 !!
 !! author   : Ge Maorong
 !!
-!! last mod.: 31-May-2003 by Maorong GE, CLEAN 
+!! last mod.: 31-May-2003 by Maorong GE, CLEAN
 
-real*8 function dot(n,v1,v2)
-implicit none 
-integer*4 n
-real*8 v1(1:*),v2(1:*)
+real*8 function dot(n, v1, v2)
+  implicit none
+  integer*4 n
+  real*8 v1(1:*), v2(1:*)
 !
 !! local
-integer*4 i
+  integer*4 i
 
-dot = 0.d0
-do i=1,n
-  dot=dot+v1(i)*v2(i)
-enddo
-return
+  dot = 0.d0
+  do i = 1, n
+    dot = dot + v1(i)*v2(i)
+  enddo
+  return
 end

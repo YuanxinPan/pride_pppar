@@ -1,11 +1,11 @@
       subroutine LAMBDA4 (n, Q, a, disall)
 
 c*ver version 1.0, dd. 13-10-96
-c*aut Delft Geodetic Computing Centre/LGR, Paul de Jonge 
+c*aut Delft Geodetic Computing Centre/LGR, Paul de Jonge
 c*aut copyright by Delft University of Technology, Faculty of Geodesy
 
 c*rol integer estimation with the LAMBDA method. Instead of computing
-c*rol matrix Z, we now compute Z^-* directly (using SRC1i). 
+c*rol matrix Z, we now compute Z^-* directly (using SRC1i).
 c*rol For the UDL decomposition of the variance-covariance matrix,
 c*rol FMFAC6 is used, since it checks on possible singularity.
 
@@ -14,27 +14,27 @@ c     ------ -------- --------------------------------------------------
 c*par n      input    dimension of matrix
 c*par L      input    variance-covariance matrix. This matrix is symmetric,
 c*                    and only the lower triangular part is stored and
-c*                    accessed. Here it is stored column-wise in a 
-c*                    2-dimensional array, to avoid the necessity of a 
+c*                    accessed. Here it is stored column-wise in a
+c*                    2-dimensional array, to avoid the necessity of a
 c*                    dedicated storage scheme.
 c*           work     | lower triangular matrix L:    *
 c*                    | variance covariance matrix = L D L
 c*par D      work     | diagonal matrix
 c*par a      input    the vector with real valued estimates \hat{a} (float
-c*                    solution) 
+c*                    solution)
 c*           output   the vector with integer valued estimates \check{a}
 c*                    (fixed solution)
-c*par cands  work     | 2-dimensional array to store the candidates 
+c*par cands  work     | 2-dimensional array to store the candidates
 c*par disall output   | according squared norms \hat{a}-\check{a}
-c*                    | (sorted in increasing order)    
-c*par Zt     work     inverse transpose Z-matrix           
+c*                    | (sorted in increasing order)
+c*par Zt     work     inverse transpose Z-matrix
 c*par v1     work     double precision work array with length=n
 c*par v2     work     double precision work array with length=n+1
 c*par v3     work     double precision work array with length=n+1
 c*par v4     work     double precision work array with length=n
 c*par v5     work     double precision work array with length=n
 c*par v6     work     double precision work array with length=n
-c*par ak     work     contains the (integer) increments of the original 
+c*par ak     work     contains the (integer) increments of the original
 c*                    float ambiguities
 
       implicit double precision (a-h, o-z)
@@ -62,11 +62,11 @@ c*    initialize Zt=unit matrix & fill in L matrix
                L(j,i)=Q(k)
             end if
          end do
-         Zt(i,i)=1.d0 
+         Zt(i,i)=1.d0
       end do
 
-c*    make estimates in 'a' between -1 and +1 by subtracting an 
-c*    integer number, store the increments in ak (=shift the centre 
+c*    make estimates in 'a' between -1 and +1 by subtracting an
+c*    integer number, store the increments in ak (=shift the centre
 c*    of the ellipsoid over the grid by an integer translation)
 c*    (see section 4.6)
       do i=1,n
@@ -93,16 +93,16 @@ c*    ... and D_1
       do i=1,n
          D(i)=1d0/D(i)
       end do
-        
+
 c*    find a suitable Chi^2 such that we have two candidates at minimum
 c*    use an eps to make sure the two candidates are inside the ellipsoid
-c*    (section 4.11) 
+c*    (section 4.11)
       eps=1d-6
       call CHIstrt4 (n, D, L, v1, v2, a, v3, v4)
       Chi_1=v3(2)+eps
 
 c*    find the two candidates with minimum norm (section 4.5)
-      call FI71 (Chi_1, MaxCan, n, a, D, L, v1, v2, v3, v4, v5, v6, 
+      call FI71 (Chi_1, MaxCan, n, a, D, L, v1, v2, v3, v4, v5, v6,
      +  ncan, disall, cands, ipos)
 
 c*    compute a = Z^-* z
@@ -114,13 +114,13 @@ c*    compute a = Z^-* z
       end do
 
 c*    ...and add the increment to them
-      do i=1,n 
+      do i=1,n
          a(i)=v1(i)+ak(i)
       end do
- 
+
 c*    'sort' the vector of squared norms in increasing order
-c*    (if ipos equals 2, the best candidate is in the second place: 
-c*    so reverse disall) 
+c*    (if ipos equals 2, the best candidate is in the second place:
+c*    so reverse disall)
       if (ipos.eq.2) then
          h=disall(1)
          disall(1)=disall(2)

@@ -1,10 +1,10 @@
 !
 !! timdif.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -25,18 +25,18 @@
 !!
 !! created   : 12/10/2006
 !
-real*8 function timdif(jd2,sod2,jd1,sod1)
-implicit none
+real*8 function timdif(jd2, sod2, jd1, sod1)
+  implicit none
 
-integer*4 jd1,jd2
-real*8 sod1,sod2
+  integer*4 jd1, jd2
+  real*8 sod1, sod2
 !
 !! local
-real*8 spd
+  real*8 spd
 
-data spd/86400.d0/
+  data spd/86400.d0/
 
-timdif=spd*(jd2-jd1)+sod2-sod1
+  timdif = spd*(jd2 - jd1) + sod2 - sod1
 
-return
+  return
 end

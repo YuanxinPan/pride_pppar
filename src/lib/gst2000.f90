@@ -1,10 +1,10 @@
 !
 !! GST2000.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !
-REAL*8 FUNCTION GST2000 ( UTA, UTB, TTA, TTB, DPSI )
+REAL*8 FUNCTION GST2000(UTA, UTB, TTA, TTB, DPSI)
 !+
 !  - - - - - - - -
 !   G S T 2 0 0 0
@@ -37,22 +37,22 @@ REAL*8 FUNCTION GST2000 ( UTA, UTB, TTA, TTB, DPSI )
 !
 !-----------------------------------------------------------------------
 
-IMPLICIT NONE
+  IMPLICIT NONE
 
-REAL*8 UTA, UTB, TTA, TTB, DPSI
+  REAL*8 UTA, UTB, TTA, TTB, DPSI
 !
 !! LOCAL
-REAL*8,PARAMETER :: D2PI = 6.283185307179586476925287D0
+  REAL*8, PARAMETER :: D2PI = 6.283185307179586476925287D0
 !
 !! FUNCTION CALLED
-REAL*8 GMST2000, EE2000
+  REAL*8 GMST2000, EE2000
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 !  Greenwich Sidereal Time, IAU 2000.
-GST2000 = GMST2000 ( UTA, UTB, TTA, TTB ) + EE2000 ( TTA, TTB, DPSI )
-GST2000 = MOD(GST2000,D2PI)
-IF(GST2000.LT.0.D0) GST2000=GST2000+D2PI
+  GST2000 = GMST2000(UTA, UTB, TTA, TTB) + EE2000(TTA, TTB, DPSI)
+  GST2000 = MOD(GST2000, D2PI)
+  IF (GST2000 .LT. 0.D0) GST2000 = GST2000 + D2PI
 
-RETURN
+  RETURN
 END

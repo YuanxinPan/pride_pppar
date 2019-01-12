@@ -1,10 +1,10 @@
 !
 !! troposphere_map.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -14,64 +14,64 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-!! 
-!! purpose  : map functions of troposhperic delay correction. Here we directly call several 
-!!            ztd model and mapping function code from GAMIT 
+!!
+!! purpose  : map functions of troposhperic delay correction. Here we directly call several
+!!            ztd model and mapping function code from GAMIT
 !! parameter: jd -- julian day (GPST)
 !!            elev -- elevation in radian
 !!            SITE%-- station information struct
 !!            damp,wmap -- map functions of hydrostatic and wet troposphere delay
 !! author   : Maorong GE, May-20-2003
-! 
-subroutine troposphere_map(jd,sod,elev,SITE,dmap,wmap)
-implicit none
-include '../header/const.h'
-include '../header/station.h'
+!
+subroutine troposphere_map(jd, sod, elev, SITE, dmap, wmap)
+  implicit none
+  include '../header/const.h'
+  include '../header/station.h'
 
-integer*4 jd
-real*8 sod,elev,dmap,wmap
-type(station) SITE
+  integer*4 jd
+  real*8 sod, elev, dmap, wmap
+  type(station) SITE
 !
 !! local
-integer*4 i,iyr,idoy,jdutc
-real*8 radian,wmf(2),hmf(2),tlen,al0,al1,ah,aw,sodutc
+  integer*4 i, iyr, idoy, jdutc
+  real*8 radian, wmf(2), hmf(2), tlen, al0, al1, ah, aw, sodutc
 !
 !! function called
-real*8 cfa,timdif,taiutc
+  real*8 cfa, timdif, taiutc
 
-radian=datan(1.d0)/45.d0 ! radian per degree
-call timinc(jd,sod,19.d0-taiutc(jd),jdutc,sodutc)
+  radian = datan(1.d0)/45.d0 ! radian per degree
+  call timinc(jd, sod, 19.d0 - taiutc(jd), jdutc, sodutc)
 !
 !! mapping functions
-if(SITE%map(1:3).eq.'VM1') then           ! vienna mapping function 1
-  do i=1,SITE%nvm-1
-    if(timdif(SITE%jdv(i),  SITE%sodv(i),  jdutc,sodutc).le.0.d0.and.&
-       timdif(SITE%jdv(i+1),SITE%sodv(i+1),jdutc,sodutc).ge.0.d0) then
+  if (SITE%map(1:3) .eq. 'VM1') then           ! vienna mapping function 1
+    do i = 1, SITE%nvm - 1
+      if (timdif(SITE%jdv(i), SITE%sodv(i), jdutc, sodutc) .le. 0.d0 .and. &
+          timdif(SITE%jdv(i + 1), SITE%sodv(i + 1), jdutc, sodutc) .ge. 0.d0) then
 !! linear interpolation
-      tlen=timdif(SITE%jdv(i+1),SITE%sodv(i+1),SITE%jdv(i),SITE%sodv(i))
-      al0=timdif(SITE%jdv(i+1),SITE%sodv(i+1),jdutc,sodutc)/tlen
-      al1=timdif(jdutc,sodutc,SITE%jdv(i),SITE%sodv(i))/tlen
-      ah=al0*SITE%vm1(1,i)+al1*SITE%vm1(1,i+1)
-      aw=al0*SITE%vm1(2,i)+al1*SITE%vm1(2,i+1)
-      call vmf1_ht(ah,aw,jdutc+sodutc/86400.d0,SITE%geod(1),SITE%geod(3)*1.d3,PI/2.d0-elev,dmap,wmap)
-      exit
-    endif
-  enddo
-else if(SITE%map(1:3).eq.'GMF') then      ! global mapping function
-  call global_map(jdutc*1.d0,SITE%geod(1),SITE%geod(2),SITE%geod(3)*1.d3,PI/2.d0-elev,dmap,wmap)
-else if(SITE%map(1:3).eq.'NIE') then      ! Niell mapping function
-  call mjd2doy(jdutc,iyr,idoy)
-  call nmfh2p1(idoy*1.d0,SITE%geod(1)/radian,SITE%geod(3)*1.d3-SITE%undu,elev/radian,hmf)
-  dmap=hmf(1)
-  call nmfw2(SITE%geod(1)/radian,elev/radian,wmf)
-  wmap=wmf(1)
-else if(SITE%map(1:3).eq.'CFA') then      ! Chao mapping function
-  dmap=cfa(SITE%p0,SITE%t0,SITE%hr0,'R',SITE%geod(1),SITE%geod(3),elev)
-  wmap=dmap
-else
-  write(oscr,'(2a)') '***ERROR(troposphere_map): unknow mapping function ',SITE%map(1:3)
-  call exit(1)
-endif
+        tlen = timdif(SITE%jdv(i + 1), SITE%sodv(i + 1), SITE%jdv(i), SITE%sodv(i))
+        al0 = timdif(SITE%jdv(i + 1), SITE%sodv(i + 1), jdutc, sodutc)/tlen
+        al1 = timdif(jdutc, sodutc, SITE%jdv(i), SITE%sodv(i))/tlen
+        ah = al0*SITE%vm1(1, i) + al1*SITE%vm1(1, i + 1)
+        aw = al0*SITE%vm1(2, i) + al1*SITE%vm1(2, i + 1)
+        call vmf1_ht(ah, aw, jdutc + sodutc/86400.d0, SITE%geod(1), SITE%geod(3)*1.d3, PI/2.d0 - elev, dmap, wmap)
+        exit
+      endif
+    enddo
+  else if (SITE%map(1:3) .eq. 'GMF') then      ! global mapping function
+    call global_map(jdutc*1.d0, SITE%geod(1), SITE%geod(2), SITE%geod(3)*1.d3, PI/2.d0 - elev, dmap, wmap)
+  else if (SITE%map(1:3) .eq. 'NIE') then      ! Niell mapping function
+    call mjd2doy(jdutc, iyr, idoy)
+    call nmfh2p1(idoy*1.d0, SITE%geod(1)/radian, SITE%geod(3)*1.d3 - SITE%undu, elev/radian, hmf)
+    dmap = hmf(1)
+    call nmfw2(SITE%geod(1)/radian, elev/radian, wmf)
+    wmap = wmf(1)
+  else if (SITE%map(1:3) .eq. 'CFA') then      ! Chao mapping function
+    dmap = cfa(SITE%p0, SITE%t0, SITE%hr0, 'R', SITE%geod(1), SITE%geod(3), elev)
+    wmap = dmap
+  else
+    write (oscr, '(2a)') '***ERROR(troposphere_map): unknow mapping function ', SITE%map(1:3)
+    call exit(1)
+  endif
 
-return
+  return
 end

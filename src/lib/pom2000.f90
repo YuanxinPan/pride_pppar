@@ -1,10 +1,10 @@
 !
 !! POM2000.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -14,7 +14,7 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-SUBROUTINE POM2000 ( XP, YP, SP, RPOM )
+SUBROUTINE POM2000(XP, YP, SP, RPOM)
 !+
 !
 !  Form the matrix of polar motion, IAU 2000.
@@ -35,22 +35,22 @@ SUBROUTINE POM2000 ( XP, YP, SP, RPOM )
 !
 !-----------------------------------------------------------------------
 
-IMPLICIT NONE
+  IMPLICIT NONE
 
-REAL*8 XP, YP, SP, RPOM(3,3)
+  REAL*8 XP, YP, SP, RPOM(3, 3)
 !
 !! LOCAL
-INTEGER*4 I
+  INTEGER*4 I
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RPOM = 0.D0
-DO I=1,3
-  RPOM(I,I)=1.D0
-ENDDO
+  RPOM = 0.D0
+  DO I = 1, 3
+    RPOM(I, I) = 1.D0
+  ENDDO
 !  Construct the matrix.
-CALL ROT_X( YP,RPOM)
-CALL ROT_Y( XP,RPOM)
-CALL ROT_Z(-SP,RPOM)
+  CALL ROT_X(YP, RPOM)
+  CALL ROT_Y(XP, RPOM)
+  CALL ROT_Z(-SP, RPOM)
 
-RETURN
+  RETURN
 END

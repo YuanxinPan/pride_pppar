@@ -1,10 +1,10 @@
 !
 !! find_flag.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -23,26 +23,26 @@
 !!            char -- searching target
 !!    output: iepo -- epoch number
 !!
-subroutine find_flag(istart,istop,flg,char,iepo)
-implicit none
-integer*4 flg(1:*),iepo,istart,istop
+subroutine find_flag(istart, istop, flg, char, iepo)
+  implicit none
+  integer*4 flg(1:*), iepo, istart, istop
 !character*256 char
-character*(*) char
+  character*(*) char
 ! local
-integer*4 i,istep
+  integer*4 i, istep
 ! function called
-logical*1 istrue
+  logical*1 istrue
 
-istep=1
-if(istop.le.istart) istep=-1
+  istep = 1
+  if (istop .le. istart) istep = -1
 
-iepo=-1
-do i=istart,istop,istep
-  if(istrue(flg(i),char)) then
-    iepo=i
-    return
-  endif
-enddo
+  iepo = -1
+  do i = istart, istop, istep
+    if (istrue(flg(i), char)) then
+      iepo = i
+      return
+    endif
+  enddo
 
-return
+  return
 end

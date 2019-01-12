@@ -1,10 +1,10 @@
 !
 !! de405.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -40,7 +40,7 @@
 !! read jpleph_405 header
         lfn=10
         OPEN(lfn,FILE='jpleph',STATUS='OLD',err=200)
-        do while(.true.)    
+        do while(.true.)
           msg=''
           read(lfn,'(a)',end=300) line
           if(index(line(1:5),'GROUP').ne.0) then
@@ -95,7 +95,7 @@
           elseif(index(line,'END OF HEADER').ne.0) then
             NRECL=4
             KSIZE=2036
-            IRECSZ=NRECL*KSIZE 
+            IRECSZ=NRECL*KSIZE
             lfn1 = 20
             OPEN(lfn1,FILE='jpleph_de405',ACCESS='DIRECT',RECL=IRECSZ,STATUS='NEW',err=200)
             write(lfn1,REC=1) HD%CNAM,HD%SS,HD%NCON,HD%AU,HD%EMRAT, &
@@ -109,12 +109,12 @@
                 else
                   jjj=jj/3+1
                 endif
-                do i=1,jjj     
-                  read(lfn,'(a)',end=300) line           
-                  read(line,'(3f26.18)',err=100) (buf(kk),kk=1+(i-1)*3,3+(i-1)*3) 
-                enddo 
-                write(LFN1,REC=ii+2) (BUF(K),K=1,jj)     
-              enddo            
+                do i=1,jjj
+                  read(lfn,'(a)',end=300) line
+                  read(line,'(3f26.18)',err=100) (buf(kk),kk=1+(i-1)*3,3+(i-1)*3)
+                enddo
+                write(LFN1,REC=ii+2) (BUF(K),K=1,jj)
+              enddo
           endif
           if(len_trim(msg).ne.0) then
                write(*,'(a)') '***ERROR: '//msg

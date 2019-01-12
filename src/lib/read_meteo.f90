@@ -1,10 +1,10 @@
 !
 !! read_meteo.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -26,43 +26,43 @@
 !! author   : Geng J
 !! created  : Sept 10, 2007
 !
-subroutine read_meteo(jd,sod,imet,map,geod,pres,temp,humd,undu)
-implicit none
+subroutine read_meteo(jd, sod, imet, map, geod, pres, temp, humd, undu)
+  implicit none
 
-integer*4 jd,imet
-real*8 sod,geod(3),pres,temp,humd,undu
-character*(*) map
+  integer*4 jd, imet
+  real*8 sod, geod(3), pres, temp, humd, undu
+  character*(*) map
 !
 !! local
-real*8 V(10,10),W(10,10)
+  real*8 V(10, 10), W(10, 10)
 !
 !! VMF1 does not need meteorological information
-if(map(1:3).eq.'VM1') return
+  if (map(1:3) .eq. 'VM1') return
 !
 !! initialization
-V=0.d0
-W=0.d0
+  V = 0.d0
+  W = 0.d0
 !
 !! compute 9x9 spherical harmonics and geoid undulation
-call spherical_harmonics(geod(1),geod(2),V,W,undu)
+  call spherical_harmonics(geod(1), geod(2), V, W, undu)
 !
 !! meteorology items
-if(imet.eq.0) then
-  pres=1013.25d0
-  temp=20.d0
-  humd=0.5d0
-else if(imet.ne.0) then
+  if (imet .eq. 0) then
+    pres = 1013.25d0
+    temp = 20.d0
+    humd = 0.5d0
+  else if (imet .ne. 0) then
 
-endif
+  endif
 !
 !add by zwx 20141030
-if(geod(3).lt.0.d0.or.geod(3).gt.9.d0) return
+  if (geod(3) .lt. 0.d0 .or. geod(3) .gt. 9.d0) return
 !! get subsequent meteorology info at station
-if(map(1:3).eq.'GMF') then
-  call global_meteo(jd*1.d0,geod(3)*1.d3,V,W,undu,pres,temp,humd)
-else
-  call mete_sea2site(.true.,pres,temp,humd,geod(3)*1.d3-undu,pres,temp,humd)
-endif
+  if (map(1:3) .eq. 'GMF') then
+    call global_meteo(jd*1.d0, geod(3)*1.d3, V, W, undu, pres, temp, humd)
+  else
+    call mete_sea2site(.true., pres, temp, humd, geod(3)*1.d3 - undu, pres, temp, humd)
+  endif
 
-return
+  return
 end

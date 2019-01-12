@@ -1,10 +1,10 @@
 !
 !! day_of_year.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -19,13 +19,13 @@
 !!
 !!   created by:  Ge Maorong
 !
-integer*4 function day_of_year(iday,imonth,iyear)
-integer*4 iday,imonth,iyear
+integer*4 function day_of_year(iday, imonth, iyear)
+  integer*4 iday, imonth, iyear
 !
 !! function called
-integer*4 modified_julday
+  integer*4 modified_julday
 
-day_of_year=modified_julday(iday,imonth,iyear)-&
-            modified_julday(1,1,iyear)+1
-return
+  day_of_year = modified_julday(iday, imonth, iyear) - &
+                modified_julday(1, 1, iyear) + 1
+  return
 end

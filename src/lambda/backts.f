@@ -10,19 +10,19 @@ c     name   i/o      parameter description
 c     ------ -------- --------------------------------------------------
 c*par n      input    dimension of matrix
 c*par i      in/out   level in the tree
-c*par end    input    dp work vector 
+c*par end    input    dp work vector
 c*par dist   in/out   difference between the integer tried and \hat{a}_i
-c*par lef    input    dp work vector 
-c*par left   output   dp work vector 
+c*par lef    input    dp work vector
+c*par left   output   dp work vector
 c*par ende   output   if .true., then search is done
 
       implicit double precision (a-h, o-z)
 
-      double precision 
-     +  dist (n), left (n), lef (n), end (n) 
-      logical 
+      double precision
+     +  dist (n), left (n), lef (n), end (n)
+      logical
      +  ende
-      
+
       j = i+1
       do i = j, n
          if (dist(i) .le. end(i)) then

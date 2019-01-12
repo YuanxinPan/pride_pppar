@@ -1,10 +1,10 @@
 !
 !! left_justify_string.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -21,27 +21,27 @@
 !!
 !! authour  : Ge Maorong
 !!
-!! last mod.: 31-May-2003 by Maorong GE, CLEAN 
+!! last mod.: 31-May-2003 by Maorong GE, CLEAN
 !!
 subroutine left_justify_string(string)
-implicit none
-character*(*) string
+  implicit none
+  character*(*) string
 
 !
 !! local
-integer*4 i,j,n
-n=len(string)
-do i=1,n                 
-  if(string(i:i).ne.' ') exit
-enddo
-if(i.le.n) string=string(i:n)
+  integer*4 i, j, n
+  n = len(string)
+  do i = 1, n
+    if (string(i:i) .ne. ' ') exit
+  enddo
+  if (i .le. n) string = string(i:n)
 !
 !! empty the rest
-j=n-i+1
-do i=j+1,n
-  string(i:i)=' '
-enddo
+  j = n - i + 1
+  do i = j + 1, n
+    string(i:i) = ' '
+  enddo
 
-return
+  return
 end
 

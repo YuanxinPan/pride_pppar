@@ -1,10 +1,10 @@
 !
 !! remov_shrt.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -25,55 +25,55 @@
 !! author   : Geng J
 !! created  : Oct. 18, 2007
 !
-subroutine remov_shrt(lupd,shrt,nepo,flag,trsi)
-implicit none
-include '../header/const.h'
-include 'data_flag.h'
+subroutine remov_shrt(lupd, shrt, nepo, flag, trsi)
+  implicit none
+  include '../header/const.h'
+  include 'data_flag.h'
 
-logical*1 lupd
-integer*4 nepo,shrt,flag(1:*)
-character*27 trsi(1:*)
+  logical*1 lupd
+  integer*4 nepo, shrt, flag(1:*)
+  character*27 trsi(1:*)
 !
 !! local
-logical*1 lfnd
-integer*4 i,j,k,iepo,nok
+  logical*1 lfnd
+  integer*4 i, j, k, iepo, nok
 !
 !! function called
-logical*1 istrue
+  logical*1 istrue
 
-k=1
-lfnd=.true.
-do while(lfnd)
-  call find_flag(k,nepo,flag,'OLDAMB',i)
-  if(i.gt.0) then
-    if(i.eq.nepo) then
-      lupd=.true.
-      flag(i)=DELSHT
-      write(oscr,'(4x,a4,a27,a,i6,a)') 'TIM ',trsi(i),' Epo ',i,' removed as short'
-      exit
-    else
-      call find_flag(i+1,nepo,flag,'OLDAMB',k)
-      if(k.lt.0) k=nepo+1
-      call find_flag(k-1,i,flag,'OK',j)
-      nok=0
-      do iepo=i,j
-        if(istrue(flag(iepo),'OK')) nok=nok+1
-      enddo
-      if(nok.le.shrt) then
-        do iepo=i,j
-          lupd=.true.
-          if(istrue(flag(iepo),'OK')) then
-            flag(iepo)=DELSHT
-            write(oscr,'(4x,a4,a27,a,i6,a)') 'TIM ',trsi(iepo),' Epo ',iepo,' removed as short'
-          endif
+  k = 1
+  lfnd = .true.
+  do while (lfnd)
+    call find_flag(k, nepo, flag, 'OLDAMB', i)
+    if (i .gt. 0) then
+      if (i .eq. nepo) then
+        lupd = .true.
+        flag(i) = DELSHT
+        write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' removed as short'
+        exit
+      else
+        call find_flag(i + 1, nepo, flag, 'OLDAMB', k)
+        if (k .lt. 0) k = nepo + 1
+        call find_flag(k - 1, i, flag, 'OK', j)
+        nok = 0
+        do iepo = i, j
+          if (istrue(flag(iepo), 'OK')) nok = nok + 1
         enddo
+        if (nok .le. shrt) then
+          do iepo = i, j
+            lupd = .true.
+            if (istrue(flag(iepo), 'OK')) then
+              flag(iepo) = DELSHT
+              write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(iepo), ' Epo ', iepo, ' removed as short'
+            endif
+          enddo
+        endif
       endif
+    else
+      lfnd = .false.
     endif
-  else
-    lfnd=.false.
-  endif
-  if(k.eq.nepo+1) exit
-enddo
+    if (k .eq. nepo + 1) exit
+  enddo
 
-return
+  return
 end

@@ -16,7 +16,7 @@ c*par vec    work     double precision work array with lenght n
 
       implicit double precision (a-h, o-z)
 
-      double precision 
+      double precision
      +  L (n,n), Lm (n,n), vec (n)
 
       do i = 1,n
@@ -26,7 +26,7 @@ c*par vec    work     double precision work array with lenght n
          do j = 1, i-1
             aiude = 0d0
             do k = j, i-1
-               aiude = aiude + Lm(k,j)*vec(k) 
+               aiude = aiude + Lm(k,j)*vec(k)
             end do
             Lm(i,j) = -aiude/L(i,i)
          end do

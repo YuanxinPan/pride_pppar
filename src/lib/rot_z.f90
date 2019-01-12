@@ -1,10 +1,10 @@
 !
 !! ROT_Z.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -14,7 +14,7 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-SUBROUTINE ROT_Z ( PSI, R )
+SUBROUTINE ROT_Z(PSI, R)
 !+
 !
 !  Rotate an r-matrix about the z-axis.
@@ -37,31 +37,31 @@ SUBROUTINE ROT_Z ( PSI, R )
 !
 !-----------------------------------------------------------------------
 
-IMPLICIT NONE
+  IMPLICIT NONE
 
-REAL*8 PSI, R(3,3)
+  REAL*8 PSI, R(3, 3)
 !
 !! LOCAL
-INTEGER*4 I
-REAL*8 S, C, A(3,3)
+  INTEGER*4 I
+  REAL*8 S, C, A(3, 3)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 !  Matrix representing new rotation.
-S = SIN(PSI)
-C = COS(PSI)
-A = 0.D0
-DO I=1,3
-  A(I,I)=1.D0
-ENDDO
-A(1,1) = C
-A(2,1) = -S
-A(1,2) = S
-A(2,2) = C
+  S = SIN(PSI)
+  C = COS(PSI)
+  A = 0.D0
+  DO I = 1, 3
+    A(I, I) = 1.D0
+  ENDDO
+  A(1, 1) = C
+  A(2, 1) = -S
+  A(1, 2) = S
+  A(2, 2) = C
 
 !  Rotate.
-CALL MATMPY(A,R,R,3,3,3)
+  CALL MATMPY(A, R, R, 3, 3, 3)
 
 !  Finished.
-RETURN
+  RETURN
 END

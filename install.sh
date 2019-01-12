@@ -1,5 +1,4 @@
 #!/bin/bash
-# Install PANDA-PPP 
+# Install PANDA-PPP
 
 cd src && make && make install
-

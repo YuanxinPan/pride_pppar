@@ -1,10 +1,10 @@
 !
 !! lsq_process.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -23,42 +23,42 @@
 !! Reference : Ge Maorong  PhD Dissertation
 !!       v= p(i+1)-M(i+1)*p(i)+w(i+1), Pw(i+1)
 !
-subroutine lsq_process(lfncid,lfnrem,jd,sod,dintv,NM,PM)
-implicit none
-include '../header/const.h'
-include 'lsq.h'
+subroutine lsq_process(lfncid, lfnrem, jd, sod, dintv, NM, PM)
+  implicit none
+  include '../header/const.h'
+  include 'lsq.h'
 
-integer*4 lfncid,lfnrem,jd
-real*8 sod,dintv
-type(norm) NM
-type(prmt) PM(1:*)
+  integer*4 lfncid, lfnrem, jd
+  real*8 sod, dintv
+  type(norm) NM
+  type(prmt) PM(1:*)
 !
 !! local variables
-integer*4 minut,ipar,k
+  integer*4 minut, ipar, k
 !
 !! one each time
-do ipar=NM%nc+1,NM%nc+NM%np
-  if(PM(ipar)%ptype.ne.'P') cycle
-  k=index(PM(ipar)%pname,':')
-  if(k.ne.0) then
-    read(PM(ipar)%pname(k+1:),*) minut
-    if((jd-PM(ipar)%ptime(2))*86400.d0+sod.lt.-MAXWND) cycle
-  endif
+  do ipar = NM%nc + 1, NM%nc + NM%np
+    if (PM(ipar)%ptype .ne. 'P') cycle
+    k = index(PM(ipar)%pname, ':')
+    if (k .ne. 0) then
+      read (PM(ipar)%pname(k + 1:), *) minut
+      if ((jd - PM(ipar)%ptime(2))*86400.d0 + sod .lt. -MAXWND) cycle
+    endif
 !
 !! remove process parameter
-  if(PM(ipar)%iobs.gt.0) then
-    call lsq_rmv_prmt(.false.,lfncid,lfnrem,ipar,NM,PM,NM%norx)
-    PM(ipar)%iobs=0
-  endif
-  if(k.ne.0) then
-    PM(ipar)%ptime(1)=PM(ipar)%ptime(1)+minut/1440.d0
-    PM(ipar)%ptime(2)=PM(ipar)%ptime(2)+minut/1440.d0
-  else
-    PM(ipar)%ptime(1)=jd+(sod+dintv)/86400.d0
-    PM(ipar)%ptime(2)=jd+(sod+dintv)/86400.d0
-  endif
+    if (PM(ipar)%iobs .gt. 0) then
+      call lsq_rmv_prmt(.false., lfncid, lfnrem, ipar, NM, PM, NM%norx)
+      PM(ipar)%iobs = 0
+    endif
+    if (k .ne. 0) then
+      PM(ipar)%ptime(1) = PM(ipar)%ptime(1) + minut/1440.d0
+      PM(ipar)%ptime(2) = PM(ipar)%ptime(2) + minut/1440.d0
+    else
+      PM(ipar)%ptime(1) = jd + (sod + dintv)/86400.d0
+      PM(ipar)%ptime(2) = jd + (sod + dintv)/86400.d0
+    endif
 !! next process parameter
-enddo
+  enddo
 
-return
+  return
 end

@@ -1,10 +1,10 @@
 !
 !! lc_help.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -14,26 +14,26 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-subroutine lc_help(nepo,flagall)
-integer*4 nepo,flagall(1:*)
+subroutine lc_help(nepo, flagall)
+  integer*4 nepo, flagall(1:*)
 
-integer*4 set_flag
-logical*1 istrue
+  integer*4 set_flag
+  logical*1 istrue
 
-integer*4 iepo
+  integer*4 iepo
 
-do iepo=1,nepo
-  if(istrue(flagall(iepo),'ok')) then
-    if(.not.istrue(flagall(iepo),'bigsd').and.&
-       .not.istrue(flagall(iepo),'gap')) then
-      if(.not.istrue(flagall(iepo),'lgjump').or.&
-         .not.istrue(flagall(iepo),'lwjump')) then
-        flagall(iepo)=set_flag(flagall(iepo),'lggood')
-        flagall(iepo)=set_flag(flagall(iepo),'lwgood')
+  do iepo = 1, nepo
+    if (istrue(flagall(iepo), 'ok')) then
+      if (.not. istrue(flagall(iepo), 'bigsd') .and. &
+          .not. istrue(flagall(iepo), 'gap')) then
+        if (.not. istrue(flagall(iepo), 'lgjump') .or. &
+            .not. istrue(flagall(iepo), 'lwjump')) then
+          flagall(iepo) = set_flag(flagall(iepo), 'lggood')
+          flagall(iepo) = set_flag(flagall(iepo), 'lwgood')
+        endif
       endif
     endif
-  endif
-enddo
+  enddo
 
-return
+  return
 end

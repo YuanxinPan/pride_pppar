@@ -2,16 +2,16 @@
 !! parameter definition
 !!
 type prmt
-character*15 pname                 !! parameter name  
-character*1 ptype                  !! parameter type
-integer*4 ipt                      !! pointer to normal equation  
-integer*4 iobs                     !! number of observations 
-real*8 xsig,xrwl,xrms,xswl,mele    !! sigma of process & ambiguities
-integer*4 pcode(2)                 !! corresponding station & satellite id
-real*8 ptime(2),ptbeg,ptend        !! living time span
-real*8 xini,xcor                   !! a priori value & correction
-real*8 map,rw,zw                   !! process noise
- end type
+  character*15 pname                 !! parameter name  
+  character*1 ptype                  !! parameter type
+  integer*4 ipt                      !! pointer to normal equation  
+  integer*4 iobs                     !! number of observations 
+  real*8 xsig,xrwl,xrms,xswl,mele    !! sigma of process & ambiguities
+  integer*4 pcode(2)                 !! corresponding station & satellite id
+  real*8 ptime(2),ptbeg,ptend        !! living time span
+  real*8 xini,xcor                   !! a priori value & correction
+  real*8 map,rw,zw                   !! process noise
+end type
 
 !!
 !! normal matrix

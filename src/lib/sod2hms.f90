@@ -1,10 +1,10 @@
 !
 !! sod2hms.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -19,14 +19,14 @@
 !!
 !! created by: Maorong Ge
 !
-subroutine sod2hms(sod,ih,im,sec)
-implicit none
-integer*4 ih,im
-real*8 sod,sec
+subroutine sod2hms(sod, ih, im, sec)
+  implicit none
+  integer*4 ih, im
+  real*8 sod, sec
 
-ih=int(sod/3600.d0)
-im=int((sod-ih*3600.d0)/60.d0)
-sec=sod-ih*3600.d0-im*60.d0
+  ih = int(sod/3600.d0)
+  im = int((sod - ih*3600.d0)/60.d0)
+  sec = sod - ih*3600.d0 - im*60.d0
 
-return
+  return
 end

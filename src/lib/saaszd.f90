@@ -1,10 +1,10 @@
 !
 !! saaszd.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -14,7 +14,7 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-real*8 function saaszd(p,t,wetvar,h2otyp,phi,h)
+real*8 function saaszd(p, t, wetvar, h2otyp, phi, h)
 !
 !     Calculates Saastamoinen zenith delay, in meters.
 !
@@ -28,21 +28,21 @@ real*8 function saaszd(p,t,wetvar,h2otyp,phi,h)
 !       PHI      Geocentric latitude, radians
 !       H        Elevation above the geoid, km
 !
-real*8 p,t,wetvar,phi,h,e,ffun,wpress,tk
+  real*8 p, t, wetvar, phi, h, e, ffun, wpress, tk
 !
-character*1 h2otyp,upper_string
+  character*1 h2otyp, upper_string
 !
 !.... Calculate the partial pressure of water vapor, in mbars
-if(h2otyp.eq.upper_string('R')) then
-  e=wpress(wetvar,t)
-else
-  e=wpress(1.d0,wetvar)
-endif
+  if (h2otyp .eq. upper_string('R')) then
+    e = wpress(wetvar, t)
+  else
+    e = wpress(1.d0, wetvar)
+  endif
 !
 !! Temperature in Kelvin
-tk=t+273.15d0
+  tk = t + 273.15d0
 !
 !! Zenith delay, meters
-saaszd=0.2277d-2*(p+(0.1255d4/tk+0.5d-1)*e)/ffun(phi,h)
-return
+  saaszd = 0.2277d-2*(p + (0.1255d4/tk + 0.5d-1)*e)/ffun(phi, h)
+  return
 end

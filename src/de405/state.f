@@ -1,4 +1,4 @@
-      SUBROUTINE STATE(ET2,LIST,PV,PNUT)   
+      SUBROUTINE STATE(ET2,LIST,PV,PNUT)
 C
 C++++++++++++++++++++++++++++++++
 C
@@ -60,10 +60,10 @@ C               PV(1,I) IS: X,Y,Z,DX,DY,DZ.
 C
 C               ALL OUTPUT VECTORS ARE REFERENCED TO THE EARTH MEAN
 C               EQUATOR AND EQUINOX OF J2000 IF THE DE NUMBER IS 200 OR
-C               GREATER; OF B1950 IF THE DE NUMBER IS LESS THAN 200. 
+C               GREATER; OF B1950 IF THE DE NUMBER IS LESS THAN 200.
 C
-C               THE MOON STATE IS ALWAYS GEOCENTRIC; THE OTHER NINE STATES 
-C               ARE EITHER HELIOCENTRIC OR SOLAR-SYSTEM BARYCENTRIC, 
+C               THE MOON STATE IS ALWAYS GEOCENTRIC; THE OTHER NINE STATES
+C               ARE EITHER HELIOCENTRIC OR SOLAR-SYSTEM BARYCENTRIC,
 C               DEPENDING ON THE SETTING OF COMMON FLAGS (SEE BELOW).
 C
 C               LUNAR LIBRATIONS, IF ON FILE, ARE PUT INTO PV(K,11) IF
@@ -132,7 +132,7 @@ C ************************************************************************
 
         NRECL=4
         KSIZE=2036
-        IRECSZ=NRECL*KSIZE 
+        IRECSZ=NRECL*KSIZE
         lfn=get_valid_unit(10)
         OPEN(lfn,FILE='jpleph_de405',ACCESS='DIRECT',FORM='UNFORMATTED',
      +   RECL=IRECSZ,STATUS='OLD',err=200)
@@ -143,7 +143,7 @@ C ************************************************************************
         if(ET2(1)+ET2(2).eq.0.d0) return
       ENDIF
 c
-cc MAIN ENTRY POINT 
+cc MAIN ENTRY POINT
       S=ET2(1)-.5D0
       CALL SPLIT(S,PJD(1))
       CALL SPLIT(ET2(2),PJD(3))
@@ -154,7 +154,7 @@ cc MAIN ENTRY POINT
 c
 cc ERROR RETURN FOR EPOCH OUT OF RANGE
       IF(PJD(1)+PJD(4).LT.HD%SS(1) .OR. PJD(1)+PJD(4).GT.HD%SS(2)) then
-         WRITE(*,'(a,f12.2,a,2f12.2)') 
+         WRITE(*,'(a,f12.2,a,2f12.2)')
      +   '***ERROR(jpleph_state): requested JED',ET2(1)+ET2(2),'
      +    not within ephemeris limits,',HD%SS(1),HD%SS(2)
          call exit(1)
@@ -171,7 +171,7 @@ C      IF(NR.NE.NRL) THEN
         READ(LFN,REC=NR,ERR=100)(BUF(K),K=1,KSIZE/2)
 C      ENDIF
 c
-cc unit 
+cc unit
       IF(KM) THEN
         T(2)=HD%SS(3)*86400.D0
         AUFAC=1.D0
@@ -189,7 +189,7 @@ cc INTERPOLATE SSBARY SUN
 c
 cc CHECK AND INTERPOLATE WHICHEVER BODIES ARE REQUESTED
       DO I=1,10
-        IF(LIST(I).EQ.0) cycle   
+        IF(LIST(I).EQ.0) cycle
         CALL INTERP(BUF(HD%IPT(1,I)),T,HD%IPT(2,I),3,HD%IPT(3,I),
      +        LIST(I),PV(1,I))
         DO J=1,6
@@ -215,26 +215,26 @@ Cc GET LIBRATIONS IF REQUESTED (AND IF ON FILE)
 
       RETURN
 
-  100 WRITE(*,'(a,2F12.2,A)') '***ERROR(jpleph_state): 
+  100 WRITE(*,'(a,2F12.2,A)') '***ERROR(jpleph_state):
      +            read `jpleph_de405` for time,',ET2
       call exit(1)
 
-  200 WRITE(*,'(a,2F12.2,A)') '***ERROR(jpleph_state): 
+  200 WRITE(*,'(a,2F12.2,A)') '***ERROR(jpleph_state):
      +		  open `jpleph_de405` '
       call exit(1)
-      
+
 
 
 c
-cc 
+cc
       ENTRY JPLEPH_CONST(CNAME,RVALE)
       IF(FIRST) THEN
         FIRST=.FALSE.
- 
+
 C ************************************************************************
 C THE USER MUST SELECT ONE OF THE FOLLOWING BY DELETING THE 'C' IN COLUMN 1
 C ************************************************************************
- 
+
         NRECL=4
         KSIZE=2036
         IRECSZ=NRECL*KSIZE

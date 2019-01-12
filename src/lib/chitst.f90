@@ -1,10 +1,10 @@
 !
 !! chitst.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -29,34 +29,34 @@
 !! created  : Oct. 17, 2007
 !! NOTE     : go to page 206 of Chinese book of statistics (Edition of Gaojiao)
 !
-logical*1 function chitst(flag,ndof,osig,nsig,zone)
-implicit none
+logical*1 function chitst(flag, ndof, osig, nsig, zone)
+  implicit none
 
-integer*4 flag,ndof
-real*8 osig,nsig,zone
+  integer*4 flag, ndof
+  real*8 osig, nsig, zone
 !
 !! local
-integer*4 ierr
-real*8 chi2l,chi2r,afa,stat
+  integer*4 ierr
+  real*8 chi2l, chi2r, afa, stat
 !
 !! chi test
-stat=ndof*(nsig/osig)**2
-chitst=.false.
-if(flag.eq.0) then
-  afa=(1.d0-zone)/2.d0
-  call pchi2(ndof,afa,1,chi2r)
-  afa=1.d0-afa
-  call pchi2(ndof,afa,1,chi2l)
-  if(stat.gt.chi2l.and.stat.lt.chi2r) chitst=.true.
-else if(flag.gt.0) then
-  afa=1.d0-zone
-  call pchi2(ndof,afa,1,chi2r)
-  if(stat.lt.chi2r) chitst=.true.
-else
-  afa=zone
-  call pchi2(ndof,afa,1,chi2l)
-  if(stat.gt.chi2l) chitst=.true.
-endif
+  stat = ndof*(nsig/osig)**2
+  chitst = .false.
+  if (flag .eq. 0) then
+    afa = (1.d0 - zone)/2.d0
+    call pchi2(ndof, afa, 1, chi2r)
+    afa = 1.d0 - afa
+    call pchi2(ndof, afa, 1, chi2l)
+    if (stat .gt. chi2l .and. stat .lt. chi2r) chitst = .true.
+  else if (flag .gt. 0) then
+    afa = 1.d0 - zone
+    call pchi2(ndof, afa, 1, chi2r)
+    if (stat .lt. chi2r) chitst = .true.
+  else
+    afa = zone
+    call pchi2(ndof, afa, 1, chi2l)
+    if (stat .gt. chi2l) chitst = .true.
+  endif
 
-return
+  return
 end

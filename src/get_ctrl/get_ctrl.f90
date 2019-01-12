@@ -1,10 +1,10 @@
 !
 !! get_ctrl.f90
-!! 
+!!
 !!    Copyright (C) 2018 by J.Geng
 !!
 !!    This program is free software: you can redistribute it and/or modify
-!!    it under the terms of the GNU General Public License (version 3) as 
+!!    it under the terms of the GNU General Public License (version 3) as
 !!    published by the Free Software Foundation.
 !!
 !!    This program is distributed in the hope that it will be useful,
@@ -17,7 +17,7 @@
 !
       program get_ctrl
 ! purpose  : get an item from PANDA control file by calling `findkey`.
-!            This is mainly for sh_panda 
+!            This is mainly for sh_panda
 !
 ! created  : Maorong GE
 !
@@ -30,33 +30,33 @@
 
       keyvalue='EMPTY'
       narg=iargc()
-      if(narg.lt.2) then         
+      if(narg.lt.2) then
         write(*,*) '***ERROR(get_ctrl): wrong args'
         write(*,*) 'get_ctrl ctrl_file control_name [bracket_name] '
         goto 100
-      endif 
+      endif
 !
 ! first one is control file
       call getarg(1,ctrlfile)
       inquire(file=ctrlfile,exist=lexist)
       if(.not.lexist) then
-        write(*,*) '***ERROR(get_ctrl): control_file not exist',ctrlfile(1:len_trim(ctrlfile))
+        write(*,*) '***ERROR(get_ctrl): control_file not exist',trim(ctrlfile)
         goto 100
       endif
 !
 ! second keyname
       call getarg(2,keyname)
-!      
+!
 ! third bracket, if there is
       bracket=' '
       if(narg.eq.3) call getarg(3,bracket)
 !
 ! get it
       open(10,file=ctrlfile,status='old')
-     
+
       keyvalue=findkey(10,keyname,bracket)
       close(10)
 100   continue
-      !write(*,'(a,a)') 'VALUE: ',keyvalue(1:len_trim(keyvalue))
-      write(*,'(a)') keyvalue(1:len_trim(keyvalue))
+      !write(*,'(a,a)') 'VALUE: ',trim(keyvalue)
+      write(*,'(a)') trim(keyvalue)
       end
