@@ -1,0 +1,17 @@
+.obj
+save
+
+bin/
+
+src/arsig/arsig
+src/de405/de405/jpleph_de405
+src/de405/libde405.a
+src/get_ctrl/get_ctrl
+src/lambda/liblambda.a
+src/lib/libcom.a
+src/lsq/lsq
+src/mergeerp/mergeerp
+src/mergesp3/mergesp3
+src/orbit/sp3orb
+src/redig/redig
+src/tedit/tedit
