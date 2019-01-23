@@ -4,7 +4,7 @@ LIB := libcom.a
 all : $(LIB)
 
 DIR_GUARD = @mkdir -p $(@D)
-OBJ_PATH = ./.obj/
+OBJ_PATH = .obj/
 
 # Flags
 FTN = gfortran

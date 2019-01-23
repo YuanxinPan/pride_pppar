@@ -14,7 +14,7 @@ SUBDIR = lib \
 all : $(SUBDIR)
 
 $(SUBDIR) :
-	make -C $@
+	make -j4 -C $@
 
 install :
 	@mkdir -p ../bin/

@@ -173,7 +173,7 @@ end
 !--------------------------------------------------------------
 function gammp(a, x)
   real*8 gammp, a, x, gln, gammcf
-  if (x .lt. 0.d0 .or. a .le. 0.d0) pause
+  if (x .lt. 0.d0 .or. a .le. 0.d0) read(*,*) !pause
   if (x .lt. a + 1.d0) then
     call gser(gammp, a, x, gln)
   else
@@ -185,7 +185,7 @@ end
 !--------------------------------------------------------------
 function gammq(a, x)
   real*8 gammq, a, x, gamser, gln
-  if (x .lt. 0.d0 .or. a .le. 0.d0) pause
+  if (x .lt. 0.d0 .or. a .le. 0.d0) read(*,*) !pause
   if (x .lt. a + 1.d0) then
     call gser(gamser, a, x, gln)
     gammq = 1.d0 - gamser

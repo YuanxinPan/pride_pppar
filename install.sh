@@ -10,8 +10,12 @@ NC='\033[0m' # No Color
 gfortran --version > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     printf "${RED}error:${NC} no compiler: gfortran\n"
-    printf "${RED}error:${NC} PRIDE-PPPAR installation failed\n"
-    exit
+    printf "${RED}error:${NC} PRIDE-PPPAR installation failed\n"; exit
+fi
+make --version > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    printf "${RED}error:${NC} GNU make not found\n"
+    printf "${RED}error:${NC} PRIDE-PPPAR installation failed\n"; exit
 fi
 
 # Compilation & Installation
