@@ -72,10 +72,7 @@ program lsq
 !
 !! read pppar biases
   bias = 0.d0
-  inquire (file=LCF%flncon, exist=lexist)
-  if (lexist) then
-    call read_snx(LCF%flnfcb, bias)
-  endif
+  call read_snx(LCF%flnfcb, bias)
 !
 !! write removing info for recovering
   lfncid = get_valid_unit(10)

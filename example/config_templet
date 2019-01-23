@@ -1,11 +1,4 @@
 #
-## Session configure
-Session time    = 2016 1 1 00 00 00 86360
-Rinex directory = /home/yxpan/Documents/Data/opensource/data/2016/001
-Sp3 directory   = /home/yxpan/Documents/Data/opensource/products
-Table directory = /home/yxpan/Documents/Data/opensource/table
-Interval = 30
-#
 ## strategies
 Remove bias      = YES
 HTG model        = PWC:720

@@ -920,7 +920,7 @@ sub sp3orb_staclk{
     my $GpsRefer2 = "igs${week2}${dow2}.sp3";
     my $GpsRefer1 = "igs${week1}${dow1}.sp3";
     my $GpsSatclk = "igs${week}${dow}.clk";
-    my $FCB = "PRL0IGSFIN_${year4}${doy}0000_01D_01D_ABS.BIA";
+    my $FCB = "WHU0IGSFIN_${year4}${doy}0000_01D_01D_ABS.BIA";
 
     # Get PANDA sp3 file path
     my $dirsp3 = `get_ctrl $ctrl_file "Sp3 directory"`;

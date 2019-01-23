@@ -17,7 +17,7 @@
 !!
 !! purpose  : read dcb bias
 !! parameter:
-!!    output: dcb -- dcb bias
+!! output   : dcb -- dcb bias
 !! author   : Geng J, Chen X
 !! created  : Jan 4 2016
 !
