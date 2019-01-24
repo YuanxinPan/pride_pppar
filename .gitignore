@@ -2,6 +2,8 @@
 save
 
 bin/
+static/
+scripts/ses.fcb
 
 src/arsig/arsig
 src/de405/de405/jpleph_de405

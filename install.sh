@@ -24,8 +24,8 @@ cd src && make && make install \
     && cd .. \
     && mkdir -p $install_dir \
     && cp -f ./bin/* $install_dir \
-    && cp -f ./scripts/pridelab_pppar.pl $install_dir \
-    && cp -f ./scripts/crx2rnx ./scripts/rnx2rtkp \\
+    && cp -f ./scripts/pridelab_pppar $install_dir \
+    && cp -f ./scripts/crx2rnx ./scripts/rnx2rtkp \
              ./scripts/rtk2xyz.sh $install_dir \
     && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
 
