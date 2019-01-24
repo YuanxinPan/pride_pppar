@@ -19,17 +19,21 @@ if [ $? -ne 0 ]; then
 fi
 
 # Compilation & Installation
+install_dir=${HOME}/.PRIDE_PPPAR_BIN
 cd src && make && make install \
     && cd .. \
-    && cp -rf ./bin/ ${HOME}/.PRIDE_PPPAR_BIN \
-    && cp -f ./scripts/pridelab_pppar.pl ${HOME}/.PRIDE_PPPAR_BIN \
-    && echo "export PATH=${HOME}/.PRIDE_PPPAR_BIN:$PATH" >> ${HOME}/.bashrc
+    && mkdir -p $install_dir \
+    && cp -f ./bin/* $install_dir \
+    && cp -f ./scripts/pridelab_pppar.pl $install_dir \
+    && cp -f ./scripts/crx2rnx ./scripts/rnx2rtkp \\
+             ./scripts/rtk2xyz.sh $install_dir \
+    && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
 
 # Output
 if [ $? -eq 0 ]; then
     printf "${BLUE}::${NC} PRIDE-PPPAR installation successfully completed!\n"
-    printf "${BLUE}::${NC} executable binaries are copy to ${HOME}/.PRIDE_PPPAR_BIN\n"
-    printf "${BLUE}::${NC} ${HOME}/.PRIDE_PPPAR_BIN added to PATH\n"
+    printf "${BLUE}::${NC} executable binaries are copy to $install_dir\n"
+    printf "${BLUE}::${NC} $install_dir added to PATH\n"
 else
     printf "${RED}errror:${NC} PRIDE-PPPAR installation failed!\n"
 fi

@@ -22,7 +22,7 @@ fi
 source ${HOME}/.bashrc
 lsq #> /dev/null 2>&1
 if [ $? -eq 127 ]; then  # command not found
-    printf "${RED}error:${NC} ${HOME}/.PRIDE_PPPAR_BIN dosen't exist\n"
+    printf "${RED}error:${NC} ${HOME}/.PRIDE_PPPAR_BIN not in PATH\n"
     printf "${RED}error:${NC} PRIDE-PPPAR testing failed\n"; exit
 fi
 
@@ -40,6 +40,10 @@ cat config_templet >> $config
 
 # Computation
 pridelab_pppar.pl ses.ppp 20160101 20160101 FR
+mv 2016/001 ./FR
+pridelab_pppar.pl ses.ppp 20160101 20160101 AR
+mv 2016/001 ./AR
+rm -rf 2016
 
 ## Output
 #if [ $? -eq 0 ]; then
