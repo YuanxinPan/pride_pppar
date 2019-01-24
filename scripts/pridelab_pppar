@@ -1099,8 +1099,9 @@ sub sp3orb_staclk{
     if(! -e "sck_${year4}${doy}"){
         #copy("${dirsp3}/cod${week}${dow}.clk","./");
         #rename("cod${week}${dow}.clk","$GpsSatclk");
-        if(! -e "cck_${year4}${doy}"){
-            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://192.168.111.19/cck_${year4}${doy}`;
+        #if(! -e "cck_${year4}${doy}"){
+        if(! -e "cck${week}${dow}.clk"){
+            `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://192.168.111.19/cck${week}${dow}.clk`;
             #`$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://igs.gnsswhu.cn/pub/gps/products/${week}/cod${week}${dow}.clk.Z`;
             #if(! -e "cod${week}${dow}.clk.Z"){
             #   `$wget -nv -nc -t 3 --connect-timeout=10 --read-timeout=60 ftp://ftp.aiub.unibe.ch/CODE/${year4}/COD${week}${dow}.CLK.Z`;
@@ -1115,7 +1116,8 @@ sub sp3orb_staclk{
             #copy("cod${week}${dow}.clk","${dirsp3}/");
             #rename("cod${week}${dow}.clk","$GpsSatclk");
         }
-        rename("cck_${year4}${doy}","sck_${year4}${doy}");
+        #rename("cck_${year4}${doy}","sck_${year4}${doy}");
+        rename("cck${week}${dow}.clk","sck_${year4}${doy}");
     }
     if(! -e "fcb_${year4}${doy}"){
         if(! -e "$FCB"){

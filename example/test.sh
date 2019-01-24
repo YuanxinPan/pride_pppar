@@ -39,9 +39,9 @@ echo "Table directory = ${wk_dir}/../table" >> $config
 cat config_templet >> $config
 
 # Computation
-pridelab_pppar.pl ses.ppp 20160101 20160101 FR
+pridelab_pppar ses.ppp 20160101 20160101 FR
 mv 2016/001 ./FR
-pridelab_pppar.pl ses.ppp 20160101 20160101 AR
+pridelab_pppar ses.ppp 20160101 20160101 AR
 mv 2016/001 ./AR
 rm -rf 2016
 

@@ -4,6 +4,8 @@ save
 bin/
 static/
 scripts/ses.fcb
+example/AR
+example/FR
 
 src/arsig/arsig
 src/de405/de405/jpleph_de405
