@@ -2,54 +2,38 @@
 # Test PRIDE-PPPAR
 
 RED='\033[0;31m'
-BLUE='\033[0;34m'
+BLUE='\033[1;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
-
-# Check prerequisite
-perl --version > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    printf "${RED}error:${NC} perl not found\n"
-    printf "${RED}error:${NC} PRIDE-PPPAR testing failed\n"; exit
-fi
-wget --version > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    printf "${RED}error:${NC} wget not found\n"
-    printf "${RED}error:${NC} PRIDE-PPPAR testing failed\n"; exit
-fi
 
 # Check installation
 source ${HOME}/.bashrc
 lsq #> /dev/null 2>&1
 if [ $? -eq 127 ]; then  # command not found
-    printf "${RED}error:${NC} ${HOME}/.PRIDE_PPPAR_BIN not in PATH\n"
+    printf "${RED}error:${NC} PRIDE-PPPAR:lsq not found\n"
     printf "${RED}error:${NC} PRIDE-PPPAR testing failed\n"; exit
 fi
 
+wk_dir=$(pwd)                  # working directory
 # Generate control file
-wk_dir=$(pwd)   # working directory
-config=ses.ppp  # configuration file
-mkdir -p products
+config=$(basename `mktemp -u`)
+config=${config/tmp/config}    # configuration file
 echo "## Session configure" > $config
 echo "Interval = 30"       >> $config
-echo "Session time    = 2016 1 1 00 00 00 86360" >> $config
-echo "Rinex directory = ${wk_dir}/data/2016/001" >> $config
+echo "Session time    = -YYYY- -MM- -DD- 00 00 00 86360" >> $config
+echo "Rinex directory = ${wk_dir}/data/-YEAR-/-DOY-" >> $config
 echo "Sp3 directory   = ${wk_dir}/products" >> $config
 echo "Table directory = ${wk_dir}/../table" >> $config
-cat config_templet >> $config
+cat config_partial >> $config
 
+mkdir -p products results
 # Computation
-pridelab_pppar ses.ppp 20160101 20160101 FR
-mv 2016/001 ./FR
-pridelab_pppar ses.ppp 20160101 20160101 AR
-mv 2016/001 ./AR
+pride_pppar ${config} 20160101 20160101 N
+mv 2016/001 ./results/float
+pride_pppar ${config} 20160101 20160101 Y
+mv 2016/001 ./results/fixed
 rm -rf 2016
 
-## Output
-#if [ $? -eq 0 ]; then
-#    printf "${BLUE}::${NC} PRIDE-PPPAR installation successfully completed!\n"
-#    printf "${BLUE}::${NC} executable binaries are copy to ${HOME}/.PRIDE_PPPAR_BIN\n"
-#    printf "${BLUE}::${NC} ${HOME}/.PRIDE_PPPAR_BIN added to PATH\n"
-#else
-#    printf "${RED}errror:${NC} PRIDE-PPPAR installation failed!\n"
-#fi
+# Output
+printf "${BLUE}::${NC} computation results are put in %s\n" ./results/
+printf "${BLUE}::${NC} reference results are in %s\n" ./results_ref/

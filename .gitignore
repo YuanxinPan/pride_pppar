@@ -5,8 +5,8 @@ bin/
 static/
 project/
 scripts/ses.fcb
-example/AR
-example/FR
+example/results/
+example/config.*
 
 src/arsig/arsig
 src/de405/de405/jpleph_de405

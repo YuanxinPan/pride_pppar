@@ -1,17 +1,8 @@
-# configuration templet for PRIDE-PPPAR
-
+# This partitial configuration file is used by test.sh to generate a complete config.
+# 
 # The following options can be kept for all data processing (except for 'Station used' list)
 # For Ambiguity fixing, it can always be 'FIX' in configuration file.  Actually, AR is
 # controlled by the command line arguments of pride_pppar.
-
-
-## Session config
-# User should modify this part configuration to suit their own directory
-Interval = 30
-Session time    = -YYYY- -MM- -DD- 00 00 00 86360
-Rinex directory = /home/username/path-to-data/-YEAR-/-DOY-/
-Sp3 directory   = /home/username/path-to-product/product/
-Table directory = /home/username/path-to-table/table/
 
 ## strategies
 Remove bias      = YES
@@ -71,7 +62,7 @@ Critical search     = 2 4 1.8 3.0
 #                              F -- fixed
 # Ohter arguments can be kept.
 
-# Station list
+## Station list
 +Station used 
 *NAME TP MAP CLKm EV ZTDm PoDm HTGm PoDm RAGm PHSc PoXEm PoYNm PoZHm PoXEm PoYNm PoZHm SIGEm SIGNm SIGHm
  algo S  GMF 9000  7 0.20 .020 .005 .002 3.00 .006 10.00 10.00 10.00 10.00 10.00 10.00 1.000 1.000 1.000
