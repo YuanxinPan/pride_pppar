@@ -4,7 +4,7 @@ all: get_ctrl
 
 # ASSIGMENTS
 
-FFLAGS = -g
+FFLAGS = -g -O3
 FTN = gfortran
 
 LIB = ../lib/libcom.a  

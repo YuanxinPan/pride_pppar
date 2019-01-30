@@ -8,7 +8,7 @@ OBJ_PATH = .obj/
 
 # Flags
 FTN = gfortran
-FFLAGS = -g
+FFLAGS = -g -O3
 
 SRC := $(wildcard *.f90)
 OBJ := $(SRC:.f90=.o)

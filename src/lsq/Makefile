@@ -6,7 +6,7 @@ DIR_GUARD = @mkdir -p $(@D)
 BIN_PATH = ./
 OBJ_PATH = .obj/
 
-FFLAGS = -g
+FFLAGS = -g -O3
 FTN = gfortran
 
 LIBCOM = ../lib/libcom.a

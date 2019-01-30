@@ -20,13 +20,13 @@ fi
 
 # Compilation & Installation
 install_dir=${HOME}/.PRIDE_PPPAR_BIN
+rm -rf "$install_dir"
 cd src && make && make install \
     && cd .. \
     && mkdir -p $install_dir \
     && cp -f ./bin/* $install_dir \
-    && cp -f ./scripts/pridelab_pppar $install_dir \
-    && cp -f ./scripts/crx2rnx ./scripts/rnx2rtkp \
-             ./scripts/rtk2xyz.sh $install_dir \
+    && cp -f ./scripts/pride_pppar.sh $install_dir/pride_pppar \
+    && cp -f ./scripts/crx2rnx ./scripts/rnx2rtkp $install_dir \
     && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
 
 # Output

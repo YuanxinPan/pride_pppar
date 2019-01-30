@@ -29,9 +29,9 @@ for ss in ${sit[@]}; do
     # rnx2rtkp
     rnx2rtkp -o outxyz -p 0 -ti 3600 -e ${ss}${doy}0.${yr}o brdc${doy}0.${yr}n
     rnx2rtkp -o outblh -p 0 -ti 3600 ${ss}${doy}0.${yr}o brdc${doy}0.${yr}n
-    teqc -R -E -O.obs "L1L2P1P2C1C2" -n_GLONASS 30 ${ss}${doy}0.${yr}o >obs
-    rm -f ${ss}${doy}0.${yr}o
-    mv -f obs ${ss}${doy}0.${yr}o
+    #teqc -R -E -O.obs "L1L2P1P2C1C2" -n_GLONASS 30 ${ss}${doy}0.${yr}o >obs
+    #rm -f ${ss}${doy}0.${yr}o
+    #mv -f obs ${ss}${doy}0.${yr}o
     # collect coordinates
     awk -v nam=$ss '{if(substr($0,1,1)!="%"){printf(" %16.6f%16.6f%10s\n",$4,$3,nam);exit}}' outblh >>blh.xyz
     awk -v nam=$ss '{if(substr($0,1,1)!="%"){printf(" %s%16.4f%16.4f%16.4f\n",nam,$3,$4,$5);exit}}' outxyz >>sit.xyz

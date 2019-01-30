@@ -7,7 +7,7 @@ OBJ_PATH = .obj/
 
 # ASSIGMENTS
 FTN = gfortran 
-FFLAGS = -g
+FFLAGS = -g -O3
 
 LIBCOM = ../lib/libcom.a  
 

@@ -8,7 +8,7 @@ BIN_PATH = ./
 OBJ_PATH = .obj/
 
 # Flags
-FFLAGS = -g -fno-align-commons
+FFLAGS = -g -O3 -fno-align-commons
 FTN = gfortran
 
 SRC := $(wildcard *.f)

@@ -3,6 +3,7 @@ save
 
 bin/
 static/
+project/
 scripts/ses.fcb
 example/AR
 example/FR

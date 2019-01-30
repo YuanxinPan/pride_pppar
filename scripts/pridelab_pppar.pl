@@ -220,7 +220,8 @@ while($k <= $end_mjd){
             my $interval = `get_ctrl $ctrl_file1 "Interval"`;
             my $short = 600/$interval;
             # edit lsq output residual file for next lsq
-            system("$edtres","res_${year4}${doy}","-jmp","$jump[$repeat]", "-sht", "$short")==0;
+            #system("$edtres","res_${year4}${doy}","-jmp","$jump[$repeat]", "-sht", "$short")==0;
+            `"$edtres" "res_${year4}${doy}" "-jmp" "$jump[$repeat]" "-sht" "$short"`;
             rename("$stt","$stt1");
             # Update repeat point for parameter estimation
             $repeat=$repeat+1;

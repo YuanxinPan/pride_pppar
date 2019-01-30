@@ -7,7 +7,7 @@ BIN_PATH = ./
 OBJ_PATH = .obj/
 
 # Flags
-FFLAGS = -g
+FFLAGS = -g -O3
 FTN = gfortran
 
 LIBCOM = ../lib/libcom.a
