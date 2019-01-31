@@ -8,7 +8,7 @@ NC='\033[0m' # No Color
 
 # Check installation
 source ${HOME}/.bashrc
-lsq #> /dev/null 2>&1
+lsq > /dev/null 2>&1
 if [ $? -eq 127 ]; then  # command not found
     printf "${RED}error:${NC} PRIDE-PPPAR:lsq not found\n"
     printf "${RED}error:${NC} PRIDE-PPPAR testing failed\n"; exit

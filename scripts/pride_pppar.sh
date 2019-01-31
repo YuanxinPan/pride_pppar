@@ -40,9 +40,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 
 MSGERR="${RED}error:$NC"
-MSGWAR="${YELLOW}warning: $NC"
-MSGINF="${BLUE}:: $NC"
-MSGSTA="${BLUE}===> $NC"
+MSGWAR="${YELLOW}warning:$NC"
+MSGINF="${BLUE}::$NC"
+MSGSTA="${BLUE}===>$NC"
 
 
 ######################################################################
@@ -61,9 +61,9 @@ main()
     ctrl_file=$(readlink -f "$ctrl_file") # convert to absolute path
 
     # Output processing infomation
-    printf "$MSGINF Processing date range: %4d-%02d-%02d  %4d-%02d-%02d\n" ${ymd_start[*]} ${ymd_end[*]}
-    printf "$MSGINF Control file: %s\n" "$ctrl_file"
-    printf "$MSGINF AR switch: %s\n" ${AR}
+    echo -e "$MSGINF Processing date range: ${ymd_start[*]}  <==>  ${ymd_end[*]}"
+    echo -e "$MSGINF Control file: ${ctrl_file}"
+    echo -e "$MSGINF AR switch: ${AR}"
 
     # Processing day-by-day
     readonly local mjd_start=$(ymd2mjd ${ymd_start[*]})
@@ -221,7 +221,14 @@ ProcessSingleDay() { # purpose: process data of single day
     for site in ${sites[*]}
     do
         ProcessSingleSite "$site" $year $doy "${ctrl_file}" $AR
-        [ $? -ne 0 ] && echo -e "$MSGWAR ProcessSingleDay: skip $year $doy $site"
+        if [ $? -ne 0 ]; then
+            echo -e "$MSGWAR ProcessSingleDay: skip processing $year $doy $site"
+            local tp types=(kin pos rck ztd htg amb res stt con)
+            for tp in ${types[*]}
+            do
+                rm -f ${tp}_${year}${doy}
+            done
+        fi
     done
     rm -f ${ctrl_file}
     echo -e "$MSGSTA ProcessSingleDay $year $doy done"
@@ -244,12 +251,11 @@ ProcessSingleSite() { # purpose: process data of single site
     local rinexobs="${rinex_dir}/${site}${doy}0.${year:2:2}o"
     local rinexnav="${rinex_dir}/brdc${doy}0.${year:2:2}n"
     if [ ! -f "$rinexobs" ]; then
-        echo -e "$MSGWAR ${rinexobs} doen't exist"
-        echo -e "$MSGWAR skip processing ${site}" && return 1
+        echo -e "$MSGWAR ${rinexobs} doesn't exist" && return 1
     fi
 
-    # Prepare initial sites' position
-    local xyz=($(sed -n "/$site/ s/$site//p" "./sit.xyz"))
+    # Prepare initial site's position
+    local xyz=($(sed -n "/^ $site/ s/$site//p" "./sit.xyz"))
     if [ ${#xyz[@]} -ne 3 ]; then
         echo -e "$MSGSTA Prepare initial position ${site}..."
         local initial_pos=($(ComputeInitialPos "$rinexobs" "$rinexnav"))
@@ -266,16 +272,16 @@ ProcessSingleSite() { # purpose: process data of single site
     echo -e "$MSGSTA Data pre-processing..."
     # Data preprocess
     local interval=$(get_ctrl "$ctrl_file" "Interval")
-    local positon_mode=$(grep $site "$ctrl_file" | awk '{print $2}') # Static/Kinematic/Fixed
-    local cutoff_elev=$(grep $site "$ctrl_file" | awk '{print $5}')  # int, degree
+    local positon_mode=$(grep "^ $site [FKS]" "$ctrl_file" | awk '{print $2}') # Static/Kinematic/Fixed
+    local cutoff_elev=$( grep "^ $site [FKS]" "$ctrl_file" | awk '{print $5}') # int, degree
     local rhd_file="rhd_${year}${doy}_${site}"
     local ymd=($(ydoy2ymd $year $doy))
     local cmd=""
-    if [ $positon_mode == S -o $positon_mode == F ]; then
+    if [ "$positon_mode" == S -o "$positon_mode" == F ]; then
         cmd="tedit ${rinexobs} -int ${interval} -rnxn ${rinexnav} -xyz ${xyz[*]} \
             -len 86400 -short 1200 -lc_check only -rhd ${rhd_file} -pc_check 300 \
             -elev ${cutoff_elev} -time ${ymd[*]} 0 0 0"
-    elif [ $positon_mode == K ]; then
+    elif [ "$positon_mode" == K ]; then
         cmd="tedit ${rinexobs} -int ${interval} -rnxn ${rinexnav} -xyz ${xyz[*]} \
             -short 1 -lc_check no -rhd ${rhd_file} -len 86400 -time ${ymd[*]} 0 0 0"
     else 
@@ -300,7 +306,7 @@ ProcessSingleSite() { # purpose: process data of single site
     for jump in ${jumps[*]}
     do
         cmd="lsq ${tmp_ctrl}"
-        Execute "$cmd" || return 1
+        ExecuteWithoutOutput "$cmd" || return 1
         cmd="redig res_${year}${doy} -jmp $jump -sht $short"
         ExecuteWithoutOutput "$cmd" || return 1
     done
@@ -311,7 +317,7 @@ ProcessSingleSite() { # purpose: process data of single site
     # Final process
     echo -e "$MSGSTA Final processing..."
     cmd="lsq ${tmp_ctrl}"
-    ExecuteWithoutOutput "$cmd" || return 1
+    Execute "$cmd" || return 1
     if [ $AR == Y -o $AR == y ]; then
         cmd="arsig ${tmp_ctrl}"
         Execute "$cmd" || return 1
@@ -460,9 +466,40 @@ UncompressFile() { # purpose: uncompress a file automatically
     # file $file
 }
 
+Execute()
+{
+    local cmd="$1"
+    # echo $cmd
+    time=`date +'%Y-%m-%d %H:%M:%S'`
+    $cmd
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed ok" # | tee -a $log
+        return 0
+    else
+        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed failed"  #| tee -a $log
+        return 1
+    fi
+}
+
+ExecuteWithoutOutput()
+{
+    local cmd="$1"
+    # echo $cmd
+    time=`date +'%Y-%m-%d %H:%M:%S'`
+    $cmd > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed ok" # | tee -a $log
+        return 0
+    else
+        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed failed"  #| tee -a $log
+        return 1
+    fi
+}
+
 
 ######################################################################
 ##                      Time Convert Funcitons                      ##
+##  Author: Shuyin Mao      shuyinm@whu.edu.cn                      ##
 ######################################################################
 ymd2mjd()
 {
@@ -543,36 +580,6 @@ ydoy2ymd()
         break;
     done
     printf "%d %02d %02d\n" $iyear $imon $iday
-}
-
-Execute()
-{
-    local cmd="$1"
-    # echo $cmd
-    time=`date -u +'%Y-%m-%d %H:%M:%S'`
-    $cmd
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed successfully" # | tee -a $log
-        return 0
-    else
-        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed failed"  #| tee -a $log
-        return 1
-    fi
-}
-
-ExecuteWithoutOutput()
-{
-    local cmd="$1"
-    # echo $cmd
-    $cmd > /dev/null 2>&1
-    time=`date -u +'%Y-%m-%d %H:%M:%S'`
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed successfully" # | tee -a $log
-        return 0
-    else
-        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed failed"  #| tee -a $log
-        return 1
-    fi
 }
 
 
