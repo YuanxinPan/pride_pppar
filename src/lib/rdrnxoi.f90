@@ -55,7 +55,7 @@ subroutine rdrnxoi(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   real*8 sec, ds, dt, c1, c2, p1, p2, obs(MAXTYP), dcb(MAXSAT, 2), bias(MAXSAT, 4)
   character*1 sysid(MAXSAT)
   character*80 line, cline, msg, name
-  character*320 string !mod by zwx 20141031, for more satellites in case of multisystems
+  character*1024 string
 !
 !! function used
   integer*4 modified_julday
@@ -71,10 +71,7 @@ subroutine rdrnxoi(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   read (line(30:32), '(i3)', iostat=ioerr) nprn
   if (ioerr .ne. 0) then
     msg = 'read satellite number error.'
-  else if (nprn .gt. MAXSAT) then
-    msg = 'satellite number > maxsat'
   endif
-  if (len_trim(msg) .ne. 0) goto 100
 !
 !! Check the RINEX 2 event flag
   read (line(27:29), '(i3)', iostat=ioerr) iflag
@@ -82,15 +79,19 @@ subroutine rdrnxoi(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
     msg = 'read event flag error.'
     goto 100
   else if (iflag .gt. 1) then
-    msg = 'read internal antenna information error'
     do i = 1, nprn
       read (lfn, '(a80)', iostat=ioerr, end=200) line
       if (line(61:80) .eq. 'ANTENNA: DELTA H/E/N') then
+        msg = 'read internal antenna information error'
         read (line, '(3f14.4)', err=100) HD%h, HD%e, HD%n
       endif
     enddo
     goto 10
   endif
+  if (nprn .gt. MAXSAT) then
+    msg = 'satellite number > maxsat'
+  endif
+  if (len_trim(msg) .ne. 0) goto 100
 !
 !! initialization
   do i = 1, MAXSAT

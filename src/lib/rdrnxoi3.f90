@@ -58,8 +58,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   character*9 obs_prio
   integer*4 obs_prio_index(4)
   integer*4 prio_index
-!character*240 string
-  character*320 string !mod by zwx 20141031, for more satellites in case of multisystems
+  character*1024 string
 !
 !! function used
   integer*4 modified_julday

@@ -11,10 +11,10 @@ real*8, parameter   :: omega=7.292115d-5  ! rad/s
 
 real*8, parameter   :: gpstai=19.d0,taitdt=32.184d0,gpstdt=gpstai+taitdt,mjd2jd=2400000.5d0
 
-integer*4,parameter :: maxsit=900,maxsat=50,maxepo=432000
+integer*4,parameter :: maxsit=900,maxsat=64,maxepo=432000
 !
 !! maxtyp : observation types
-integer*4,parameter :: maxeph=maxsat*48,maxtyp=30 !change maxtyp from 12 to 30, by cxy 20161011
+integer*4,parameter :: maxeph=maxsat*48,maxtyp=32
 !
 integer*4,parameter :: maxpar_sta=10,maxow_st=maxsat*10,maxpar=maxsit*(maxpar_sta+6)+maxsit*maxow_st
 integer*4,parameter :: maxsd_sit=maxsat*400,maxsd_pai=maxsit*40,maxdd_bl=5000
