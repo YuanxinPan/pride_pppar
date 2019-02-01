@@ -1,4 +1,4 @@
-# configuration templet for PRIDE-PPPAR
+# configuration template for PRIDE-PPPAR
 
 # The following options can be kept for all data processing (except for 'Station used' list)
 # For Ambiguity fixing, it can always be 'FIX' in configuration file.  Actually, AR is

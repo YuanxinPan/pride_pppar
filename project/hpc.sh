@@ -34,7 +34,7 @@ if [ $? -eq 127 ]; then  # command not found
 fi
 
 # Generate control file
-config=${PBS_O_WORKDIR}/config_templet    # configuration file
+config=${PBS_O_WORKDIR}/config_template    # configuration file
 
 sed '/^\*NAME / q' ${config} > ses.ppp
 for f in /home/yxpan/data/fcb/${year}/${doy}/rinex/*.${yr}o
