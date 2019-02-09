@@ -244,7 +244,8 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT)
     call read_obsrhd(0, LCF%dintv, LCF%nprn, LCF%prn, OB)
     if (OB%ava_obs .lt. OB%rem_obs) then
       write (*, '(2a)') '###WARNING(get_lsq_args): bad observation quality ', SITE%obsfil(1:i)
-      call exit(1)
+      write (*, '(2a,i12)') '###WARNING(get_lsq_args): ', 'obs avaiable: ', OB%ava_obs
+      !call exit(1)
     endif
     write (*, '(a4,1x,a4,1x,a,f7.1,a1,i3)') 'STA:', SITE%name, SITE%obsfil(1:i), &
       OB%ava_obs*1.d0/(OB%ava_obs + OB%rem_obs)*100.d0, '%', ierr
