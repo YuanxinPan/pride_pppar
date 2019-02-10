@@ -198,7 +198,11 @@ ProcessSingleDay() { # purpose: process data of single day
     local table_dir=$(get_ctrl "$ctrl_file" "Table directory")
     local product_dir=$(get_ctrl "$ctrl_file" "Sp3 directory")
     CopyTables "$table_dir" || return 1
-    PrepareProducts $mjd "$product_dir" ${ctrl_file} || return 1
+    PrepareProducts $mjd "$product_dir" ${ctrl_file}
+    if [ $? -ne 0 ]; then
+        echo -e "$MSGERR PrepareProducts failed"
+        return 1
+    fi
 
     # Download rinexnav file
     local rinex_dir=$(get_ctrl "$ctrl_file" "Rinex directory")
@@ -446,7 +450,7 @@ CopyOrDownloadProduct() { # purpose: copy or download a product
         cp -f "$file" .
     else
         WgetDownload "$url" || return 1
-        cp $(basename "$url") "$file"
+        cp -f $(basename "$url") "$file"
     fi
 }
 

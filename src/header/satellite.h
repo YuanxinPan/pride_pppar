@@ -8,7 +8,4 @@ type satellite
   real*8 xscf(3),yscf(3),zscf(3)
 !! clock correction
   real*8 sclock,dclk0
-!! epoch difference clock
-  integer*4 lepo
-  real*8 epclk
 end type

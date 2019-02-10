@@ -187,7 +187,7 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT)
     SITE%map = key(10:12)
     read (key(13:), *, err=200) SITE%dclk0, SITE%cutoff, SITE%dztd0, &
       SITE%qztd, SITE%dhtg0, SITE%qhtg, SITE%sigr, &
-      SITE%sigp, (SITE%dx0(i), i=1, 6), (SITE%qx(i), i=1, 3)
+      SITE%sigp, (SITE%dx0(i), i=1, 3)
     SITE%cutoff = SITE%cutoff*PI/180.d0
     SITE%undu = 0.d0
     SITE%rclock = 0.d0

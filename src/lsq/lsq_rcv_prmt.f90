@@ -101,7 +101,7 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, NM, PM)
       endif
       elev = elev/PI*180.d0
       azim = azim/PI*180.d0
-      write (lfnres, '(2i3,2f10.3,2d16.8,i3,f8.3,f9.3,2f8.4)') isit, isat, phase, range, wphs, wrng, iflg, elev, azim, dmap, wmap
+      write (lfnres, '(2i3,2f10.3,2d16.8,i3,f8.3,f9.3)') isit, isat, phase, range, wphs, wrng, iflg, elev, azim
       backspace lfnobs
     else if (cid .eq. 'de') then
       backspace lfnrem

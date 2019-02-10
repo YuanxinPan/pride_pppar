@@ -2,7 +2,7 @@ type station
   character*4 name
   character*2 skd
   integer*4 iunit,imet,ikin,iion,itrp,iptatx,ixyz
-  real*8 x(6),dx0(6),qx(3),geod(3)
+  real*8 x(6),dx0(3),geod(3)
 !
 !! related file names
   character*256 obsfil,metfil
@@ -33,7 +33,4 @@ type station
 !
 !! ocean load
   real*8 olc(11,6),rlat,rlon
-!
-!! real-time ambiguity resolution
-  integer*4 naps,abipt(maxsat)
 end type 

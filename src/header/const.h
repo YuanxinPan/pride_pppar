@@ -17,10 +17,7 @@ integer*4,parameter :: maxsit=900,maxsat=64,maxepo=432000
 integer*4,parameter :: maxeph=maxsat*48,maxtyp=32
 !
 integer*4,parameter :: maxpar_sta=10,maxow_st=maxsat*10,maxpar=maxsit*(maxpar_sta+6)+maxsit*maxow_st
-integer*4,parameter :: maxsd_sit=maxsat*400,maxsd_pai=maxsit*40,maxdd_bl=5000
-integer*4,parameter :: maxpp=maxsat*(maxsat-1)/2,maxsc=120
-!
-!! minimum number of candidates for an averaging
-integer*4,parameter :: mincad=10
+integer*4,parameter :: maxsd_sit=maxsat*400
+integer*4,parameter :: maxpp=maxsat*(maxsat-1)/2
 
 real*8,parameter    :: maxwnd=0.01d0
