@@ -1,4 +1,4 @@
-# Makefile created by Yuanxin Pan (yxpan.im@gmail.com) on Jan 7 2018
+# Makefile created by Yuanxin Pan (yxpan@whu.edu.cn) on Mar 8 2018
 
 all: redig
 

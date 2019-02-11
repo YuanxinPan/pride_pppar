@@ -1,4 +1,4 @@
-# Makefile created by Yuanxin Pan (yxpan.im@gmail.com), on Dec 20, 2017
+# Makefile created by Yuanxin Pan (yxpan@whu.edu.cn), on Dec 20, 2017
 
 LIB := libde405.a
 all: $(LIB)

@@ -1,4 +1,4 @@
-# Makefile for oi on SunOS 5.5.1 by unimake at Fri Nov 20 13:09:26 MET 1998
+# Makefile created by Yuanxin Pan (yxpan@whu.edu.cn) on Mar 9, 2018
 
 all: get_ctrl
 

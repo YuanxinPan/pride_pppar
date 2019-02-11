@@ -7,9 +7,7 @@ SUBDIR = lib \
 		 arsig \
 		 tedit \
 		 redig \
-		 get_ctrl \
-		 mergeerp \
-		 mergesp3
+		 get_ctrl
 
 all : $(SUBDIR)
 
@@ -19,7 +17,7 @@ $(SUBDIR) :
 install :
 	@mkdir -p ../bin/
 	cp arsig/arsig  lsq/lsq tedit/tedit redig/redig orbit/sp3orb \
-		get_ctrl/get_ctrl mergesp3/mergesp3 mergeerp/mergeerp ../bin/
+		orbit/mergesp3 orbit/mergeerp get_ctrl/get_ctrl ../bin/
 
 .PHONY : all $(SUBDIR) install
 

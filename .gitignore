@@ -5,8 +5,6 @@ bin/
 static/
 project/
 scripts/ses.fcb
-example/results/
-example/config.*
 
 src/arsig/arsig
 src/de405/de405/jpleph_de405
@@ -15,12 +13,12 @@ src/get_ctrl/get_ctrl
 src/lambda/liblambda.a
 src/lib/libcom.a
 src/lsq/lsq
-src/mergeerp/mergeerp
-src/mergesp3/mergesp3
+src/orbit/mergeerp
+src/orbit/mergesp3
 src/orbit/sp3orb
 src/redig/redig
 src/tedit/tedit
 
-example/ses.ppp
-example/2016/
+example/config.*
 example/products/
+example/results/

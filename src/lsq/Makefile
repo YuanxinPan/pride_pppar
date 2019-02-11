@@ -1,4 +1,4 @@
-# Makefile created by Yuanxin Pan (yxpan.im@gmail.com), on Mar 9, 2018
+# Makefile created by Yuanxin Pan (yxpan@whu.edu.cn), on Mar 9, 2018
 
 all: lsq
 

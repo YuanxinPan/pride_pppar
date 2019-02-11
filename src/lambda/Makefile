@@ -1,4 +1,4 @@
-# Makefile created by Yuanxin Pan (yxpan.im@gmail.com), on Jan 29, 2018
+# Makefile created by Yuanxin Pan (yxpan@whu.edu.cn), on Jan 29, 2018
 
 LIB = liblambda.a
 all : $(LIB)

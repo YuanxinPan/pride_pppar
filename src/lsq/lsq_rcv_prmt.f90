@@ -135,9 +135,17 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, NM, PM)
         mw = PM(ipar)%ptime(1)
         if (PM(ipar)%pname(1:6) .eq. 'RECCLK') then
           call mjd2date(0, mw, iy, imon, id, ih, im, dummy)
+          if (dabs(dummy-60.d0) .lt. maxwnd) then
+            im = im + 1
+            dummy = 0.d0
+          endif
           write (tmprck) SITE%name, iy, imon, id, ih, im, dummy, PM(ipar)%xini, PM(ipar)%xcor
         else if (PM(ipar)%pname(1:6) .eq. 'SATCLK') then
           call mjd2date(0, mw, iy, imon, id, ih, im, dummy)
+          if (dabs(dummy-60.d0) .lt. maxwnd) then
+            im = im + 1
+            dummy = 0.d0
+          endif
           write (tmpcck) LCF%prn(PM(ipar)%pcode(2)), iy, imon, id, ih, im, dummy, (PM(ipar)%xini + PM(ipar)%xcor)/VLIGHT
         else if (PM(ipar)%pname(1:4) .eq. 'HTGC') then
           write (tmphtg) SITE%name, PM(ipar)%ptime(1:2), (PM(ipar + i)%xini, PM(ipar + i)%xcor, i=0, 1)
@@ -153,6 +161,10 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, NM, PM)
       if ((dummy - PM(ipar)%ptime(1))*86400.d0 .gt. -MAXWND .and. &
           (PM(ipar)%ptime(2) - dummy)*86400.d0 .gt. -MAXWND .and. PM(ipar)%iobs .gt. 0) then
         call mjd2date(0, dummy, iy, imon, id, ih, im, mw)
+        if (dabs(mw-60.d0) .lt. maxwnd) then
+          im = im + 1
+          mw = 0.d0
+        endif
         write (tmpztd) SITE%name, iy, imon, id, ih, im, mw, zdd, zwd, PM(ipar)%xcor
       endif
       backspace lfnrem

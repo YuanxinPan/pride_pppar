@@ -1,4 +1,4 @@
-# Makefile created by Yuanxin Pan (yxpan.im@gmail.com), on Nov 25, 2017
+# Makefile created by Yuanxin Pan (yxpan@whu.edu.cn), on Nov 25, 2017
 
 LIB := libcom.a
 all : $(LIB)
