@@ -28,10 +28,24 @@ cat config_partial >> $config
 
 mkdir -p products results
 # Computation
+echo -e "(1) static float"
 pride_pppar ${config} 20160101 20160101 N
-mv 2016/001 ./results/float
+mv 2016/001 ./results/static-float
+
+echo -e "\n(2) static fixed"
 pride_pppar ${config} 20160101 20160101 Y
-mv 2016/001 ./results/fixed
+mv 2016/001 ./results/static-fixed
+
+sed -i 's/\(^ \w\w\w\w\) S/\1 K/' ${config}
+
+echo -e "\n(3) kinematic float"
+pride_pppar ${config} 20160101 20160101 N
+mv 2016/001 ./results/kinematic-float
+
+echo -e "\n(4) kinematic fixed"
+pride_pppar ${config} 20160101 20160101 Y
+mv 2016/001 ./results/kinematic-fixed
+
 rm -rf 2016
 
 # Output
