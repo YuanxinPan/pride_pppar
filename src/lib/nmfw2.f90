@@ -1,126 +1,87 @@
-Subroutine NMFW2(latitude, elev, wmf)
+!
+!! nmfw2.f90
+!!
+!!    Copyright (C) 2018 by Wuhan University
+!!
+!!    This program is free software: you can redistribute it and/or modify
+!!    it under the terms of the GNU General Public License (version 3) as
+!!    published by the Free Software Foundation.
+!!
+!!    This program is distributed in the hope that it will be useful,
+!!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    GNU General Public License (version 3) for more details.
+!!
+!!    You should have received a copy of the GNU General Public License
+!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!!   PURPOSE: Compute the new wetmf2.0 mapping function
+!!
+!!   AUTHOR : Shaoming Xin    jsx_miracle@whu.edu.cn
+!!
+!!   VERSION: ver 1.00        jan-25-2019
+!!
+!!   DATE   : jan-25, 2019
+!!
+!!   INPUT  : lat,elev
+!!
+!!   OUTPUT : wetmf
 
-!     Received from Arthur Niell May 17, 1996
-!     --rwk 960517
+subroutine nmfw2(lat, elev, wetmf)
+implicit none
 
-! new aen 930517 Routine to compute the new wmf2.0 mapping function which
-!                depends only on latitude.
+real*8 lat, elev,wetmf(2)
+integer*4 i
+real*8 a, b, c, beta, cose, gamma, sine, contop
+real*8 wetmf_lats(5), w2p0_abc(5, 3)
+real*8 dl, da, db, dc, la, deg2rad
 
-  integer*4 i
+data wetmf_lats/15.d0, 30.d0, 45.d0, 60.d0, 75.d0/
 
-!   a,b,c       - the a,b,and c coefficients in the continued fraction
-!                 form of Marini
-!   beta        - intermediate term in calculation
-!   gamma       - intermediate term in calculation
-!   sine        - Sine of elevation angle
-!   cose        - Cos of elevation angle
-!   wmf(1)      - wet delay mapping function
-!   wmf(2)      - d_wet_mapping_function/d_elevation
-!   topcon      - Constant of top of mapping fuinction to ensure
-!                 that value is 1.0000 at zenith
+data w2p0_abc/ &
+  5.8021897d-4, 5.6794847d-4, 5.8118019d-4, 5.9727542d-4, 6.1641693d-4, &
+  1.4275268d-3, 1.5138625d-3, 1.4572752d-3, 1.5007428d-3, 1.7599082d-3, &
+  4.3472961d-2, 4.6729510d-2, 4.3908931d-2, 4.4626982d-2, 5.4736038d-2/
 
-  real*8 a, b, c, beta, cose, wmf(2), gamma, sine, topcon
+a=0.d0
+b=0.d0
+c=0.d0
+deg2rad = 3.14159265d0/180.d0
+la = abs(lat)
 
-!   latitude   - latitude (degrees)
-!   l          - absolute latitude
-!   dl         - incremental latitude from last lat_wmf
-!   elev       - elevation (degrees)
-!   dl,da,db,dc  - used for interpolation
+if (la .le. wetmf_lats(1)) then
+  a = w2p0_abc(1, 1)
+  b = w2p0_abc(1, 2)
+  c = w2p0_abc(1, 3)
+endif
 
-  real*8 lat_wmf(5), abc_w2p0(5, 3)
-  real*8 dl, da, db, dc
-  real*8 latitude, l, elev, deg2rad
-
-!   define parameters used for calculating coefficients.
-
-  data lat_wmf/15.d0, 30.d0, 45.d0, 60.d0, 75.d0/
-
-!   coefficients are from fits to raytraces of the standard atmospheres
-!   for July for latitudes 15, 45, 60, and 75 degrees latitude and for
-!   January for 30 degrees latitude (930517).
-
-  data abc_w2p0/ &
-    5.8021897d-4, 5.6794847d-4, 5.8118019d-4, 5.9727542d-4, 6.1641693d-4, &
-    1.4275268d-3, 1.5138625d-3, 1.4572752d-3, 1.5007428d-3, 1.7599082d-3, &
-    4.3472961d-2, 4.6729510d-2, 4.3908931d-2, 4.4626982d-2, 5.4736038d-2/
-
-  deg2rad = 3.14159265d0/180.d0
-
-  a = 0.d0
-  b = 0.d0
-  c = 0.d0
-
-  l = abs(latitude)
-
-!   Coefficients for the continued fraction expansion for each latitude.
-
-!   for latitudes less than 15 degrees:
-
-  if (l .le. lat_wmf(1)) then
-    a = abc_w2p0(1, 1)
-    b = abc_w2p0(1, 2)
-    c = abc_w2p0(1, 3)
+do i = 1, 4
+  if (la .gt. wetmf_lats(i) .and. la .le. wetmf_lats(i + 1)) then
+    dl = (la - wetmf_lats(i))/(wetmf_lats(i + 1) - wetmf_lats(i))
+    da = w2p0_abc(i + 1, 1) - w2p0_abc(i, 1)
+    a = w2p0_abc(i, 1) + dl*da
+    db = w2p0_abc(i + 1, 2) - w2p0_abc(i, 2)
+    b = w2p0_abc(i, 2) + dl*db
+    dc = w2p0_abc(i + 1, 3) - w2p0_abc(i, 3)
+    c = w2p0_abc(i, 3) + dl*dc
   endif
+end do
 
-!   for latitudes between 15 and 75  degrees:
+if (la .ge. wetmf_lats(5)) then
+  a = w2p0_abc(5, 1)
+  b = w2p0_abc(5, 2)
+  c = w2p0_abc(5, 3)
+endif
 
-  do i = 1, 4
-    if (l .gt. lat_wmf(i) .and. l .le. lat_wmf(i + 1)) then
-      dl = (l - lat_wmf(i))/(lat_wmf(i + 1) - lat_wmf(i))
-      da = abc_w2p0(i + 1, 1) - abc_w2p0(i, 1)
-      a = abc_w2p0(i, 1) + dl*da
-!     write(*,'(" dl,da ,a  ",6e15.6)')
-!    .            dl,da ,a
+sine = sin(elev*deg2rad)
+cose = cos(elev*deg2rad)
+beta = b/(sine + c)
+gamma = a/(sine + beta)
+contop = (1.d0 + a/(1.d0 + b/(1.d0 + c)))
 
-      db = abc_w2p0(i + 1, 2) - abc_w2p0(i, 2)
-      b = abc_w2p0(i, 2) + dl*db
-!     write(*,'(" dl,db ,b ",6e15.6)')
-!    .            dl,db ,b
+wetmf(1) = contop/(sine + gamma)
+wetmf(2) = -contop/(sine + gamma)**2*(cose - a/(sine + beta)**2*cose*(1.d0 - b/(sine + c)**2))
 
-      dc = abc_w2p0(i + 1, 3) - abc_w2p0(i, 3)
-      c = abc_w2p0(i, 3) + dl*dc
-!     write(*,'(" dl,dc ,c ",6e15.6)')
-!    .            dl,dc ,c
-
-    endif
-  end do
-
-!   for latitudes greater than 75 degrees:
-
-  if (l .ge. lat_wmf(5)) then
-    a = abc_w2p0(5, 1)
-    b = abc_w2p0(5, 2)
-    c = abc_w2p0(5, 3)
-  endif
-
-!   Now the coefficients exist; calculate the mapping function, wmf(1),
-!       and the change of mapping function with elevation,
-!       dwmf/d_el =wmf(2).
-!   To calculate the delay-rate correction, d_tau/dt:
-!       d_tau/dt = d_tau_zen/dt * wmf(1) + tau_zen * dwmf/d_el * d_el/dt
-
-  sine = sin(elev*deg2rad)
-  cose = cos(elev*deg2rad)
-  beta = b/(sine + c)
-  gamma = a/(sine + beta)
-  topcon = (1.d0 + a/(1.d0 + b/(1.d0 + c)))
-
-!     write(*,'("sine, cose, beta, gamma, topcon = ", 5f10.5)')
-!    .           sine, cose, beta, gamma, topcon
-
-  wmf(1) = topcon/(sine + gamma)
-
-  wmf(2) = -topcon/(sine + gamma)**2* &
-           (cose - a/(sine + beta)**2*cose* &
-            (1.d0 - b/(sine + c)**2))
-
-!     write(*,'("wmf(1), wmf(2) = ", 2f10.4)') wmf(1), wmf(2)
-!     write(*,'("wmf(1), wmf(2) = ", 2f10.4)') wmf
-
-!aen   write out diagnostic info.
-!     write(*,'("  elev, latitude, wmf2.0, dwmf/del = ",4f15.6)')
-!    .             elev, latitude, wmf(1), wmf(2)
-
-  return
+return
 end
 

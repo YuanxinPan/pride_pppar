@@ -1,6 +1,9 @@
 C
       SUBROUTINE PLEPH ( ET, NTARG, NCENT, RRD )
 C
+C Copyright 1997, The Jet Propulsion Laboratory, California Institute of
+C Technology, All Rights Reserved.
+C
 C  For de405, set KSIZE to 2036  NOTE : Over the years, different versions of PLEPH have had a fifth argument:
 C  sometimes, an error return statement number; sometimes, a logical denoting
 C  whether or not the requested

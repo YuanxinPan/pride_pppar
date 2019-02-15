@@ -1,6 +1,9 @@
 C
       SUBROUTINE SPLIT(TT,FR)
 C
+C Copyright 1997, The Jet Propulsion Laboratory, California Institute of
+C Technology, All Rights Reserved.
+C
 C+++++++++++++++++++++++++
 C
 C     THIS SUBROUTINE BREAKS A D.P. NUMBER INTO A D.P. INTEGER

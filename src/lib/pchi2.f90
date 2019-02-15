@@ -1,59 +1,85 @@
-SUBROUTINE PCHI2(N, Q, L, XX)
-!! PURPOSE    :  COMPUTE NORMAL FUNCTION DEVIATESS
+!
+!! pchi2.f90
 !!
-!! PARAMETERS :
-!!         IN :  N : DERGEE OF FREEDOM                                   I*4
-!!               Q : UP STAT. (AF)                                       R*4
-!!               L : L=O :                                               I*4
-!!                   L=1 : USE NUTON INTERATION MOTHED
-!!        OUT :  XX: VALUE OF DENCITY DEVIATESS                          R*8
+!!    Copyright (C) 2018 by Wuhan University
 !!
-  IMPLICIT REAL*8(A - H, O - Z)
+!!    This program is free software: you can redistribute it and/or modify
+!!    it under the terms of the GNU General Public License (version 3) as
+!!    published by the Free Software Foundation.
+!!
+!!    This program is distributed in the hope that it will be useful,
+!!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    GNU General Public License (version 3) for more details.
+!!
+!!    You should have received a copy of the GNU General Public License
+!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!!   PURPOSE: Compute the normal function deviatess
+!!
+!!   AUTHOR : Shaoming Xin    jsx_miracle@whu.edu.cn
+!!
+!!   VERSION: ver 1.00        jan-25-2019
+!!
+!!   DATE   : jan-25, 2019
+!!
+!!   INPUT  : n,q,typ
+!!
+!!   OUTPUT : valu
 
-  IF (Q .le. 0.D0) THEN
-    write (*, '(a,f5.1,a)') ' ****ERROR(pchi2): INPUT AF = ', Q, ' <= 0'
-    call exit(1)
-  ENDIF
+subroutine pchi2(n, q, typ, valu)
+implicit none
 
-  IF (N .EQ. 1) GOTO 200
-  IF (N .EQ. 2) GOTO 300
+integer*4 n,typ
+real*8    q,valu
+!
+real*8    p,w,x,x0,pp,d
+integer*4 k
 
-  P = 1.D0 - Q
-  CALL PNORMAL(Q, X)
-  W = 2.D0/(9.D0*DBLE(N))
-  IF (W .LT. 0.D0) W = 0.D0
-  X0 = DBLE(N)*(1.D0 - W + X*DSQRT(W))**3
+if (q .le. 0.d0) then
+  write (*, '(a,f5.1,a)') ' ****ERROR(pchi2): input q can not <= 0'
+  call exit(1)
+endif
 
-  IF (L .EQ. 0) THEN
-    XX = X0
-    GOTO 400
-  ENDIF
+if (n .eq. 1) then
+  call pnormal(q/2.d0, x)
+  valu = x*x
+  return
+endif
+if (n .eq. 2) then
+  valu = -2.d0*dlog(q)
+  return
+endif
 
-  K = 0
+p = 1.d0 - q
+call pnormal(q, x)
+w = 2.d0/(9.d0*dble(n))
+if (w .lt. 0.d0) w = 0.d0
+x0 = dble(n)*(1.d0 - w + x*dsqrt(w))**3
 
-100 CALL CHI2(N, X0, PP, D)
+if (typ .eq. 0) then
+  valu = x0
+  return
+endif
 
-  IF (ABS((D - 0.D0)) .LT. 1.D-20) THEN
-    XX = X0
-    GOTO 400
-  ENDIF
+k = 0
 
-  XX = X0 - (PP - P)/D
-  IF (ABS(X0 - XX) .LE. ((1.D-4)*ABS(XX))) GOTO 400
+100 call chi2(n, x0, pp, d)
 
-  K = K + 1
-  IF (K .GE. 30) GOTO 400
+if (abs((d - 0.d0)) .lt. 1.d-20) then
+  valu = x0
+  return
+endif
 
-  X0 = XX
-  GOTO 100
+valu = x0 - (pp - p)/d
+if (abs(x0 - valu) .le. ((1.d-4)*abs(valu))) return
 
-200 CALL PNORMAL(Q/2.D0, X)
-  XX = X*X
-  GOTO 400
+k = k + 1
+if (k .ge. 30) return
 
-300 XX = -2.D0*DLOG(Q)
+x0 = valu
+goto 100
 
-400 CONTINUE
 
-  RETURN
-END
+return
+end

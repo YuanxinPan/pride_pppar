@@ -1,48 +1,70 @@
-SUBROUTINE PNORMAL(Q, U)
+!
+!! pnormal.f90
 !!
-!! PURPOSE    :  COMPUTE NORMAL FUNCTION DEVIATESS
+!!    Copyright (C) 2018 by Wuhan University
 !!
-!! PARAMETERS :
-!!         IN :  Q : UP SATA. (RFA)                                      R*8
+!!    This program is free software: you can redistribute it and/or modify
+!!    it under the terms of the GNU General Public License (version 3) as
+!!    published by the Free Software Foundation.
 !!
-!!        OUT :  U : DEVIATESS (U_RFA)                                   R*8
+!!    This program is distributed in the hope that it will be useful,
+!!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    GNU General Public License (version 3) for more details.
 !!
-  IMPLICIT REAL*8(A - H, O - Z)
+!!    You should have received a copy of the GNU General Public License
+!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!!   PURPOSE: Compute the normal function deviatess
+!!
+!!   AUTHOR : Shaoming Xin    jsx_miracle@whu.edu.cn
+!!
+!!   VERSION: ver 1.00        jan-25-2019
+!!
+!!   DATE   : jan-25, 2019
+!!
+!!   INPUT  : q
+!!
+!!   OUTPUT : u
 
-  IF (Q .LE. 0.D0 .OR. Q .GE. 1.D0) THEN
-    write (*, '(a)') '***ERROR(pnormal): INPUT RFA CAN NOT >=1 OR <=0'
-    call exit(1)
-  ENDIF
+subroutine pnormal(q, u)
+implicit none
 
-! IF RFA =.5 THEN U=0
-  IF (Q .EQ. .5D0) THEN
-    U = 0.D0
-    RETURN
-  ENDIF
+real*8 q,u
+real*8 p,y,b0,bn(10)
 
-  IF (Q .LT. .5D0 .AND. Q .GT. 0.D0) THEN
-    P = Q
-  ELSE IF (Q .GT. 0.5) THEN
-    P = 1.D0 - Q
-  ENDIF
+b0 = 1.570796288d0
+bn(1) = 0.3706987906d-1
+bn(2) = -0.8364353598d-3
+bn(3) = -0.2250947176d-3
+bn(4) = 0.6841218299d-5
+bn(5) = 0.5824238515d-5
+bn(6) = -0.1045274970d-5
+bn(7) = 0.8360937017d-7
+bn(8) = -0.3231081277d-8
+bn(9) = 0.3657763036d-10
+bn(10) = 0.6936233982d-12
 
-  Y = -1.D0*DLOG(4.D0*P*(1.D0 - P))
-  B0 = 1.570796288D0
-  B1 = .3706987906D-1
-  B2 = -.8364353598D-3
-  B3 = -.2250947176D-3
-  B4 = .6841218299D-5
-  B5 = .5824238515D-5
-  B6 = -.1045274970D-5
-  B7 = .8360937017D-7
-  B8 = -.3231081277D-8
-  B9 = .3657763036D-10
-  B10 = .6936233982D-12
+if (q .ge. 1.d0 .or. q .le. 0.d0) then
+  write (*, '(a)') '***ERROR(pnormal): input q can not >=1 or <=0 '
+  call exit(1)
+else if (q .eq. 0.5d0) then
+  u = 0.d0
+  return
+endif
 
-  Y = Y*(B0 + Y*(B1 + Y*(B2 + Y*(B3 + Y*(B4 + Y*(B5 + Y*(B6 + Y*(B7 + Y*(B8 + Y*(B9 + Y*B10))))))))))
+if (q .lt. 0.5d0 .and. q .gt. 0.d0) then
+  p = q
+else if (q .gt. 0.5d0) then
+  p = 1.d0 - q
+endif
 
-  U = DSQRT(Y)
-  IF (Q .GT. .5D0) U = -1.D0*U
+y = -1.d0*dlog(4.d0*p*(1.d0 - p))
 
-  RETURN
-END
+y = y*(b0 + y*(bn(1) + y*(bn(2) + y*(bn(3) + y*(bn(4) + y*(bn(5) + y*(bn(6) + y*(bn(7) + y*(bn(8) + y*(bn(9) + y*bn(10)))))))))))
+
+u = dsqrt(y)
+if (q .gt. 0.5d0) u = -1.d0*u
+
+return
+end

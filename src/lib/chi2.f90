@@ -1,45 +1,72 @@
-SUBROUTINE CHI2(N, CH, P, D)
+!
+!! chi2.f90
 !!
-!! PURPOSE    :  COMPUTE NORMAL FUNCTION
+!!    Copyright (C) 2018 by Wuhan University
 !!
-!! PARAMETERS :
-!!         IN :  N : DERGEE OF FREEDOM                                   I*4
-!!               CH: CHI2 VALUE                                          R*8
-!!               P : DOWN SATAT. F(CHI2,N)                               R*8
-!!        OUT :  D : VALUE OF DENCITY FUNCTION                           R*8
+!!    This program is free software: you can redistribute it and/or modify
+!!    it under the terms of the GNU General Public License (version 3) as
+!!    published by the Free Software Foundation.
 !!
-  IMPLICIT REAL*8(A - H, O - Z)
-  REAL*8 LU
+!!    This program is distributed in the hope that it will be useful,
+!!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    GNU General Public License (version 3) for more details.
+!!
+!!    You should have received a copy of the GNU General Public License
+!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!!  PURPOSE: Compute the normal function
+!!
+!!  AUTHOR : Shaoming Xin    jsx_miracle@whu.edu.cn
+!!
+!!  VERSION: ver 1.00        jan-25-2019
+!!
+!!  DATE   : jan-25, 2019
+!!
+!!  INPUT  :
+!!           N : DERGEE OF FREEDOM                                   I*4
+!!           CH: CHI2 VALUE                                          R*8
+!!           P : DOWN SATAT. F(CHI2,N)                               R*8
+!! OUTPUT :
+!!           D : VALUE OF DENCITY FUNCTION                           R*8
 
-  PI = DATAN(1.D0)*4.D0
-  PIS = DSQRT(PI)
-  X = CH/2.D0
-  CHS = DSQRT(CH)
+subroutine chi2(n, chv, p, valu)
+implicit none
+integer*4 n
+real*8 chv,p,valu
+! local
+integer*4 n2,i
+real*8 lul,pi,pis,x,pp,chs,iai,u
 
-  IF (INT(REAL(N*.5)) .EQ. REAL(N*.5)) GOTO 100
+pi = datan(1.d0)*4.d0
+pis = dsqrt(pi)
+x = chv/2.d0
+chs = dsqrt(chv)
 
-  LU = DLOG(DSQRT(X)) - X - DLOG(PIS)
+if (int(real(n*0.5d0)) .eq. real(n*0.5d0)) goto 100
 
-  CALL NORMAL(CHS, PP)
-  P = 2.D0*(PP - .5D0)
-  IAI = 1
-  GOTO 110
+lul = dlog(dsqrt(x)) - x - dlog(pis)
 
-100 LU = DLOG(X) - X
-  P = 1.D0 - DEXP(-X)
-  IAI = 2.D0
+call normal(chs, pp)
+p = 2.d0*(pp - 0.5d0)
+iai = 1
+goto 110
 
-110 U = DEXP(LU)
-  IF (IAI .EQ. N) GOTO 130
+100 lul = dlog(x) - x
+p = 1.d0 - dexp(-x)
+iai = 2.d0
 
-  N2 = N - 2
-  DO I = IAI, N2, 2
-    P = P - 2.D0*U/DBLE(I)
-    LU = DLOG(CH/DBLE(I)) + LU
-    U = DEXP(LU)
-  ENDDO
+110 u = dexp(lul)
+if (iai .eq. n) goto 120
 
-130 D = U/CH
+n2 = n - 2
+do i = iai, n2, 2
+  p = p - 2.d0*u/dble(i)
+  lul = dlog(chv/dble(i)) + lul
+  u = dexp(lul)
+enddo
 
-  RETURN
-END
+120 valu = u/chv
+
+return
+end

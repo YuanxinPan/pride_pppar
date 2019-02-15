@@ -1,40 +1,62 @@
 !
-SUBROUTINE NORMAL(U, P)
+!! normal.f90
 !!
-!! PARAMETERS :
-!!         IN :  U : NORMAL OFFSET POINT                                 R*8
+!!    Copyright (C) 2018 by Wuhan University
 !!
-!!        OUT :  P : DOWN SATAT.                                         R*8
+!!    This program is free software: you can redistribute it and/or modify
+!!    it under the terms of the GNU General Public License (version 3) as
+!!    published by the Free Software Foundation.
 !!
-  IMPLICIT REAL*8(A - H, O - Z)
+!!    This program is distributed in the hope that it will be useful,
+!!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!!    GNU General Public License (version 3) for more details.
+!!
+!!    You should have received a copy of the GNU General Public License
+!!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!!   PURPOSE: Compute the normal function
+!!
+!!   AUTHOR : Shaoming Xin    jsx_miracle@whu.edu.cn
+!!
+!!   VERSION: ver 1.00        jan-25-2019
+!!
+!!   DATE   : jan-25, 2019
+!!
+!!   INPUT  : u
+!!
+!!   OUTPUT : p
 
-  IF (U .LT. -5.D0) THEN
-    P = 0.D0
-    RETURN
-  ENDIF
+subroutine normal(u, p)
+implicit none
+real*8 u,p
+!
+real*8 y,an(6),er
 
-  IF (U .GT. 5.D0) THEN
-    P = 1.D0
-    RETURN
-  ENDIF
+an(1) = 0.0705230784d0
+an(2) = 0.0422820123d0
+an(3) = 0.0092705272d0
+an(4) = 0.0001520143d0
+an(5) = 0.0002765672d0
+an(6) = 0.0000430638d0
 
-  Y = DABS(U)/DSQRT(2.D0)
+if (u .lt. -5.d0) then
+  p = 0.d0
+  return
+else if (u .gt. 5.d0) then
+  p = 1.d0
+  return
+endif
 
-  A1 = .0705230784D0
-  A2 = .0422820123D0
-  A3 = .0092705272D0
-  A4 = .0001520143D0
-  A5 = .0002765672D0
-  A6 = .0000430638D0
+y = dabs(u)/dsqrt(2.d0)
 
-  ER = 1.D0 - (1.D0 + Y*(A1 + Y*(A2 + Y*(A3 + Y*(A4 + Y*(A5 + Y*A6))))))**(-16)
-  Q = .5D0*ER
+er = 1.d0 - (1.d0 + y*(an(1) + y*(an(2) + y*(an(3) + y*(an(4) + y*(an(5) + y*an(6)))))))**(-16)
 
-  IF (U .LT. 0.D0) THEN
-    P = .5D0 - Q
-  ELSE
-    P = .5D0 + Q
-  ENDIF
+if (u .lt. 0.d0) then
+  p = 0.5d0 - 0.5d0*er
+else
+  p = 0.5d0 + 0.5d0*er
+endif
 
-  RETURN
-END
+return
+end

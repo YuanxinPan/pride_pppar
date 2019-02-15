@@ -1,6 +1,9 @@
 C
       SUBROUTINE INTERP(BUF,T,NCF,NCM,NA,IFL,PV)
 C
+C Copyright 1997, The Jet Propulsion Laboratory, California Institute of
+C Technology, All Rights Reserved.
+C
 C+++++++++++++++++++++++++++++++++
 C
 C     THIS SUBROUTINE DIFFERENTIATES AND INTERPOLATES A
