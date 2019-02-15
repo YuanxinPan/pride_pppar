@@ -1,7 +1,7 @@
 !
 !! check_amb_depend.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!
 !! purpose  : check if a new ambiguity is dependant of the already selected
 !!            set expressed by a set of orth. unit vector Ei.
@@ -35,7 +39,6 @@
 !!            pt2ow    -- position of the n_oneway oneway amb
 !!            depend   -- .true. dependant
 !!
-!! author   : Maorong GE, 01-May-2003
 !
 subroutine check_amb_depend(namb, ndef, n_oneway, pt2ow, depend)
   implicit none
@@ -68,17 +71,17 @@ subroutine check_amb_depend(namb, ndef, n_oneway, pt2ow, depend)
     if (namb .gt. 0) then
       allocate (e(namb*namb), stat=ierr)
       if (ierr .ne. 0) then
-        write (oscr, '(a,i10)') '***ERROR(check_amb_depend): memory allocation for e ', namb
+        write (*, '(a,i10)') '***ERROR(check_amb_depend): memory allocation for e ', namb
         call exit(1)
       endif
       allocate (c(namb), stat=ierr)
       if (ierr .ne. 0) then
-        write (oscr, '(a)') '***ERROR(check_amb_depend): memory allocation for c '
+        write (*, '(a)') '***ERROR(check_amb_depend): memory allocation for c '
         call exit(1)
       endif
       allocate (idx(namb), stat=ierr)
       if (ierr .ne. 0) then
-        write (oscr, '(a)') '***ERROR(check_amb_depend): memory allocation for idx '
+        write (*, '(a)') '***ERROR(check_amb_depend): memory allocation for idx '
         call exit(1)
       endif
       do i = 1, namb
@@ -108,7 +111,7 @@ subroutine check_amb_depend(namb, ndef, n_oneway, pt2ow, depend)
 !
 !! a new independent vector
   if (ndef + 1 .gt. namb) then
-    write (oscr, '(a)') '***ERROR(check_amb_depend): redundant independent vector '
+    write (*, '(a)') '***ERROR(check_amb_depend): redundant independent vector '
     call exit(1)
   endif
   e(idx(ndef + 1) + 1:idx(ndef + 1) + namb) = 0.d0

@@ -1,7 +1,7 @@
 !
 !! get_arsig_args.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,11 +15,13 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : get arguments
 !! parameter:
 !!    output: FCB -- fractional cycle biases
-!! author   : Geng J
-!! created  : Jan 10, 2008
 !
 subroutine get_arsig_args(FCB)
   implicit none
@@ -41,14 +43,14 @@ subroutine get_arsig_args(FCB)
 !! read arguments
   nargs = iargc()
   if (nargs .eq. 0) then
-    write (oscr, '(a)') 'Usage: arsig sesfil'
+    write (*, '(a)') 'Usage: arsig sesfil'
     call exit(4)
   endif
   call getarg(1, sesfil)
   lfn = get_valid_unit(10)
   open (lfn, file=sesfil, status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(2a)') '***ERROR(get_arsig_args): open file ', trim(sesfil)
+    write (*, '(2a)') '***ERROR(get_arsig_args): open file ', trim(sesfil)
     call exit(1)
   endif
   FCB%flnwlf = ' '
@@ -128,8 +130,8 @@ subroutine get_arsig_args(FCB)
 
   close (lfn)
   return
-100 write (oscr, '(3a)') '***ERROR(get_arsig_args): find option ', trim(msg), trim(key)
+100 write (*, '(3a)') '***ERROR(get_arsig_args): find option ', trim(msg), trim(key)
   call exit(1)
-200 write (oscr, '(3a)') '***ERROR(get_arsig_args): read option ', trim(msg), trim(key)
+200 write (*, '(3a)') '***ERROR(get_arsig_args): read option ', trim(msg), trim(key)
   call exit(1)
 end

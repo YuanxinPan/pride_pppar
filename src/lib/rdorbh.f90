@@ -1,7 +1,7 @@
 !
 !! rdorbh.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,11 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : read header of PANDA orbit file
 !! parameters: orbfil -- orbit file name
 !!             iunit  -- unit of file
 !!             OH     -- header part 1 (oi control data)
-!! created   : Geng J
 !
 subroutine rdorbh(orbfil, iunit, OH)
   implicit none
@@ -39,14 +42,14 @@ subroutine rdorbh(orbfil, iunit, OH)
   iunit = get_valid_unit(10)
   open (iunit, file=orbfil, status='old', form='unformatted', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(a)') '***ERROR(rdorbh): open orbit ', trim(orbfil)
+    write (*, '(a)') '***ERROR(rdorbh): open orbit ', trim(orbfil)
     call exit(1)
   endif
 !
 !! read header of the orbit file
   read (iunit, iostat=ierr) OH
   if (ierr .ne. 0) then
-    write (oscr, '(a)') '***ERROR(rdorbh): read orbit ', trim(orbfil)
+    write (*, '(a)') '***ERROR(rdorbh): read orbit ', trim(orbfil)
     call exit(1)
   endif
 

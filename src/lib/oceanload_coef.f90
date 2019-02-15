@@ -1,7 +1,7 @@
 !
 !! oceanload_coef.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : get oceanload coefficients
 !! parameter:
 !!    input : sname   -- station name
 !!            lat,lon -- geodetic position of station
 !!            rlat,rlon -- reference position corresponding to olc
 !!    output: olc     -- oceanload coefficients
-!! author   : Geng J
 !
 subroutine oceanload_coef(name, lat, lon, rlat, rlon, olc)
   implicit none
@@ -48,7 +51,7 @@ subroutine oceanload_coef(name, lat, lon, rlat, rlon, olc)
     lfn = get_valid_unit(10)
     open (lfn, file='oceanload', status='old', iostat=ierr)
     if (ierr .ne. 0) then
-      write (oscr, '(a)') '***ERROR(oceanload_coef): open file oceanload '
+      write (*, '(a)') '***ERROR(oceanload_coef): open file oceanload '
       call exit(1)
     endif
     deg2rad = datan(1.d0)/45.d0
@@ -87,7 +90,7 @@ subroutine oceanload_coef(name, lat, lon, rlat, rlon, olc)
         do j = 1, 6
           read (lfn, *, iostat=ierr) (olc(i, j), i=1, 11)
           if (ierr .ne. 0) then
-            write (oscr, '(a)') '***ERROR(oceanload_coef): read file oceanload '
+            write (*, '(a)') '***ERROR(oceanload_coef): read file oceanload '
             call exit(1)
           endif
 ! convert to radian
@@ -102,6 +105,6 @@ subroutine oceanload_coef(name, lat, lon, rlat, rlon, olc)
     endif
   enddo
 
-100 write (oscr, '(2a)') '###WARNING(oceanload_coef): no oceanload coefficients for ', name
+100 write (*, '(2a)') '###WARNING(oceanload_coef): no oceanload coefficients for ', name
   return
 end

@@ -1,7 +1,7 @@
 !
 !! troposphere_delay.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,12 +15,15 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : troposhperic delay correction. Here we directly call several
 !!            ztd model and mapping function code from GAMIT
 !! parameter: jd,sod -- julian day (GPST)
 !!            SITE%-- station information struct
 !!            zdd,zwd --- dry and wet zenith delay, in meter
-!! author   : Maorong GE, May-20-2003
 !
 subroutine troposphere_delay(jd, sod, SITE, zdd, zwd)
   implicit none
@@ -66,7 +69,7 @@ subroutine troposphere_delay(jd, sod, SITE, zdd, zwd)
 !
 !! check availability
   if (zdd .eq. 0.d0 .or. zwd .eq. 0.d0) then
-    write (oscr, '(a,i5,f9.2)') '***ERROR(troposphere_delay): fail to compute a priori delays ', jd, sod
+    write (*, '(a,i5,f9.2)') '***ERROR(troposphere_delay): fail to compute a priori delays ', jd, sod
     call exit(1)
   endif
 

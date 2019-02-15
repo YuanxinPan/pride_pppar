@@ -1,7 +1,7 @@
 !
 !! rot_scfix2j2000.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : rotation matrix from spacecraft(GPS)-fixed system to J2000
 !!             The yaw-error correction should be implemented later.
 !!
@@ -25,7 +29,6 @@
 !!                 They define the transformation from x(scf) to j2000 as following
 !!                 x(j2000) =  [ xscf,yscf,zscf ] x(scf)
 !!
-!! created by: Ge Maorong
 !
 subroutine rot_scfix2j2000(xsat, xsun, xscf, yscf, zscf)
   implicit none
@@ -72,7 +75,7 @@ subroutine rot_scfix2j2000(xsat, xsun, xscf, yscf, zscf)
 !! the sc-fixed z-axis
     call cross(yscf, zscf, xscf)
   else
-    write (oscr, '(a,f14.4)') '###WARNING(rot_scfix2j200): scx/y no definition, previous epoch used ', alpha
+    write (*, '(a,f14.4)') '###WARNING(rot_scfix2j200): scx/y no definition, previous epoch used ', alpha
   endif
 
   return

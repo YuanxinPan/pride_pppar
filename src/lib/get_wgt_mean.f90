@@ -1,7 +1,7 @@
 !
 !! get_wgt_mean.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : compute weighted mean value of an array
 !!            & sign-constrained least squares
 !! parameter:
@@ -26,7 +30,6 @@
 !!            mean -- mean value
 !!            rms  -- unweighted rms of residuals
 !!            sig  -- sigma of mean value
-!! author   : Ge M, Geng J
 !! revised  : Jan 21, 2008; Aug 26, 2009
 !
 subroutine get_wgt_mean(l_edit, x, flg, wgt, n, ndel, mean, rms, sig)

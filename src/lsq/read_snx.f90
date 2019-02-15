@@ -1,7 +1,7 @@
 !
 !! read_fcb.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,11 +15,13 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read fractional-cycle biases for ambiguity resolution in PPP
 !! parameter:
 !!    input : FCB -- fractional part of uncalibrated phase delays
-!! author   : Chen X
-!! created  : Nov. 13, 2018
 !
 subroutine read_snx(flnfcb, bias)
   implicit none
@@ -42,7 +44,7 @@ subroutine read_snx(flnfcb, bias)
   lfn = get_valid_unit(500)
   open (lfn, file=flnfcb, status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(2a)') '***ERROR(read_fcb): open file ', trim(flnfcb)
+    write (*, '(2a)') '***ERROR(read_fcb): open file ', trim(flnfcb)
     call exit(1)
   endif
 !
@@ -80,8 +82,8 @@ subroutine read_snx(flnfcb, bias)
 300 close (lfn)
 
   return
-100 write (oscr, '(2a)') '***ERROR(read_fcb): end of file ', trim(flnfcb)
+100 write (*, '(2a)') '***ERROR(read_fcb): end of file ', trim(flnfcb)
   call exit(1)
-200 write (oscr, '(2a)') '***ERROR(read_fcb): read file ', trim(flnfcb)
+200 write (*, '(2a)') '***ERROR(read_fcb): read file ', trim(flnfcb)
   call exit(1)
 end

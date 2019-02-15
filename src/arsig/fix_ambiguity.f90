@@ -1,7 +1,7 @@
 !
 !! fix_ambiguity.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,15 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : fix ambiguity in one station
 !! parameter:
 !!    input : FCB  -- fractional cycle biases
 !!    output: AS   -- ambiguity station struct
 !!            ASD  -- single-difference struct
-!! author   : Geng J
-!! created  : Jan 29, 2008
 !
 subroutine fix_ambiguity(FCB, AS, ASD)
   implicit none
@@ -74,12 +76,12 @@ subroutine fix_ambiguity(FCB, AS, ASD)
 !! output
       call timinc(FCB%jd0, FCB%sod0, (ASD(isd)%iepc(1) - 1)*FCB%dintv, jd, sodb)
       call timinc(FCB%jd0, FCB%sod0, (ASD(isd)%iepc(2) - 1)*FCB%dintv, jd, sode)
-      write (oscr, '(i5,1x,a4,2i3,2(f14.3,f8.3),2f10.1,1x,a5)') isd, AS%name, FCB%prn(isat), FCB%prn(jsat), &
+      write (*, '(i5,1x,a4,2i3,2(f14.3,f8.3),2f10.1,1x,a5)') isd, AS%name, FCB%prn(isat), FCB%prn(jsat), &
         ASD(isd)%rwl, ASD(isd)%swl, ASD(isd)%rnl, ASD(isd)%snl, sodb, sode, fixed
     endif
   enddo
   if (nwlfx .ne. 0) then
-    write (oscr, '(a,a4,3i8,2(f6.1,a1,2x))') 'Wide/Narrow-lane FR(whole): ', AS%name, nwnfx, nwlfx, AS%nsd, &
+    write (*, '(a,a4,3i8,2(f6.1,a1,2x))') 'Wide/Narrow-lane FR(whole): ', AS%name, nwnfx, nwlfx, AS%nsd, &
       nwlfx*1.d2/AS%nsd, '%', nwnfx*1.d2/nwlfx, '%'
   endif
 !
@@ -116,7 +118,7 @@ subroutine fix_ambiguity(FCB, AS, ASD)
     if (k .eq. 3) ntot = ndef
   enddo
   call check_amb_depend(0, 0, 2, (/1, 1/), ldep)
-  write (oscr, '(a,3i8,3(f6.1,a1,2x))') 'Station FR(indep): ', nwnfx, nwlfx, ntot, nwlfx*1.d2/ntot, '%', &
+  write (*, '(a,3i8,3(f6.1,a1,2x))') 'Station FR(indep): ', nwnfx, nwlfx, ntot, nwlfx*1.d2/ntot, '%', &
     nwnfx*1.d2/nwlfx, '%', nwnfx*1.d2/ntot, '%'
 !! only save widelane fixed ones
   AS%nsd = nwlfx

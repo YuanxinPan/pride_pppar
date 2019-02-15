@@ -1,7 +1,7 @@
 !!
 !! mete_sea2site.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !
 !! purpose  : conversion meteo-data on see level to station height.
 !!
@@ -23,11 +27,9 @@
 !!
 !!   output:     t,p,h --- temperature,pressure,humidity(%) at height
 !!
-!! author   : Ge Maorong
 !!            Tsinghua University
 !!            Beijing 100084
 !!
-!! created  : 1990-05-20
 !!
 subroutine mete_sea2site(lsea, ps, ts, hs, height, p, t, h)
   implicit none

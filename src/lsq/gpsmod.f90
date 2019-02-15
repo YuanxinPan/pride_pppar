@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : modelling of GPS observations, observation equaitons are storaged in
 !!             OB%amat and OB%omc etc.
 !! parameters:
@@ -23,7 +27,6 @@
 !!            SITE   -- SITE information
 !!            OB     -- observations
 !!            SAT    -- satellite information
-!! author   : Geng J, Chen X
 !! tester   : Li C, Mao S, Zhou J, Yang S, Dai Y
 !
 subroutine gpsmod(jd, sod, LCF, SITE, OB, SAT)

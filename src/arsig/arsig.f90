@@ -1,7 +1,7 @@
 !
 !! arsig.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!
 !! Ambiguity Resolution for SIngle Station
 !
@@ -35,9 +39,9 @@ program arsig
   integer*4 i, j, k, tfx, tsd
 !
 !! instruction
-  write (oscr, '(a)') '++++++++++++++++++++++++++++++++++++'
-  write (oscr, '(a)') 'AMBIGUITY RESOLUTION FOR PPP'
-  write (oscr, '(a)') '++++++++++++++++++++++++++++++++++++'
+  write (*, '(a)') '++++++++++++++++++++++++++++++++++++'
+  write (*, '(a)') 'AMBIGUITY RESOLUTION FOR PPP'
+  write (*, '(a)') '++++++++++++++++++++++++++++++++++++'
 !
 !! read arguments & configure options
   call get_arsig_args(FCB)
@@ -85,10 +89,10 @@ program arsig
         SD(i)%ipt(2) = PM(SD(i)%ipt(2))%pcode(2)
       enddo
       do i = 1, QN%nxyz
-        write (oscr, '(3f15.4)') PM(i)%xest
+        write (*, '(3f15.4)') PM(i)%xest
       enddo
     endif
-    write (oscr, '(a,2i3,f6.1,a1)') 'Narrow-lane AR(search) ', QN%nfix, QN%indp, QN%nfix*1.d2/QN%indp, '%'
+    write (*, '(a,2i3,f6.1,a1)') 'Narrow-lane AR(search) ', QN%nfix, QN%indp, QN%nfix*1.d2/QN%indp, '%'
   endif
 !
 !! write constraint file

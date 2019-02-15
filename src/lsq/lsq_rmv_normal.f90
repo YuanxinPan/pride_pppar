@@ -1,7 +1,7 @@
 !
 !! lsq_rmv_normal.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,11 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : eliminate non-active ambiguities in the LSQ estimator
 !! parameter: lfncid,lfnrem -- tmp rem file for recovery
 !!            ncol,icol     -- index of parameters to be removed
 !!            NM,PM         -- normal matrix & PAR table
-!! author   : Geng J
 !
 subroutine lsq_rmv_normal(lfncid, lfnrem, ncol, icol, NM, PM)
   implicit none
@@ -36,7 +39,7 @@ subroutine lsq_rmv_normal(lfncid, lfnrem, ncol, icol, NM, PM)
   do ib = 1, ncol
     ipar = icol(ib)
     if (ipar .ne. NM%iptp(PM(ipar)%ipt)) then
-      write (oscr, '(a)') '***ERROR(lsq_rmv_normal): index not consistent '
+      write (*, '(a)') '***ERROR(lsq_rmv_normal): index not consistent '
       call exit(1)
     endif
     call lsq_rmv_prmt(.true., lfncid, lfnrem, ipar, NM, PM, NM%norx)

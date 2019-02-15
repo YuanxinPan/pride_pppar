@@ -1,7 +1,7 @@
 !
 !! troposphere_map.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : map functions of troposhperic delay correction. Here we directly call several
 !!            ztd model and mapping function code from GAMIT
 !! parameter: jd -- julian day (GPST)
 !!            elev -- elevation in radian
 !!            SITE%-- station information struct
 !!            damp,wmap -- map functions of hydrostatic and wet troposphere delay
-!! author   : Maorong GE, May-20-2003
 !
 subroutine troposphere_map(jd, sod, elev, SITE, dmap, wmap)
   implicit none
@@ -69,7 +72,7 @@ subroutine troposphere_map(jd, sod, elev, SITE, dmap, wmap)
     dmap = cfa(SITE%p0, SITE%t0, SITE%hr0, 'R', SITE%geod(1), SITE%geod(3), elev)
     wmap = dmap
   else
-    write (oscr, '(2a)') '***ERROR(troposphere_map): unknow mapping function ', SITE%map(1:3)
+    write (*, '(2a)') '***ERROR(troposphere_map): unknow mapping function ', SITE%map(1:3)
     call exit(1)
   endif
 

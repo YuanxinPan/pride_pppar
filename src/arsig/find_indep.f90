@@ -1,7 +1,7 @@
 !
 !! find_indep.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : find independent satellite pairs for ambiguity fixing
 !! parameter:
 !!    input : AS   -- ambiguity station
@@ -22,8 +26,6 @@
 !!            FCB  -- fractional cycle biases
 !!    output: indp -- # of independent pairs
 !!            SD   -- independent ambiguity pairs
-!! author   : Geng J
-!! created  : Jan 13, 2008
 !
 subroutine find_indep(indp, FCB, SD, AS, ASD)
   implicit none
@@ -45,7 +47,7 @@ subroutine find_indep(indp, FCB, SD, AS, ASD)
     if (ASD(isd)%id .eq. 0) then
       indp = indp + 1
       if (indp .gt. MAXSIT*MAXSD_SIT) then
-        write (oscr, '(a)') '***ERROR(find_indep): too many independent pairs '
+        write (*, '(a)') '***ERROR(find_indep): too many independent pairs '
         call exit(1)
       endif
       SD(indp) = ASD(isd)
@@ -63,7 +65,7 @@ subroutine find_indep(indp, FCB, SD, AS, ASD)
       if (FCB%lsearch) then
         indp = indp + 1
         if (indp .gt. MAXSIT*MAXSD_SIT) then
-          write (oscr, '(a)') '***ERROR(find_indep): too many independent pairs '
+          write (*, '(a)') '***ERROR(find_indep): too many independent pairs '
           call exit(1)
         endif
         SD(indp) = ASD(isd)

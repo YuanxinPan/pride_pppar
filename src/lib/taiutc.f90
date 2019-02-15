@@ -1,7 +1,7 @@
 !
 !! taiutc.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!
 !! purpose : return the leap seconds at mjd
 !!
@@ -41,7 +45,7 @@ real*8 function taiutc(mjd)
     lun = get_valid_unit(10)
     open (lun, file='leap.sec', status='old', iostat=ios)
     if (ios .ne. 0) then
-      write (oscr, *) '***ERROR(taiutc): open leap.sec, ', ios
+      write (*, *) '***ERROR(taiutc): open leap.sec, ', ios
       call exit(1)
     endif
     first = .false.
@@ -57,7 +61,7 @@ real*8 function taiutc(mjd)
     do while (index(line, '-leap sec') .eq. 0)
       nls = nls + 1
       if (nls .gt. 50) then
-        write (oscr, *) '***ERROR(taiutc): more than 50 LS records, change dimmension'
+        write (*, *) '***ERROR(taiutc): more than 50 LS records, change dimmension'
         call exit(1)
       endif
       read (line, *, err=200) jdt(nls), ls(nls)
@@ -67,11 +71,11 @@ real*8 function taiutc(mjd)
   endif
 
   if (mjd .le. jdt(1)) then
-    write (oscr, *) '***ERROR(taiutc): epoch before table start,', mjd, jdt(1)
+    write (*, *) '***ERROR(taiutc): epoch before table start,', mjd, jdt(1)
     call exit(1)
   endif
   if (mjd .gt. jdt(nls)) then
-    write (oscr, *) '***ERROR(taiutc): epoch after table end,', mjd, jdt(nls)
+    write (*, *) '***ERROR(taiutc): epoch after table end,', mjd, jdt(nls)
     call exit(1)
   endif
 
@@ -84,10 +88,10 @@ real*8 function taiutc(mjd)
 
   return
 100 continue
-  write (oscr, *) '***ERROR(taiutc): sinex endline `-leap sec` not found'
+  write (*, *) '***ERROR(taiutc): sinex endline `-leap sec` not found'
   call exit(1)
 
 200 continue
-  write (oscr, '(a/a)') '***ERROR(taiutc): read leap.sec error,', line
+  write (*, '(a/a)') '***ERROR(taiutc): read leap.sec error,', line
   call exit(1)
 end

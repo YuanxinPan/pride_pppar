@@ -1,7 +1,7 @@
 !
 !! ut1ut1r.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,11 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : compute tide variation on UT1 due to Earth rotation  (IERS1996, 2003)
 !! parameter: rmjd -- mod. julian date
 !!            dut1 -- ut1 correction
 !!                 UT1 = UT1R + dut1
-!! author   : Ge Maorong, Geng J
 !! notice   : if ut1. table is UT1, dut1 must be subtracted for interpolation.
 !!            dut1 must be added to the interpolated UT1R for coordinate trans.
 !

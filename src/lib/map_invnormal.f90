@@ -1,7 +1,7 @@
 !
 !! map_invnormal.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,12 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : map inversed normal matrix from one-way to multiple-difference ones
 !! parameter:
 !!    input : MD -- multiple difference struct (SD or DD)
 !!    output: QN -- inversed normal matrix (lower triangular part)
-!! author   : Geng J
-!! created  : Jan 20, 2008
 !
 subroutine map_invnormal(MD, QN, invx)
   implicit none
@@ -42,7 +44,7 @@ subroutine map_invnormal(MD, QN, invx)
 
   allocate (hp(QN%indp, QN%indp + QN%nxyz), stat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(a)') '***ERROR(map_invnormal): memory allocation hp '
+    write (*, '(a)') '***ERROR(map_invnormal): memory allocation hp '
     call exit(1)
   endif
 !

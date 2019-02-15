@@ -1,7 +1,7 @@
 !
 !! lsq_add_newamb.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : add the new ambiguities to the estimator. Newly occured or detected
 !!             is indicated by OB%flag.ne.0. Parameter table must be updated and
 !!             so do the estimator.
@@ -23,8 +27,6 @@
 !!             LCF    -- LSQ struct
 !!             OB     -- observation struct
 !!             NM,PM  -- normal matrix & PAR table
-!! author    : Geng J
-!! created   : Sept. 9, 2007
 !
 subroutine lsq_add_newamb(jd, sod, name, LCF, OB, NM, PM)
   implicit none
@@ -63,11 +65,11 @@ subroutine lsq_add_newamb(jd, sod, name, LCF, OB, NM, PM)
 !! add new ambiguity
       nbias = nbias + 1
       if (NM%imtx + nbias + 1 .gt. NM%nmtx) then
-        write (oscr, '(a,i5,f15.7)') '***ERROR(lsq_add_newamb): normal matrix too small ', jd, sod
+        write (*, '(a,i5,f15.7)') '***ERROR(lsq_add_newamb): normal matrix too small ', jd, sod
         call exit(1)
       endif
       if (NM%ipm + nbias .gt. NM%npm) then
-        write (oscr, '(a,i5,f15.7)') '***ERROR(lsq_add_newamb): parameter array too small ', jd, sod
+        write (*, '(a,i5,f15.7)') '***ERROR(lsq_add_newamb): parameter array too small ', jd, sod
         call exit(1)
       endif
       PM(NM%ipm + nbias)%pname = 'AMBC'
@@ -93,14 +95,14 @@ subroutine lsq_add_newamb(jd, sod, name, LCF, OB, NM, PM)
         if ((OB%lifamb(isat, 1) - LCF%jd0)*86400.d0 - LCF%sod0 .lt. 0.d0) OB%lifamb(isat, 1) = LCF%jd0 + LCF%sod0/86400.d0
         if ((OB%lifamb(isat, 2) - LCF%jd1)*86400.d0 - LCF%sod1 .gt. 0.d0) OB%lifamb(isat, 2) = LCF%jd1 + LCF%sod1/86400.d0
         if (OB%lifamb(isat, 1) .gt. OB%lifamb(isat, 2)) then
-          write (oscr, '(a,2f12.5)') '***ERROR(lsq_add_newamb): active time ', OB%lifamb(isat, 1), OB%lifamb(isat, 2)
+          write (*, '(a,2f12.5)') '***ERROR(lsq_add_newamb): active time ', OB%lifamb(isat, 1), OB%lifamb(isat, 2)
           call exit(1)
         endif
         PM(NM%ipm + nbias)%ptbeg = OB%lifamb(isat, 1)
         PM(NM%ipm + nbias)%ptend = OB%lifamb(isat, 2)
       else
         call mjd2date(jd, sod, iy, imon, id, ih, im, sec)
-        write (oscr, '(a,i3,1x,a,i5,4i3,f11.7)') '***ERROR(lsq_add_newamb): living ', OB%prn(isat), &
+        write (*, '(a,i3,1x,a,i5,4i3,f11.7)') '***ERROR(lsq_add_newamb): living ', OB%prn(isat), &
                                                   name//' at', iy, imon, id, ih, im, sec
         call exit(1)
       endif

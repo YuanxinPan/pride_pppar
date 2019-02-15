@@ -1,7 +1,7 @@
 !
 !! candid_ambi.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : search ambiguity candidates. stack algorithm
 !! parameter:
 !!    input : QN -- normal matrix
@@ -23,8 +27,6 @@
 !!            max_chisq -- chi square test statistics
 !!            min_ratio -- ratio test critical value
 !!    output: MD -- multiple difference struct
-!! author   : Geng J
-!! created  : Mar. 26, 2008
 !
 subroutine candid_ambi(MD, QN, invx, max_del, min_sav, max_chisq, min_ratio)
   implicit none
@@ -111,8 +113,6 @@ end
 !!    input : ntot -- highest number
 !!    output: ndel -- deleted number
 !!            candi -- candidate numbers
-!! author   : Geng J
-!! created  : Mar. 26, 2008
 !
 subroutine sel_candi(ntot, ndel, candi)
   implicit none

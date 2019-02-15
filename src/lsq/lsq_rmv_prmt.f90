@@ -1,7 +1,7 @@
 !
 !! lsq_rmv_prmt.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : pre-eliminate one selected parameter
 !! parameter :
 !!    input  : lcompact -- compact ntxal matrix or not
@@ -23,8 +27,6 @@
 !!             mp,pw    -- for process parameters
 !!             NM,PM    -- normal matrix & PAR table
 !!             ntx      -- one-dimensional normal matrix
-!! author    : Geng J
-!! created   : 7/21/2006
 !
 subroutine lsq_rmv_prmt(lcompact, lfncid, lfnrem, ipar, NM, PM, ntx)
   implicit none
@@ -75,7 +77,7 @@ subroutine lsq_rmv_prmt(lcompact, lfncid, lfnrem, ipar, NM, PM, ntx)
     ntx(k) = 0.d0
   enddo
   if (ipt(0) .eq. 0) then
-    write (oscr, '(2a,2i4)') '***ERROR(lsq_rmv_prmt): zero pivot ', PM(ipar)%pname, PM(ipar)%pcode(1:2)
+    write (*, '(2a,2i4)') '***ERROR(lsq_rmv_prmt): zero pivot ', PM(ipar)%pname, PM(ipar)%pcode(1:2)
     call exit(1)
   endif
 !

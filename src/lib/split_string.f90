@@ -1,7 +1,7 @@
 !
 !! split_string.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!! purpose  : split string into words
 !!
 !! parameter: lnoempty --  ignore blank or empty words  (len_trim(word)==0)
@@ -23,7 +27,6 @@
 !!            nword -- total number of words
 !!            word  -- words
 !!
-!! created  : Ge Maorong
 !
 subroutine split_string(lnoempty, string, c_start, c_end, seperator, nword, word)
   implicit none
@@ -40,7 +43,7 @@ subroutine split_string(lnoempty, string, c_start, c_end, seperator, nword, word
 
   line = string
   if (len(string) .gt. 256) then
-    write (oscr, *) '***ERROR(split_line): input string length > 256'
+    write (*, *) '***ERROR(split_line): input string length > 256'
     call exit(1)
   endif
 

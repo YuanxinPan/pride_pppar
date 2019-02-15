@@ -1,7 +1,7 @@
 !
 !! rdrnxoi.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!
 !! purpose  : read one epoch data from a RINEX o-file
 !!
@@ -34,7 +38,6 @@
 !!            bias -- biases for pppar
 !!            ierr -- error code, end of file or read fil error
 !!
-!! author   : Ge Maorong
 !!
 !! last mod.: 31-May-2003 by Maorong GE, CLEAN
 !
@@ -106,7 +109,7 @@ subroutine rdrnxoi(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   msg = 'read time & svn error'
   read (line, '(5i3,f11.7,2i3,12(a1,i2))', err=100) iy, im, id, ih, imi, sec, iflag, nprn
   if (nprn .gt. MAXSAT) then
-    write (oscr, '(a,i3)') '***ERROR(rdrnxoi): nprn > maxsat ', nprn
+    write (*, '(a,i3)') '***ERROR(rdrnxoi): nprn > maxsat ', nprn
     call exit(1)
   endif
   read (line(68:80), '(f13.9)', iostat=ioerr) dt
@@ -251,7 +254,7 @@ subroutine rdrnxoi(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
 100 continue
   ierr = 1
   inquire (unit=lfn, name=name)
-  write (oscr, '(a/a/a)') '***ERROR(rdrnxoi): read file, '//trim(name), '   line :'//line(1:80), ' &
+  write (*, '(a/a/a)') '***ERROR(rdrnxoi): read file, '//trim(name), '   line :'//line(1:80), ' &
     msg  :'//trim(msg)
   call exit(1)
 !
@@ -262,6 +265,6 @@ subroutine rdrnxoi(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   do i = 1, MAXSAT
     OB%obs(i, 1:4) = 0.d0
   enddo
-  write (oscr, '(a/a)') '###WARNING(rdrnxoi): end of file, ', trim(name)
+  write (*, '(a/a)') '###WARNING(rdrnxoi): end of file, ', trim(name)
   return
 end

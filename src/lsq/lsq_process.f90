@@ -1,7 +1,7 @@
 !
 !! lsq_process.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,11 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : time update of process parameter in LSQ
 !! parameters: lfncid, lfnrem -- lsq structure
 !!             jd,sod,dintv   -- time tag
 !!             NM,PM          -- normal matrix & PAR table
-!! author    : Geng J
 !! Reference : Ge Maorong  PhD Dissertation
 !!       v= p(i+1)-M(i+1)*p(i)+w(i+1), Pw(i+1)
 !

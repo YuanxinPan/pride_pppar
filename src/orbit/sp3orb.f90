@@ -1,7 +1,7 @@
 !
 !! sp3orb.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !
 !
 !! Orbit generator
@@ -51,13 +55,13 @@ program sp3orb
   enddo
 !
 !! instruction
-  write (oscr, '(a)') '++++++++++++++++++++++++++++++++++++'
-  write (oscr, '(a)') 'PREPARING GPS SATELLITE ORBITS'
-  write (oscr, '(a)') '++++++++++++++++++++++++++++++++++++'
+  write (*, '(a)') '++++++++++++++++++++++++++++++++++++'
+  write (*, '(a)') 'PREPARING GPS SATELLITE ORBITS'
+  write (*, '(a)') '++++++++++++++++++++++++++++++++++++'
 !
 !! get arguements
   call get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
-  write (oscr, '(a,40i3)') ' GPS Satellite: ', (OH%prn(i), i=1, OH%nprn)
+  write (*, '(a,40i3)') ' GPS Satellite: ', (OH%prn(i), i=1, OH%nprn)
 !
 !! open temp orbit file
   lfnorb = get_valid_unit(10)
@@ -74,12 +78,12 @@ program sp3orb
     call rdsp3i(jd, sod, OH%nprn, OH%prn, x, iflag)
     k = k + 1
     if (iflag .eq. 1) then
-      write (oscr, '(a,i6,f8.2)') '###WARNING(sp3orb): epoch lost ', jd, sod
+      write (*, '(a,i6,f8.2)') '###WARNING(sp3orb): epoch lost ', jd, sod
     else
       call ef2int(erpfil, jd, sod, mate2j, rmte2j, gast, xpole, ypole)
       do i = 1, OH%nprn
         if (x(1, i) .eq. 1.d15) then
-          write (oscr, '(a,i6,f9.2,i4)') '###WARNING(sp3orb): satellite lost ', jd, sod, OH%prn(i)
+          write (*, '(a,i6,f9.2,i4)') '###WARNING(sp3orb): satellite lost ', jd, sod, OH%prn(i)
           cycle
         endif
         call matmpy(mate2j, x(1, i), x(1, i), 3, 3, 1)

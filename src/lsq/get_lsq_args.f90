@@ -15,14 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : get arguments and read options for lsq
 !! parameter:
 !!   output : LCF  -- lsq configure options
 !!            SITE -- station infomation
 !!            SAT  -- satellite information
-!! author   : Geng J, Chen X
 !! tester   : Li C, Mao S, Zhou J, Yang S, Dai Y
-!! created  : Sept. 7, 2018
 !
 subroutine get_lsq_args(LCF, SITE, OB, SAT)
   implicit none

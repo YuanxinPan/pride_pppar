@@ -1,7 +1,7 @@
 !
 !! read_recclk.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,14 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read receiver clock correction
 !! parameter:
 !!    input : recfil -- receiver clock file
 !!            name   -- requested station
 !!            jd,sod -- requested time
 !!    output: x0     -- receiver clock correction (in meter)
-!! author   : Geng J
-!! created  : Oct. 3, 2007
 !! note     : only read corresponding epoch without interpolation
 !
 subroutine read_recclk(recfil, name, jd, sod, x0)
@@ -53,7 +55,7 @@ subroutine read_recclk(recfil, name, jd, sod, x0)
     lfn = get_valid_unit(10)
     open (lfn, file=recfil, status='old', iostat=ierr)
     if (ierr .eq. 0) then
-      write (oscr, '(2a)') '%%%MESSAGE(read_recclk): receiver clocks read ', trim(recfil)
+      write (*, '(2a)') '%%%MESSAGE(read_recclk): receiver clocks read ', trim(recfil)
     else
       return
     endif
@@ -74,7 +76,7 @@ subroutine read_recclk(recfil, name, jd, sod, x0)
       read (lfn, '(a)') line
       nsit = nsit + 1
       if (nsit .gt. MAXSIT) then
-        write (oscr, '(a)') '***ERROR(read_recclk): max site exceeded '
+        write (*, '(a)') '***ERROR(read_recclk): max site exceeded '
         call exit(1)
       endif
       read (line, '(a4,i5,4i3,f10.6,f17.6,f14.6)', err=100) lname(nsit), iy, imon, id, ih, im, sec, a0(nsit), dummy
@@ -98,12 +100,12 @@ subroutine read_recclk(recfil, name, jd, sod, x0)
   if (dabs(dt) .lt. MAXWND) then
     i = pointer_string(nsit, lname, name)
     if (i .eq. 0) then
-      write (oscr, '(2a)') '###WARNING(read_recclk): station not found ', name(1:4)
+      write (*, '(2a)') '###WARNING(read_recclk): station not found ', name(1:4)
       return
     endif
     x0 = a0(i)/VLIGHT
   else if (dt .lt. -MAXWND) then
-    write (oscr, '(a,i7,f10.2)') '***ERROR(read_recclk): before ref. time ', jd, sod
+    write (*, '(a,i7,f10.2)') '***ERROR(read_recclk): before ref. time ', jd, sod
     call exit(1)
   else if (dt .gt. MAXWND) then
     nsit = 0
@@ -114,7 +116,7 @@ subroutine read_recclk(recfil, name, jd, sod, x0)
       if (ierr .ne. 0) exit
       nsit = nsit + 1
       if (nsit .gt. MAXSIT) then
-        write (oscr, '(a)') '***ERROR(read_recclk): max site exceeded '
+        write (*, '(a)') '***ERROR(read_recclk): max site exceeded '
         call exit(1)
       endif
       read (line, '(a4,i5,4i3,f10.6,f17.6,f14.6)', err=100) lname(nsit), iy, imon, id, ih, im, sec, a0(nsit), dummy
@@ -134,6 +136,6 @@ subroutine read_recclk(recfil, name, jd, sod, x0)
   endif
 
   return
-100 write (oscr, '(2a)') '***ERROR(read_recclk): read file ', trim(line)
+100 write (*, '(2a)') '***ERROR(read_recclk): read file ', trim(line)
   call exit(1)
 end

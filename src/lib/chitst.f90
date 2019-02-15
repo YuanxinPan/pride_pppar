@@ -1,7 +1,7 @@
 !
 !! chitst.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : chi-square test
 !! parameter:
 !!    input : flag -- 0: dual-side test
@@ -25,8 +29,6 @@
 !!            nsig -- new sigma
 !!            zone -- belief zone 0.95, 0.99 ...
 !!    output: chitst -- true, then reject H0, otherwise false, accept H0
-!! author   : Geng J
-!! created  : Oct. 17, 2007
 !! NOTE     : go to page 206 of Chinese book of statistics (Edition of Gaojiao)
 !
 logical*1 function chitst(flag, ndof, osig, nsig, zone)

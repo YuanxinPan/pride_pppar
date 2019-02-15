@@ -1,7 +1,7 @@
 !
 !! read_position.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read position for static stations
 !! parameter:
 !!    input : flnpos -- position file
@@ -23,8 +27,6 @@
 !!            seslen -- session length
 !!    output: x      -- requested positions in km
 !!            flag   -- read from sit.xyz (0) or pos-file (1)
-!! author   : Geng J
-!! created  : Sept 7, 2007
 !
 subroutine read_position(flnpos, name, jd, sod, seslen, x, flag)
   implicit none
@@ -107,7 +109,7 @@ subroutine read_position(flnpos, name, jd, sod, seslen, x, flag)
   endif
 !
 !! position not found
-  write (oscr, '(2a)') '###WARNING(read_position): position not found ', name
+  write (*, '(2a)') '###WARNING(read_position): position not found ', name
   do i = 1, 3
     x(i) = 1.d0
   enddo

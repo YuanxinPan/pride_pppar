@@ -1,7 +1,7 @@
 !
 !! read_iniambi.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read ambiguity estimates
 !! parameter:
 !!    input : flnamb -- ambiguity file
@@ -22,8 +26,6 @@
 !!            fjd0,fjd1 -- start and ending time of ambiguity
 !!    output: ambini -- ambiguity estimate
 !!            rwini  -- wide-lane ambiguity estimate
-!! author   : Geng J
-!! created  : June 30, 2009
 !
 subroutine read_iniambi(flnamb, name, iprn, fjd0, fjd1, ambini, rwini, iflag)
   implicit none
@@ -54,7 +56,7 @@ subroutine read_iniambi(flnamb, name, iprn, fjd0, fjd1, ambini, rwini, iflag)
     lfn = get_valid_unit(10)
     open (lfn, file=flnamb, status='old', iostat=ierr)
     if (ierr .eq. 0) then
-      write (oscr, '(2a)') '%%%MESSAGE(read_iniambi): ambiguity read ', trim(flnamb)
+      write (*, '(2a)') '%%%MESSAGE(read_iniambi): ambiguity read ', trim(flnamb)
     else
       lexist = .false.
     endif
@@ -85,7 +87,7 @@ subroutine read_iniambi(flnamb, name, iprn, fjd0, fjd1, ambini, rwini, iflag)
 !
 !! check estimate
   if (iflag .eq. 1) then
-    write (oscr, '(a,a4,i3,2f18.10)') '***ERROR(read_iniambi): ambiguity estimate not found ', name, iprn, fjd0, fjd1
+    write (*, '(a,a4,i3,2f18.10)') '***ERROR(read_iniambi): ambiguity estimate not found ', name, iprn, fjd0, fjd1
     call exit(1)
   endif
 

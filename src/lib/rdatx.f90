@@ -1,7 +1,7 @@
 !
 !! rdatx.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,12 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : read antenna atx file
 !! parameter :
 !!    input  : fjd_beg,fjd_end -- time span
 !!    output : ATX%-- antenna correction
-!! author    : Geng J
-!! created   : Oct. 2, 2007
 !
 subroutine rdatx(fjd_beg, fjd_end, ATX)
   implicit none

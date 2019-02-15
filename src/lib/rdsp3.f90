@@ -1,7 +1,7 @@
 !
 !! rdsp3h.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : read IGS sp3 orbit file
 !!
 !! parameters: fln -- sp3 file name
@@ -23,7 +27,6 @@
 !!             jd,sod -- request epoch time
 !!             xsp3   -- satellite position and velocity
 !!
-!! created by: Ge Maorong
 !
 subroutine rdsp3h(fln, jd0, sod0, jd1, sod1, dintv, nprn, prn)
   implicit none
@@ -54,7 +57,7 @@ subroutine rdsp3h(fln, jd0, sod0, jd1, sod1, dintv, nprn, prn)
     lfn = get_valid_unit(10)
     open (lfn, file=fln, status='old', iostat=ierr)
     if (ierr .ne. 0) then
-      write (oscr, '(2a)') '***ERROR(rdsp3h): open file ', trim(fln)
+      write (*, '(2a)') '***ERROR(rdsp3h): open file ', trim(fln)
       call exit(1)
     endif
     jd0 = 0
@@ -71,7 +74,7 @@ subroutine rdsp3h(fln, jd0, sod0, jd1, sod1, dintv, nprn, prn)
 !! third to 12th lines with satellite prns
       read (lfn, '(4x,i2,3x,17(a1,i2),4(/,9x,17(a1,i2)))') nprn0, (sys(i), prn0(i), i=1, MAXSAT*2)
       if (nprn0 .gt. MAXSAT*2) then
-        write (oscr, '(a,i3)') '***ERROR(rdsp3h): too many satellites in SP3 file ', nprn0
+        write (*, '(a,i3)') '***ERROR(rdsp3h): too many satellites in SP3 file ', nprn0
         call exit(1)
       endif
 !
@@ -110,7 +113,7 @@ subroutine rdsp3h(fln, jd0, sod0, jd1, sod1, dintv, nprn, prn)
 !
   Entry rdsp3i(jd, sod, nprn, prn, xsp3, iflag)
   if (lfn .eq. 0) then
-    write (oscr, '(a)') '***ERROR(rdsp3i): sp3fil not open '
+    write (*, '(a)') '***ERROR(rdsp3i): sp3fil not open '
     call exit(1)
   endif
 !

@@ -1,7 +1,7 @@
 !
 !! lsq_init.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : initialization of the least squares estimator
 !! parameters:
 !!             LCF   -- LSQ control struct
 !!             SITE  -- station struct
 !!             OB    -- observation struct
 !!             NM,PM -- normal matrix & PAR table
-!! author    : Geng J
 !
 subroutine lsq_init(LCF, SITE, SAT, OB, NM, PM)
   implicit none
@@ -125,7 +128,7 @@ subroutine lsq_init(LCF, SITE, SAT, OB, NM, PM)
       NM%iptp(ipar) = ipar
     enddo
   else if (SITE%skd(1:1) .ne. 'F') then
-    write (oscr, '(2a)') '***ERROR(lsq_init): unknown site type ', SITE%name//' '//SITE%skd
+    write (*, '(2a)') '***ERROR(lsq_init): unknown site type ', SITE%name//' '//SITE%skd
     call exit(1)
   endif
 !
@@ -235,13 +238,13 @@ subroutine lsq_init(LCF, SITE, SAT, OB, NM, PM)
 !
 !! check consistence
   if (ic .ne. NM%nc .or. ip .ne. NM%np .or. ic + ip .ne. NM%imtx) then
-    write (oscr, '(a)') '***ERROR(lsq_init): parameter number not consistent with that from lsq_cnt_prmt'
-    write (oscr, '(2(a,2i5,/))') ' nc, ic ', NM%nc, ic, ' np, ip ', NM%np, ip
+    write (*, '(a)') '***ERROR(lsq_init): parameter number not consistent with that from lsq_cnt_prmt'
+    write (*, '(2(a,2i5,/))') ' nc, ic ', NM%nc, ic, ' np, ip ', NM%np, ip
     call exit(1)
   endif
 !
 !! output to screen
-  write (oscr, '(a)') ' ALL PARAMETERS '
+  write (*, '(a)') ' ALL PARAMETERS '
   do ipar = 1, NM%imtx
     val = NM%norx(ipar, ipar)
     if (PM(ipar)%pcode(1) .eq. 0) then
@@ -254,7 +257,7 @@ subroutine lsq_init(LCF, SITE, SAT, OB, NM, PM)
     else
       write (prnname, '(i2)') PM(ipar)%pcode(2)
     endif
-    write (oscr, '(3i4,1x,a4,1x,a2,1x,a15)') ipar, (PM(ipar)%pcode(j), j=1, 2), sitename, prnname, PM(ipar)%pname
+    write (*, '(3i4,1x,a4,1x,a2,1x,a15)') ipar, (PM(ipar)%pcode(j), j=1, 2), sitename, prnname, PM(ipar)%pname
   enddo
 
   return

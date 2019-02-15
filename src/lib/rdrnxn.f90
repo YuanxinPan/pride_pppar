@@ -1,7 +1,7 @@
 !
 !! rdrnxn.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!! purpose   : read rinex navigation file.  choose only records
 !!             within thime (fjd0,fjd1) and duplicated records are
 !!             ignored.
@@ -23,7 +27,6 @@
 !!             neph -- total number of records
 !!             ephem -- broadcast ephemeris
 !!
-!! created by: Maorong GE
 !! motified by: Xingyu Chen : add renix 3
 !
 subroutine rdrnxn(flneph, fjd0, fjd1, neph, ephem)
@@ -119,7 +122,7 @@ subroutine rdrnxn(flneph, fjd0, fjd1, neph, ephem)
       neph = neph + 1
       ephem(neph) = eph
     else if (neph .gt. maxeph) then
-      write (oscr, *) '***WARNING(rdrnxn): too many ephemeris records(maxeph,neph),', maxeph, neph
+      write (*, *) '***WARNING(rdrnxn): too many ephemeris records(maxeph,neph),', maxeph, neph
       return
     endif
   enddo

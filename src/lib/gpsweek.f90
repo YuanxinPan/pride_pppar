@@ -1,7 +1,7 @@
 !
 !! gpsweek.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !
 !! purpose   : get GPS week number and day of week given day month and year
 !!             or doy and  year
@@ -21,7 +25,6 @@
 !! parameters: day month year -- if month==0, day = doy
 !!             week, wd       -- GPS week and day of week
 !!
-!! created by: Maorong GE
 !
 subroutine gpsweek(day, month, year, week, wd)
   implicit none

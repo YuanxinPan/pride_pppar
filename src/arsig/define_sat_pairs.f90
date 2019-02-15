@@ -1,7 +1,7 @@
 !
 !! define_sat_pairs.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,15 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : define satellite pairs per station
 !! parameter:
 !!    input : FCB -- fractional cycle biases
 !!            AS  -- station ambiguity
 !!    output: ASD -- single-difference ambiguities
-!! author   : Geng J
-!! created  : Jan 23, 2008
 !
 subroutine define_sat_pairs(FCB, AS, ASD)
   implicit none
@@ -60,7 +62,7 @@ subroutine define_sat_pairs(FCB, AS, ASD)
 !! single difference ambiguity between satellites
           AS%nsd = AS%nsd + 1
           if (AS%nsd .gt. MAXSD_SIT) then
-            write (oscr, '(a,a4)') '***ERROR(define_sat_pairs): too many single difference ambiguities ', AS%name
+            write (*, '(a,a4)') '***ERROR(define_sat_pairs): too many single difference ambiguities ', AS%name
             call exit(1)
           endif
           ASD(AS%nsd)%id = 2                         ! wide-lane not fixed

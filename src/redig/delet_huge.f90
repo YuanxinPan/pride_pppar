@@ -1,7 +1,7 @@
 !
 !! delet_huge.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : delete huge residuals
 !! parameter:
 !!    input : lupd -- update rhd or not
@@ -23,8 +27,6 @@
 !!            resi -- residuals
 !!            trsi -- time tags for each epoch
 !!    output: flag -- flags of each epoch
-!! author   : Geng J
-!! created  : July 2, 2009
 !
 subroutine delet_huge(lupd, xres, nepo, flag, resi, trsi)
   implicit none
@@ -53,7 +55,7 @@ subroutine delet_huge(lupd, xres, nepo, flag, resi, trsi)
       endif
       lupd = .true.
       flag(i) = DELBAD
-      write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as huge residual'
+      write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as huge residual'
     endif
   enddo
 

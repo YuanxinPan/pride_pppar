@@ -1,7 +1,7 @@
 !
 !! redig.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!
 !! residual diagnose
 !
@@ -39,9 +43,9 @@ program redig
   real*8 timdif
 !
 !! instruction
-  write (oscr, '(a)') '++++++++++++++++++++++++++++++++++++'
-  write (oscr, '(a)') 'DIAGNOSE CARRIER-PHASE RESIDUALS'
-  write (oscr, '(a)') '++++++++++++++++++++++++++++++++++++'
+  write (*, '(a)') '++++++++++++++++++++++++++++++++++++'
+  write (*, '(a)') 'DIAGNOSE CARRIER-PHASE RESIDUALS'
+  write (*, '(a)') '++++++++++++++++++++++++++++++++++++'
 !
 !! read configure arguments
   call get_redig_args(nepo, RCF)
@@ -49,25 +53,25 @@ program redig
 !! allocate memory
   allocate (resi(nepo, RCF%nprn), stat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(a)') '***ERROR(redig): memory allocation resi'
+    write (*, '(a)') '***ERROR(redig): memory allocation resi'
     call exit(1)
   endif
   allocate (flag(nepo, RCF%nprn), stat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(a)') '***ERROR(redig): memory allocation flag'
+    write (*, '(a)') '***ERROR(redig): memory allocation flag'
     call exit(1)
   endif
 !
 !! read residuals
-  write (oscr, '(a)') '$$$MESSAGE: READING RESIDUALS ...'
+  write (*, '(a)') '$$$MESSAGE: READING RESIDUALS ...'
   call read_residual(nepo, resi, flag, trsi, RCF)
 !
 !! edit residuals
   if (RCF%jump .ne. 0.d0) then
-    write (oscr, '(a)') '$$$MESSAGE: EDITING RESIDUALS ...'
-    write (oscr, '(a,a4)') '%%% SCREENING FOR SITE ', RCF%snam
+    write (*, '(a)') '$$$MESSAGE: EDITING RESIDUALS ...'
+    write (*, '(a,a4)') '%%% SCREENING FOR SITE ', RCF%snam
     do isat = 1, RCF%nprn
-      write (oscr, '(a,i3)') ' $$ FOR PRN ', RCF%prn(isat)
+      write (*, '(a,i3)') ' $$ FOR PRN ', RCF%prn(isat)
 !
 !! remove huge residuals
       if (RCF%xres .ne. 0.d0) call delet_huge(RCF%lupd, RCF%xres, nepo, flag(1, isat), resi(1, isat), trsi)
@@ -88,7 +92,7 @@ program redig
 !
 !! update rinex diagnose file
   rtot = 0; atot = 0
-  write (oscr, '(a)') '$$$MESSAGE: UPDATING RHD FILES ...'
+  write (*, '(a)') '$$$MESSAGE: UPDATING RHD FILES ...'
 !
 !! initialization
   jdb = 0
@@ -205,16 +209,16 @@ program redig
   RCF%lfnrhd = 0
 !
 !! total statistics
-  write (oscr, '(a)') '$$$MESSAGE: TOTAL STATISTICS '
-  write (oscr, '(a,i10,/,a,i10)') 'NEWLY REMOVED: ', rtot, 'NEWLY AMBIGUT: ', atot
+  write (*, '(a)') '$$$MESSAGE: TOTAL STATISTICS '
+  write (*, '(a,i10,/,a,i10)') 'NEWLY REMOVED: ', rtot, 'NEWLY AMBIGUT: ', atot
 !
 !! release memory
 50 deallocate (resi)
   deallocate (flag)
 
   stop
-100 write (oscr, '(a)') '***ERROR(redig): MAXEPO exceeded '
+100 write (*, '(a)') '***ERROR(redig): MAXEPO exceeded '
   call exit(1)
-200 write (oscr, '(a)') '***ERROR(redig): read index '
+200 write (*, '(a)') '***ERROR(redig): read index '
   call exit(1)
 end

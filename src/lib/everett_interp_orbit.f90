@@ -1,7 +1,7 @@
 !
 !! everett_interp_orbit.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : everett interplolation of satellite position and partial derivatives
 !!            based on table data
 !!
@@ -27,7 +31,6 @@
 !!            jd,sod  -- time of the requested point
 !!            x,v,part  -- interpolated position, velocity and partial derivatives
 !!
-!! created  : Maorong Ge, Feb 1993
 !! modified : Jianghui Geng, May 2011: missing satellites
 !!
 subroutine everett_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
@@ -93,7 +96,7 @@ subroutine everett_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
     enddo
     EI%ndgr = 6
     if (EI%ndgr .gt. MAXDGR) then
-      write (oscr, '(a,2i3)') '***ERROR(everett_interp_orbit): EI%ndgr larger than MAXDGR', EI%ndgr, MAXDGR
+      write (*, '(a,2i3)') '***ERROR(everett_interp_orbit): EI%ndgr larger than MAXDGR', EI%ndgr, MAXDGR
       call exit(1)
     endif
 
@@ -105,7 +108,7 @@ subroutine everett_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
 !
 !! check time
   if (timdif(jd, sod, EI%jds, EI%sods) .lt. -1.d-6 .or. timdif(jd, sod, EI%jde, EI%sode) .gt. 1.d-6) then
-    write (oscr, '(a,i5,f9.1)') '***ERROR(everett_interp_orbit): arc not cover epoch ', jd, sod
+    write (*, '(a,i5,f9.1)') '***ERROR(everett_interp_orbit): arc not cover epoch ', jd, sod
     x(1:3) = 1.d15
     v(1:3) = 1.d15
     !call exit(1)
@@ -114,7 +117,7 @@ subroutine everett_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
 !! which satellite
   it = pointer_int(nprn, prn, iprn)
   if (it .eq. 0) then
-    write (oscr, '(a,i2)') '***ERROR(everett_interp_orbit): in table no data for satellite ', iprn
+    write (*, '(a,i2)') '***ERROR(everett_interp_orbit): in table no data for satellite ', iprn
     call exit(1)
   endif
 !
@@ -212,7 +215,7 @@ subroutine everett_interp_orbit(orbfil, lpos, lvel, jd, sod, iprn, x, v)
   return
 
 300 continue
-  write (oscr, '(a)') '***ERROR(everett_interpolate_orbit): end of file '
+  write (*, '(a)') '***ERROR(everett_interpolate_orbit): end of file '
   call exit(1)
 !
 !! reset

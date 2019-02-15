@@ -1,7 +1,7 @@
 !
 !! find_ambd.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,14 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : find death epoch of an ambiguity
 !! parameter:
 !!    input : nepo -- total number of flag
 !!            flag -- flag array
 !!            iepo -- starting epoch of amb
 !!    output: find_flag -- death epoch of amb
-!! author   : Geng J
-!! created  : Oct. 18, 2007
 !
 integer*4 function find_ambd(nepo, flag, iepo)
   implicit none

@@ -1,7 +1,7 @@
 !
 !! read_residual.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read residuals
 !! parameter:
 !!    input : nepo -- number of epochs
@@ -22,8 +26,6 @@
 !!    output: resi -- residuals
 !!            flag -- flag info
 !!            trsi -- time tag for each epoch
-!! author   : Geng J
-!! created  : Oct. 20, 2007
 !
 subroutine read_residual(nepo, resi, flag, trsi, RCF)
   implicit none
@@ -70,7 +72,7 @@ subroutine read_residual(nepo, resi, flag, trsi, RCF)
     iepo = nint(timdif(jdx, sodx, RCF%jd0, RCF%sod0)/RCF%dintv) + 1
     trsi(iepo) = line(5:31)
     if (iepo .gt. nepo) then
-      write (oscr, '(a)') '***ERROR(read_residual): number of epochs exceeded '
+      write (*, '(a)') '***ERROR(read_residual): number of epochs exceeded '
       call exit(1)
     endif
     do while (.true.)
@@ -156,6 +158,6 @@ subroutine read_residual(nepo, resi, flag, trsi, RCF)
   RCF%lfnstt = 0
 
   return
-100 write (oscr, '(2a)') '***ERROR(read_residual): read file ', trim(line)
+100 write (*, '(2a)') '***ERROR(read_residual): read file ', trim(line)
   call exit(1)
 end

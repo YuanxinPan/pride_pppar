@@ -1,7 +1,7 @@
 !
 !! cltasy.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : correlation analysis
 !! parameter:
 !!    input : nobs -- # of observations
@@ -23,8 +27,6 @@
 !!            invn -- inversed normal matrix
 !!            resi -- reisudal vector
 !!    output: iptx -- pointer to deleted observation
-!! author   : Geng J
-!! created  : Nov. 1, 2007
 !
 subroutine cltasy(nobs, nukn, amat, invn, resi, iptx)
   implicit none

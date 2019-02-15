@@ -1,7 +1,7 @@
 !
 !! read_ambiguity.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,12 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read un-differenced ambiguity estimates
 !! parameter:
 !!    input : FCB -- fractional cycle biases
 !!    output: AS  -- ambiguity estimates at a station
-!! author   : Geng J
-!! created  : Jan 5, 2008
 !
 subroutine read_ambiguity(FCB, AS)
   implicit none
@@ -44,7 +46,7 @@ subroutine read_ambiguity(FCB, AS)
   lfn = get_valid_unit(10)
   open (lfn, file=FCB%flnamb, status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(2a)') '***ERROR(read_ambiguity): open file ', trim(FCB%flnamb)
+    write (*, '(2a)') '***ERROR(read_ambiguity): open file ', trim(FCB%flnamb)
     call exit(1)
   endif
 !
@@ -57,7 +59,7 @@ subroutine read_ambiguity(FCB, AS)
     read (line, '(a4,i4,2f22.6,2f18.10,2f9.4,f6.1)') name, iprn, xamb, xrwl, t(1:2), xrms, xswl, elev
     if (elev .le. FCB%cutoff .or. xswl*3.d0 .gt. 0.2d0 .or. (t(2) - t(1))*86400.d0 .lt. FCB%minsec_common) cycle
     if (pointer_int(FCB%nprn, FCB%prn, iprn) .eq. 0) then
-      write (oscr, '(a,i2)') '***ERROR(read_ambiguity): satellite not exist ', iprn
+      write (*, '(a,i2)') '***ERROR(read_ambiguity): satellite not exist ', iprn
       call exit(1)
     endif
 !
@@ -67,7 +69,7 @@ subroutine read_ambiguity(FCB, AS)
 !! add a new eligible ambiguity
     AS%now = AS%now + 1
     if (AS%now .gt. MAXOW_ST) then
-      write (oscr, '(2a)') '***ERROR(read_ambiguity): too many un-differenced ambiguity estimates ', AS%name
+      write (*, '(2a)') '***ERROR(read_ambiguity): too many un-differenced ambiguity estimates ', AS%name
       call exit(1)
     endif
     AS%isat(AS%now) = pointer_int(FCB%nprn, FCB%prn, iprn)

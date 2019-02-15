@@ -1,7 +1,7 @@
 !
 !! mjd2date.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,12 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : transform modified julday to date
 !! parameter:
 !!    input : jd,sod -- modified julday
 !!    output: iy,imon,id,ih,im,is -- date
-!! author   : Geng J
-!! created  : Nov. 6, 2008
 !
 subroutine mjd2date(jd, sod, iy, imon, id, ih, im, is)
   implicit none

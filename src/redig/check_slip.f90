@@ -1,7 +1,7 @@
 !
 !! check_slip.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : check residual time series to identify slips or blunders
 !! parameter:
 !!    input : lupd -- rhd update or not
@@ -24,8 +28,6 @@
 !!            resi -- residuals
 !!            trsi -- time tag for each residual
 !!    output: lfnd -- jump found or not
-!! author   : Geng J
-!! created  : Oct. 17, 2007
 !
 subroutine check_slip(lupd, jump, nepo, flag, resi, trsi, lfnd)
   implicit none
@@ -104,7 +106,7 @@ subroutine check_slip(lupd, jump, nepo, flag, resi, trsi, lfnd)
 !! whether to remove the largest residual difference
   if (.not. chitst(-1, ndif - 1, sig, signew, 0.99d0) .and. dabs(dif(imax)) .gt. jump) then
     lupd = .true.
-    write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(imax), ' Epo ', imax, ' marked as biggest jump'
+    write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(imax), ' Epo ', imax, ' marked as biggest jump'
     flag(imax) = NEWAMB
     lfnd = .true.
     goto 100
@@ -119,13 +121,13 @@ subroutine check_slip(lupd, jump, nepo, flag, resi, trsi, lfnd)
     if (dabs(dif(i)) .gt. jmp) then
       if (istrue(flag(i), 'GOOD')) then
         lupd = .true.
-        write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' marked as jump'
+        write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' marked as jump'
         flag(i) = NEWAMB
         lfnd = .true.
       endif
     else
       if (istrue(flag(i), 'NEWAMB')) then
-        write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' reset as good'
+        write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' reset as good'
         flag(i) = GOOD
       endif
     endif
@@ -137,7 +139,7 @@ subroutine check_slip(lupd, jump, nepo, flag, resi, trsi, lfnd)
     if (istrue(flag(i), 'NEWAMB') .and. istrue(flag(ipt(i)), 'NEWAMB')) then
       if (dsign(1.d0, dif(i))*dsign(1.d0, dif(ipt(i))) .lt. 0.d0) then
         lupd = .true.
-        write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(ipt(i)), ' Epo ', ipt(i), ' deleted as bad'
+        write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(ipt(i)), ' Epo ', ipt(i), ' deleted as bad'
         flag(ipt(i)) = DELBAD
         dif(i) = dif(i) + dif(ipt(i))
         k = ipt(i)
@@ -145,7 +147,7 @@ subroutine check_slip(lupd, jump, nepo, flag, resi, trsi, lfnd)
         dif(k) = 0.d0
         ipt(k) = 0
         if (dabs(dif(i)) .lt. jmp) then
-          write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' reset as good'
+          write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' reset as good'
           flag(i) = GOOD
         endif
       endif
@@ -162,21 +164,21 @@ subroutine check_slip(lupd, jump, nepo, flag, resi, trsi, lfnd)
       enddo
       if (k .lt. frt) then
         lupd = .true.
-        write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(k), ' Epo ', k, ' deleted as redundant ambiguity'
+        write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(k), ' Epo ', k, ' deleted as redundant ambiguity'
         flag(k) = DELBAD
       else if (j .gt. nepo) then
         lupd = .true.
-        write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as last ambiguity'
+        write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as last ambiguity'
         flag(i) = DELBAD
       else if (istrue(flag(j), 'AMB')) then
         if (istrue(flag(i), 'OLDAMB')) then
           lupd = .true.
-          write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as redundant ambiguity'
+          write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as redundant ambiguity'
           flag(i) = DELBAD
           flag(j) = OLDAMB
         else if (istrue(flag(i), 'NEWAMB')) then
           lupd = .true.
-          write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as redundant ambiguity'
+          write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' deleted as redundant ambiguity'
           flag(i) = DELBAD
         endif
       endif

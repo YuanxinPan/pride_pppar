@@ -1,7 +1,7 @@
 !
 !! lsq_slv_prmt.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,11 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : solve for parameter in LSQ
 !!
 !! parameters: NM,PM -- parameter & normal equation struct
 !!
-!! author    : Maorong GE
 !
 subroutine lsq_slv_prmt(LCF, NM, PM)
   implicit none
@@ -46,7 +49,7 @@ subroutine lsq_slv_prmt(LCF, NM, PM)
 !! inverse
   call matinv(NM%norx, NM%nmtx, NM%imtx, det)
   if (det .eq. 0.d0) then
-    write (oscr, '(a)') '***ERROR(lsq_slv_prmt): matrix inversion, singularity '
+    write (*, '(a)') '***ERROR(lsq_slv_prmt): matrix inversion, singularity '
     call exit(1)
   endif
 !

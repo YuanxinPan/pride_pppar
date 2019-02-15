@@ -1,7 +1,7 @@
 !
 !! rdrnxoh.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!! PANDA subroutine
 !!
 !! purpose  : read header of a RINEX o-file
@@ -22,7 +26,6 @@
 !!            HD  -- rinex head structure, see `rinex_observation.h`
 !!            ierr -- error code
 !!
-!! author   : Ge Maorong
 !!
 !! last mod.: 31-May-2003, CLEAN
 !!

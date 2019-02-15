@@ -1,7 +1,7 @@
 !
 !! read_invnormal.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,15 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read inversed normal matrix (Q matrix)
 !! parameter:
 !!    input : FCB -- fractional part of initial phases
 !!    output: QN  -- inversed normal matrix
 !!            AS  -- ambiguity station struct
-!! author   : Geng J
-!! created  : Jan 17, 2008
 !
 subroutine read_invnormal(FCB, PM, QN, AS)
   implicit none
@@ -46,7 +48,7 @@ subroutine read_invnormal(FCB, PM, QN, AS)
   lfn = get_valid_unit(10)
   open (lfn, file=FCB%flnneq, form='unformatted', status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(2a)') '***ERROR(read_invnormal): open file ', trim(FCB%flnneq)
+    write (*, '(2a)') '***ERROR(read_invnormal): open file ', trim(FCB%flnneq)
     call exit(1)
   endif
   read (lfn) AS%name
@@ -54,12 +56,12 @@ subroutine read_invnormal(FCB, PM, QN, AS)
   read (lfn) nprn, (prn(i), i=1, nprn)
   read (lfn) QN%ntot, QN%vtpv, QN%frdm
   if (QN%ntot .gt. 3 + MAXOW_ST) then
-    write (oscr, '(a)') '***ERROR(read_invnormal): too many parameters '
+    write (*, '(a)') '***ERROR(read_invnormal): too many parameters '
     call exit(1)
   endif
   allocate (QN%invx(1:QN%ntot, 1:QN%ntot), stat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(a)') '***ERROR(read_invnormal): memory allocation invx '
+    write (*, '(a)') '***ERROR(read_invnormal): memory allocation invx '
     call exit(1)
   endif
   allocate (QN%idq(QN%ntot), stat=ierr)
@@ -79,13 +81,13 @@ subroutine read_invnormal(FCB, PM, QN, AS)
     endif
     PM(i)%pcode(2) = pointer_int(FCB%nprn, FCB%prn, prn(isat))
     if (PM(i)%pcode(2) .eq. 0) then
-      write (oscr, '(a,i2)') '***ERROR(read_invnormal): satellite not exist ', prn(isat)
+      write (*, '(a,i2)') '***ERROR(read_invnormal): satellite not exist ', prn(isat)
       call exit(1)
     endif
     if (elev .le. FCB%cutoff .or. xswl*3.d0 .gt. 0.2d0 .or. (PM(i)%ptime(2) - PM(i)%ptime(1))*86400.d0 .lt. FCB%minsec_common) cycle
     AS%now = AS%now + 1
     if (AS%now .gt. MAXOW_ST) then
-      write (oscr, '(a,a4)') '***ERROR(read_invnormal): too many one-way ambiguities ', AS%name
+      write (*, '(a,a4)') '***ERROR(read_invnormal): too many one-way ambiguities ', AS%name
       call exit(1)
     endif
     AS%isat(AS%now) = PM(i)%pcode(2)

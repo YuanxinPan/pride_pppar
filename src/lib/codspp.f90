@@ -1,7 +1,7 @@
 !
 !! codspp.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : single point positioning using range observations to check
 !!            and/or improving station position
 !! parameter:
@@ -24,8 +28,6 @@
 !!            ite           -- # of iterations
 !!            flag          -- flag for position initializtion
 !!    output: deltax        -- position correction
-!! author   : Geng J
-!! created  : Nov. 3, 2007
 !
 subroutine codspp(lfncid, lfnrem, jd, sod, OB, ite, flag, deltax)
   implicit none
@@ -94,7 +96,7 @@ subroutine codspp(lfncid, lfnrem, jd, sod, OB, ite, flag, deltax)
 !! solve normal equation
     call matinv(c, 4, 4, det)
     if (det .eq. 0.d0) then
-      write (oscr, '(a)') '***ERROR(codspp): matrix singularity '
+      write (*, '(a)') '***ERROR(codspp): matrix singularity '
       call exit(1)
     endif
 !
@@ -129,7 +131,7 @@ subroutine codspp(lfncid, lfnrem, jd, sod, OB, ite, flag, deltax)
       ite = 0
       deltax(5) = 10.d0
       OB%obs(ipt(iptx), 1:4) = 0.d0
-      write (oscr, '(a,i5,f8.1,a,i2)') '###WARNING(codspp): bad range in SIT at ', jd, sod, ' for SAT', OB%prn(ipt(iptx))
+      write (*, '(a,i5,f8.1,a,i2)') '###WARNING(codspp): bad range in SIT at ', jd, sod, ' for SAT', OB%prn(ipt(iptx))
       if (lfncid .ne. 0 .and. lfnrem .ne. 0) then
         write (lfncid) 'de'
         write (lfnrem) 1, jd, sod, 1, ipt(iptx)
@@ -162,7 +164,7 @@ subroutine codspp(lfncid, lfnrem, jd, sod, OB, ite, flag, deltax)
     deltax(1:4) = 0.d0
     if (flag .eq. 2) then
       deltax(5) = 10.d0
-      write (oscr, '(a,i5,f8.1)') '###WARNING(codspp): initialization fails in SIT at ', jd, sod
+      write (*, '(a,i5,f8.1)') '###WARNING(codspp): initialization fails in SIT at ', jd, sod
       do i = 1, nobs
         OB%obs(ipt(i), 1:4) = 0.d0
       enddo

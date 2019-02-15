@@ -1,7 +1,7 @@
 !
 !! lsq_rcv_prmt.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : recover pre-eliminated parameters and residual from tmp files
 !! parameter :
 !!    input  : lfncid,lfnobs,lfnrem -- tmp files for recovery
@@ -22,8 +26,6 @@
 !!             LCF                  -- least squares control
 !!             SITE                 -- station control
 !!             NM,PM                -- normal equation & parameters
-!! author    : Geng J.H.
-!! created   : 7/22/2006
 !
 subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, NM, PM)
   implicit none
@@ -263,9 +265,9 @@ subroutine lsq_rcv_prmt(lfncid, lfnobs, lfnrem, lfnres, LCF, SITE, NM, PM)
   enddo
   close (tmpkin, status='delete')
   if (index(SITE%skd, 'K') .ne. 0) close (SITE%ikin)
-  write (oscr, '(a,3i6)') 'Recovering: nc, np, ns ', NM%nc, NM%np, NM%ns
+  write (*, '(a,3i6)') 'Recovering: nc, np, ns ', NM%nc, NM%np, NM%ns
 
   return
-100 write (oscr, '(a)') '***ERROR(lsq_rcv_prmt): back space or read file'
+100 write (*, '(a)') '***ERROR(lsq_rcv_prmt): back space or read file'
   call exit(1)
 end

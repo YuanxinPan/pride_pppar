@@ -1,7 +1,7 @@
 !
 !! fixamb_solution.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,15 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : fix MD ambiguities & update solutions
 !! parameter:
 !!    input : MD -- ambguity difference struct
 !!    output: PM -- parameter struct
 !!            QN%-- inversed normal matrix
-!! author   : Geng J
-!! created  : Jan 21, 2008
 !
 subroutine fixamb_solution(MD, PM, QN, invx, max_del, min_sav, max_chisq, min_ratio)
   implicit none
@@ -44,7 +46,7 @@ subroutine fixamb_solution(MD, PM, QN, invx, max_del, min_sav, max_chisq, min_ra
   allocate (bias(QN%indp + QN%nxyz))
   allocate (q22(QN%indp*(QN%indp + 1)/2), stat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(a)') '***ERROR(fixamb_solution): memory allocation q22 '
+    write (*, '(a)') '***ERROR(fixamb_solution): memory allocation q22 '
     call exit(1)
   endif
   if (QN%ndam .gt. 0) then
@@ -56,20 +58,20 @@ subroutine fixamb_solution(MD, PM, QN, invx, max_del, min_sav, max_chisq, min_ra
     call ambslv(QN%ncad, q22, bias, disall)
     chisq = (disall(1) + QN%vtpv)/(QN%frdm + QN%ncad)/QN%vtpv*QN%frdm
     ratio = disall(2)/disall(1)
-    write (oscr, '(a,i4,2f10.3)') 'Bias/Chi/Ratio(Whole): ', QN%ncad, chisq, ratio
+    write (*, '(a,i4,2f10.3)') 'Bias/Chi/Ratio(Whole): ', QN%ncad, chisq, ratio
 !
 !! whether the whole can be resolved
     if (chisq .ge. max_chisq .or. ratio .le. min_ratio) then
       call candid_ambi(MD, QN%invx, max_del, min_sav, max_chisq, min_ratio)
       if (QN%ncad .eq. 0) then
-        write (oscr, '(a)') '$$$MESSAGE(fixamb_solution): no more can be fixed '; goto 100
+        write (*, '(a)') '$$$MESSAGE(fixamb_solution): no more can be fixed '; goto 100
       endif
       call sort_invx(MD, QN%invx, bias, q22)
       call ambslv(QN%ncad, q22, bias, disall)
       chisq = (disall(1) + QN%vtpv)/(QN%frdm + QN%ncad)/QN%vtpv*QN%frdm
       ratio = disall(2)/disall(1)
     endif
-    write (oscr, '(a,i4,2f10.3)') 'Bias/Chi/Ratio: ', QN%ncad, chisq, ratio
+    write (*, '(a,i4,2f10.3)') 'Bias/Chi/Ratio: ', QN%ncad, chisq, ratio
 !
 !! Q22 inversed matrix
     ntot = QN%nxyz + QN%ndam
@@ -85,7 +87,7 @@ subroutine fixamb_solution(MD, PM, QN, invx, max_del, min_sav, max_chisq, min_ra
     enddo
     call matinv(q22h, QN%ncad, QN%ncad, dump)
     if (dump .eq. 0.d0) then
-      write (oscr, '(a)') '***ERROR(fixamb_solution): matrix singularity '
+      write (*, '(a)') '***ERROR(fixamb_solution): matrix singularity '
       call exit(1)
     endif
 !

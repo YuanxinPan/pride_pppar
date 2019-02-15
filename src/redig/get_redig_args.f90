@@ -1,7 +1,7 @@
 !
 !! get_redig_args.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,12 +15,14 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : get arguments of redig
 !! parameter:
 !!    input : nepo -- # of epochs in residual file
 !!    output: RCF  -- redig configure struct
-!! author   : Geng J
-!! created  : Oct. 19, 2007
 !
 subroutine get_redig_args(nepo, RCF)
   implicit none
@@ -49,7 +51,7 @@ subroutine get_redig_args(nepo, RCF)
 !! read arguments
   nargs = iargc()
   if (nargs .eq. 0) then
-    write (oscr, '(a)') 'Usage: redig resfil -jmp jump -sht nsht [-hug huge-residual]'
+    write (*, '(a)') 'Usage: redig resfil -jmp jump -sht nsht [-hug huge-residual]'
     call exit(4)
   endif
   call getarg(1, resfil)
@@ -74,7 +76,7 @@ subroutine get_redig_args(nepo, RCF)
   RCF%lfnres = get_valid_unit(10)
   open (RCF%lfnres, file=resfil, status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(2a)') '***ERROR(get_redig_args): open file ', trim(resfil)
+    write (*, '(2a)') '***ERROR(get_redig_args): open file ', trim(resfil)
     call exit(1)
   endif
   line = ' '
@@ -110,7 +112,7 @@ subroutine get_redig_args(nepo, RCF)
   enddo
   nepo = nint(seslen/RCF%dintv) + 1
   if (nepo .gt. MAXEPO) then
-    write (oscr, '(a,i8)') '***ERROR(get_redig_args): MAXEPO exceeded ', nepo
+    write (*, '(a,i8)') '***ERROR(get_redig_args): MAXEPO exceeded ', nepo
     call exit(1)
   endif
 !
@@ -124,12 +126,12 @@ subroutine get_redig_args(nepo, RCF)
   RCF%lfnrhd = get_valid_unit(10)
   open (RCF%lfnrhd, file=line, status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(2a)') '***ERROR(get_redig_args): open file ', trim(line)
+    write (*, '(2a)') '***ERROR(get_redig_args): open file ', trim(line)
     call exit(1)
   endif
   RCF%lupd = .false.
 
   return
-100 write (oscr, '(2a)') '***ERROR(get_redig_args): read arguments ', trim(line)
+100 write (*, '(2a)') '***ERROR(get_redig_args): read arguments ', trim(line)
   call exit(1)
 end

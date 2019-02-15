@@ -1,7 +1,7 @@
 !
 !! write_diag_rpt.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : write rinex health diagnose report
 !! parameter:
 !!    input : flnrhd   -- diagnose file
@@ -23,8 +27,6 @@
 !!            jd0,ti   -- time tag
 !!            flagall  -- flags
 !!            interval -- sampling interval
-!! author   : Geng J
-!! created  : Oct. 18, 2007
 !
 subroutine write_diag_rpt(flnrhd, nepo, nsat, jd0, ti, flagall, interval, sumepo)
   implicit none

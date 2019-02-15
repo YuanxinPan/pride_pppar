@@ -1,7 +1,7 @@
 !
 !! rot_enu2xyz.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 subroutine rot_enu2xyz(lat, lon, rotmat)
 ! purpose  : rotation matrix from local station system to earth-fixed system.
 !            Local system is east-north-radial/up  right-hand system.
@@ -21,7 +25,6 @@ subroutine rot_enu2xyz(lat, lon, rotmat)
 ! parameter:  lat lon -- latitude and longitode in radians
 !             rotmat  -- rotation matrix
 !
-! created  :
 
   implicit none
   real*8 lat, lon, rotmat(3, 3)

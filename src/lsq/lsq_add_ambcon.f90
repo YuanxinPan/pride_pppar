@@ -1,7 +1,7 @@
 !
 !! lsq_add_ambcon.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,14 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : add ambiguity resolution constraint
 !! parameter:
 !!    input : jd,sod -- epoch time
 !!            LCF    -- lsq control struct
 !!            SITE   -- station struct
 !!    output: NM,PM  -- normal matrix & parameter array
-!! author   : Geng J
-!! created  : Jan 13, 2008
 !
 subroutine lsq_add_ambcon(jd, sod, LCF, SITE, NM, PM)
   implicit none
@@ -57,11 +59,11 @@ subroutine lsq_add_ambcon(jd, sod, LCF, SITE, NM, PM)
     lfirst = .false.
     inquire (file=LCF%flncon, exist=lexist)
     if (lexist) then
-      write (oscr, '(a)') '%%%MESSAGE(lsq_add_ambcon): ambiguity constraint imposed'
+      write (*, '(a)') '%%%MESSAGE(lsq_add_ambcon): ambiguity constraint imposed'
       lfn = get_valid_unit(10)
       open (lfn, file=LCF%flncon, status='old', iostat=ierr)
       if (ierr .ne. 0) then
-        write (oscr, '(2a)') '***ERROR(lsq_add_ambcon): open file ', trim(LCF%flncon)
+        write (*, '(2a)') '***ERROR(lsq_add_ambcon): open file ', trim(LCF%flncon)
         call exit(1)
       endif
       bc = 77.d0/60.d0
@@ -133,7 +135,7 @@ subroutine lsq_add_ambcon(jd, sod, LCF, SITE, NM, PM)
     if (ctyp .eq. 'SD' .and. ix(1) .ne. 0 .and. ix(2) .ne. 0) exit
   enddo
   if (ix(1) .eq. 0 .or. ix(2) .eq. 0) then
-    write (oscr, '(a,a4,1x,a4,2i3,2(1x,i4,4i3,f10.6))') '***ERROR(lsq_add_ambcon): ambiguity not found ', cname, dname, &
+    write (*, '(a,a4,1x,a4,2i3,2(1x,i4,4i3,f10.6))') '***ERROR(lsq_add_ambcon): ambiguity not found ', cname, dname, &
       isat, jsat, iy(1), imon(1), id(1), ih(1), im(1), is(1), iy(2), imon(2), id(2), ih(2), im(2), is(2)
     call exit()
   endif
@@ -161,6 +163,6 @@ subroutine lsq_add_ambcon(jd, sod, LCF, SITE, NM, PM)
 
 100 close (lfn)
   return
-200 write (oscr, '(a,/,a)') '***ERROR(lsq_add_ambcon): read file ', trim(line)
+200 write (*, '(a,/,a)') '***ERROR(lsq_add_ambcon): read file ', trim(line)
   call exit()
 end

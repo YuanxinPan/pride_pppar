@@ -1,7 +1,7 @@
 !
 !! findkey.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : get the content of the line start with `keyword` within the
 !!            sinex_bracket or in the whole file if the bracket is empty.
 !!             Line start with * or # is ignored as comment. Keyword and its
@@ -26,7 +30,6 @@
 !!             findkey -- content of keyword. `EMPTY` is returned if the
 !!                        keyword is not defined in the file
 !!
-!! created  : Ge Maorong,
 !!
 !! last mod.: 31-May-2003 by Maorong GE, CLEAN
 !! last mod.: 12-Jul-2003 by Maorong GE, add sinex_bracket.

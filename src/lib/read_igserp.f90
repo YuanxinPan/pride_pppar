@@ -1,7 +1,7 @@
 !
 !! read_igserp.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,14 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read IGS ERP & return TAI-UT1R
 !! parameter:
 !!    input : erpfil -- ERP file
 !!            jd,sod -- requested time
 !!    output: tmur   -- TAI-UT1R
 !!            pole   -- pole movement
-!! author   : Geng J
-!! created  : Oct. 25, 2007
 !! modified : May. 13, 2011: leap seconds in terms of igserp table time, not input time
 !
 subroutine read_igserp(erpfil, jd, sod, tmur, pole)
@@ -52,14 +54,14 @@ subroutine read_igserp(erpfil, jd, sod, tmur, pole)
     lfn = get_valid_unit(10)
     open (lfn, file=erpfil, status='OLD', iostat=ierr)
     if (ierr .eq. 0) then
-      write (oscr, '(2a)') '%%%MESSAGE(read_igserp): ERP read ', trim(erpfil)
+      write (*, '(2a)') '%%%MESSAGE(read_igserp): ERP read ', trim(erpfil)
     else
-      write (oscr, '(2a)') '***ERROR(read_igserp): open file ', trim(erpfil)
+      write (*, '(2a)') '***ERROR(read_igserp): open file ', trim(erpfil)
       call exit(1)
     endif
     read (lfn, '(a)') line
     if (line(1:9) .ne. 'version 2' .and. line(1:9) .ne. 'VERSION 2') then
-      write (oscr, '(2a)') '***ERROR(read_igserp): unknown version ', line(1:9)
+      write (*, '(2a)') '***ERROR(read_igserp): unknown version ', line(1:9)
       call exit(1)
     endif
     line = ' '
@@ -125,9 +127,9 @@ subroutine read_igserp(erpfil, jd, sod, tmur, pole)
   endif
 
   return
-100 write (oscr, '(a)') '***ERROR(read_igserp): end of file igserp'
+100 write (*, '(a)') '***ERROR(read_igserp): end of file igserp'
   call exit(1)
-200 write (oscr, '(2a)') '***ERROR(read_igserp): read file igserp ', trim(line)
+200 write (*, '(2a)') '***ERROR(read_igserp): read file igserp ', trim(line)
   call exit(1)
 !
 !! reset

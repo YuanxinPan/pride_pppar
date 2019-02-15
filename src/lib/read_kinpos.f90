@@ -1,7 +1,7 @@
 !
 !! read_kinpos.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,15 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read kinematic position file
 !! parameter:
 !!    input : SITE%  -- station struct
 !!            jd,sod -- requested time
 !!    output: x,y,z  -- kinematic position in m
-!! author   : Geng J
-!! created  : Nov. 2, 2007
 !
 subroutine read_kinpos(SITE, jd, sod, x, y, z)
   implicit none
@@ -52,9 +54,9 @@ subroutine read_kinpos(SITE, jd, sod, x, y, z)
     SITE%ikin = get_valid_unit(10)
     open (SITE%ikin, file=SITE%kinfil, status='old', iostat=ierr)
     if (ierr .eq. 0) then
-      write (oscr, '(2a)') '%%%MESSAGE(read_kinpos): kinematic read ', trim(SITE%kinfil)
+      write (*, '(2a)') '%%%MESSAGE(read_kinpos): kinematic read ', trim(SITE%kinfil)
     else
-      write (oscr, '(2a)') '***ERROR(read_kinpos): open file ', trim(SITE%kinfil)
+      write (*, '(2a)') '***ERROR(read_kinpos): open file ', trim(SITE%kinfil)
       call exit(1)
     endif
 !
@@ -82,9 +84,9 @@ subroutine read_kinpos(SITE, jd, sod, x, y, z)
     endif
   enddo
 
-100 write (oscr, '(2a)') '###WARNING(read_kinpos): end of file ', trim(SITE%kinfil)
+100 write (*, '(2a)') '###WARNING(read_kinpos): end of file ', trim(SITE%kinfil)
   if (SITE%ixyz .eq. 0) SITE%ixyz = 1
   return
-200 write (oscr, '(2a)') '***ERROR(read_kinpos): read file ', trim(SITE%kinfil)
+200 write (*, '(2a)') '***ERROR(read_kinpos): read file ', trim(SITE%kinfil)
   call exit(1)
 end

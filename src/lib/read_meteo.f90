@@ -1,7 +1,7 @@
 !
 !! read_meteo.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read meterology information
 !! parameter:
 !!    input : jd,sod -- requested time
@@ -23,8 +27,6 @@
 !!    output: pres   -- pressure, mbar
 !!            temp   -- temperature, C
 !!            humd   -- humidity (0.0-1.0)
-!! author   : Geng J
-!! created  : Sept 10, 2007
 !
 subroutine read_meteo(jd, sod, imet, map, geod, pres, temp, humd, undu)
   implicit none

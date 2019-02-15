@@ -1,7 +1,7 @@
 !
 !! get_sp3orb_args.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,6 +14,10 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !
 subroutine get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
   implicit none
@@ -40,7 +44,7 @@ subroutine get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
 !! read command arguments
   nargs = iargc()
   if (nargs .eq. 0) then
-    write (oscr, '(a)') 'Usage: sp3orb sp3fil -cfg sescfg [-erp erpfil]'
+    write (*, '(a)') 'Usage: sp3orb sp3fil -cfg sescfg [-erp erpfil]'
     call exit(4)
   endif
   sp3fil = ' '
@@ -65,7 +69,7 @@ subroutine get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
   lfn = get_valid_unit(10)
   open (lfn, file=erpfil, status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(2a)') '***ERROR(get_sp3orb_args): open file ', trim(erpfil)
+    write (*, '(2a)') '***ERROR(get_sp3orb_args): open file ', trim(erpfil)
     call exit(1)
   endif
   line = ' '
@@ -98,7 +102,7 @@ subroutine get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
   lfn = get_valid_unit(10)
   open (lfn, file=sescfg, status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (oscr, '(2a)') '***ERROR(get_sp3orb_args): open file ', trim(sescfg)
+    write (*, '(2a)') '***ERROR(get_sp3orb_args): open file ', trim(sescfg)
     call exit(1)
   endif
 !
@@ -138,9 +142,9 @@ subroutine get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
   close (lfn)
   return
 100 continue
-  write (oscr, '(3a)') '***ERROR(get_sp3orb_args): find option ', trim(msg), trim(key)
+  write (*, '(3a)') '***ERROR(get_sp3orb_args): find option ', trim(msg), trim(key)
   call exit(1)
 200 continue
-  write (oscr, '(3a)') '***ERROR(get_sp3orb_args): read option ', trim(msg), trim(key)
+  write (*, '(3a)') '***ERROR(get_sp3orb_args): read option ', trim(msg), trim(key)
   call exit(1)
 end

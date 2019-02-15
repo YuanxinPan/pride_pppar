@@ -1,7 +1,7 @@
 !
 !! read_obsrhd.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,13 +15,15 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : read rinex health diagnose information
 !! parameter:
 !!    input : jd,sod   -- requested time
 !!            nprn,prn -- satellite
 !!    output: OB       -- rinex observation struct
-!! author   : Geng J
-!! created  : Oct. 19, 2007
 !
 subroutine read_obsrhd(jd, sod, nprn, prn, OB)
   implicit none
@@ -47,7 +49,7 @@ subroutine read_obsrhd(jd, sod, nprn, prn, OB)
     OB%lfnrhd = get_valid_unit(10)
     open (unit=OB%lfnrhd, file=OB%rhdfil, status='OLD', iostat=ierr)
     if (ierr .ne. 0) then
-      write (oscr, '(2a)') '***ERROR(read_obsrhd): open file ', trim(OB%rhdfil)
+      write (*, '(2a)') '***ERROR(read_obsrhd): open file ', trim(OB%rhdfil)
       call exit(1)
     endif
     line = ' '
@@ -68,11 +70,11 @@ subroutine read_obsrhd(jd, sod, nprn, prn, OB)
       endif
     enddo
     if (dintv .gt. sod) then
-      write (oscr, '(a)') '***ERROR(read_obsrhd): rhd interval not small enough '
+      write (*, '(a)') '***ERROR(read_obsrhd): rhd interval not small enough '
       call exit(1)
     endif
     if (OB%ava_obs .ne. 0 .and. OB%amb_epo .eq. 0) then
-      write (oscr, '(a)') '***ERROR(read_obsrhd): MAX AMB not found'
+      write (*, '(a)') '***ERROR(read_obsrhd): MAX AMB not found'
       call exit(1)
     endif
     return
@@ -120,6 +122,6 @@ subroutine read_obsrhd(jd, sod, nprn, prn, OB)
   enddo
 50 backspace OB%lfnrhd
   return
-100 write (oscr, '(a)') '***ERROR(read_obsrhd): read file ', trim(OB%rhdfil)
+100 write (*, '(a)') '***ERROR(read_obsrhd): read file ', trim(OB%rhdfil)
   call exit(1)
 end

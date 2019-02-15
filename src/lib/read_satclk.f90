@@ -1,7 +1,7 @@
 !
 !! read_satclk.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : read and interpolate satellite clock for rinex clock files
 !!
 !! parameter :
@@ -26,9 +30,7 @@
 !!             x1     -- clock drift
 !!             iflag  -- flag for clock existing
 !!
-!! author    : Geng J.H.
 !!
-!! created   : 12/10/2006
 !
 subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
   implicit none
@@ -60,7 +62,7 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
     lfn = get_valid_unit(10)
     open (lfn, file=clkfil, iostat=ierr)
     if (ierr .ne. 0) then
-      write (oscr, '(2a)') '***ERROR(read_satclk) : open file ', trim(clkfil)
+      write (*, '(2a)') '***ERROR(read_satclk) : open file ', trim(clkfil)
       call exit(1)
     endif
     dintv = 30.d0
@@ -115,14 +117,14 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
 202   k = k + 1
     enddo
     dintv = timdif(jdf(2), sodf(2), jdf(1), sodf(1))
-    write (oscr, '(a,f7.1)') '%%%MESSAGE(read_satclk): satellite clock interval ', dintv
+    write (*, '(a,f7.1)') '%%%MESSAGE(read_satclk): satellite clock interval ', dintv
   endif
 !
 !! check time tag
 10 dt1 = timdif(jd, sod, jdf(1), sodf(1))
   dt2 = timdif(jd, sod, jdf(2), sodf(2))
   if (dt1 .lt. -MAXWND) then
-    write (oscr, '(a)') '***ERROR(read_satclk) : read_satclk t < trefclk '
+    write (*, '(a)') '***ERROR(read_satclk) : read_satclk t < trefclk '
     !call exit(1) !comment by zwx, 2014/10/31, donot stop but skip this epoch
     !replace all the call exit(1) to call exit(1) for the
     !convenience of debug
@@ -219,8 +221,8 @@ subroutine read_satclk(clkfil, iprn, jd, sod, jdc, sodc, x0, x1, iflag)
   endif
 
   return
-100 write (oscr, '(2a)') '***ERROR(read_satclk) : read file ', trim(clkfil)
+100 write (*, '(2a)') '***ERROR(read_satclk) : read file ', trim(clkfil)
   call exit(1)
-200 write (oscr, '(2a)') '***ERROR(read_satclk) : end of file ', trim(clkfil)
+200 write (*, '(2a)') '***ERROR(read_satclk) : end of file ', trim(clkfil)
   call exit(1)
 end

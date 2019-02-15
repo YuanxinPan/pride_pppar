@@ -1,7 +1,7 @@
 !
 !! yeardoy2monthday.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -14,11 +14,14 @@
 !!
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
 !!! purpose   : get month and day given year and day of year
 !! parameters: iyear,idoy -- year and day of year
 !!             imonth,iday -- month and day in the yar
 !!
-!! created by: Maorong Ge
 !!
 subroutine yeardoy2monthday(iyear, idoy, imonth, iday)
   implicit none

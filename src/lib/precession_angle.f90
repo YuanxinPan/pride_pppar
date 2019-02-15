@@ -1,7 +1,7 @@
 !
 !! precession_angle.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! sub. name : subroutine precession_angle(jd_tdt,sod_tdt,p1,p2,p3,epsilon0)
 !!
 !! purpose   : compute precesion quatities(4 angles) at epoch t
@@ -23,7 +27,6 @@
 !!             p1,p2,p3,epsilon0, 4 angles in the sequence of the formulas in Ref. 1,
 !!                unit is radians.
 !!
-!! created   : Maorong Ge, Sept. 2002
 !!
 !! last mod. :
 !!

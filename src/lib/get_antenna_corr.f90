@@ -1,7 +1,7 @@
 !
 !! get_ant_corr.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,14 +15,16 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : get antenna pointer in the whole table for receivers and satellites
 !! parameter :
 !!    input  : fjd_beg,fjd_end -- time span
 !!             antnam,antnum   -- antenna name and serial number
 !!    output : iptatx  -- pointer to global table
 !!             enu     -- antenna offset
-!! author    : Geng J
-!! created   : Oct. 2, 2007
 !
 subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu)
   implicit none
@@ -84,8 +86,6 @@ subroutine get_ant_ipt(fjd_beg, fjd_end, antnam, antnum, iptatx, enu)
 !!             azim  -- azimuth angle in radian
 !!             nadir -- nadir angle in radian
 !!    output : var   -- phase center variation
-!! author    : Geng J
-!! created   : Oct. 2, 2007
 !
   Entry get_ant_pcv(ript, sipt, zeni, azim, nadir, var)
 

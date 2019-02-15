@@ -1,7 +1,7 @@
 !
 !! timdif.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,15 +15,17 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose   : get time difference
 !!
 !! parameter :
 !!    input  : jd2,sod2 -- time to be differenced
 !!             jd1,sod1 -- time difference
 !!
-!! author    : Geng J.H.
 !!
-!! created   : 12/10/2006
 !
 real*8 function timdif(jd2, sod2, jd1, sod1)
   implicit none

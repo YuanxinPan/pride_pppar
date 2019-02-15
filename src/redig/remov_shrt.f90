@@ -1,7 +1,7 @@
 !
 !! remov_shrt.f90
 !!
-!!    Copyright (C) 2018 by J.Geng
+!!    Copyright (C) 2018 by Wuhan University
 !!
 !!    This program is free software: you can redistribute it and/or modify
 !!    it under the terms of the GNU General Public License (version 3) as
@@ -15,6 +15,10 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
+!! author: J.Geng X.Chen
+!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!!
+!!
 !! purpose  : remove short arc
 !! parameter:
 !!    input : shrt -- short limit
@@ -22,8 +26,6 @@
 !!            flag -- flags of each epoch
 !!            trsi -- time tags for each epoch
 !!    output:
-!! author   : Geng J
-!! created  : Oct. 18, 2007
 !
 subroutine remov_shrt(lupd, shrt, nepo, flag, trsi)
   implicit none
@@ -49,7 +51,7 @@ subroutine remov_shrt(lupd, shrt, nepo, flag, trsi)
       if (i .eq. nepo) then
         lupd = .true.
         flag(i) = DELSHT
-        write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' removed as short'
+        write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(i), ' Epo ', i, ' removed as short'
         exit
       else
         call find_flag(i + 1, nepo, flag, 'OLDAMB', k)
@@ -64,7 +66,7 @@ subroutine remov_shrt(lupd, shrt, nepo, flag, trsi)
             lupd = .true.
             if (istrue(flag(iepo), 'OK')) then
               flag(iepo) = DELSHT
-              write (oscr, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(iepo), ' Epo ', iepo, ' removed as short'
+              write (*, '(4x,a4,a27,a,i6,a)') 'TIM ', trsi(iepo), ' Epo ', iepo, ' removed as short'
             endif
           enddo
         endif
