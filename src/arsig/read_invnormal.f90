@@ -51,7 +51,7 @@ subroutine read_invnormal(FCB, PM, QN, AS)
     write (*, '(2a)') '***ERROR(read_invnormal): open file ', trim(FCB%flnneq)
     call exit(1)
   endif
-  read (lfn) AS%name
+  read (lfn) FCB%nsit, AS%name
   AS%now = 0
   read (lfn) nprn, (prn(i), i=1, nprn)
   read (lfn) QN%ntot, QN%vtpv, QN%frdm

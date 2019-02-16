@@ -35,8 +35,8 @@ implicit none
 integer*4 n
 real*8 chv,p,valu
 ! local
-integer*4 n2,i
-real*8 lul,pi,pis,x,pp,chs,iai,u
+integer*4 n2,i,iai
+real*8 lul,pi,pis,x,pp,chs,u
 
 pi = datan(1.d0)*4.d0
 pis = dsqrt(pi)
@@ -54,7 +54,7 @@ goto 110
 
 100 lul = dlog(x) - x
 p = 1.d0 - dexp(-x)
-iai = 2.d0
+iai = 2
 
 110 u = dexp(lul)
 if (iai .eq. n) goto 120

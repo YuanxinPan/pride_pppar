@@ -54,7 +54,7 @@ subroutine fixamb_solution(MD, PM, QN, invx, max_del, min_sav, max_chisq, min_ra
       MD(i)%id = 0
     enddo
     QN%ncad = QN%ndam
-    call sort_invx(MD, QN%invx, bias, q22)
+    call sort_invx(MD, QN, invx, bias, q22)
     call ambslv(QN%ncad, q22, bias, disall)
     chisq = (disall(1) + QN%vtpv)/(QN%frdm + QN%ncad)/QN%vtpv*QN%frdm
     ratio = disall(2)/disall(1)
@@ -62,11 +62,11 @@ subroutine fixamb_solution(MD, PM, QN, invx, max_del, min_sav, max_chisq, min_ra
 !
 !! whether the whole can be resolved
     if (chisq .ge. max_chisq .or. ratio .le. min_ratio) then
-      call candid_ambi(MD, QN%invx, max_del, min_sav, max_chisq, min_ratio)
+      call candid_ambi(MD, QN, invx, max_del, min_sav, max_chisq, min_ratio)
       if (QN%ncad .eq. 0) then
         write (*, '(a)') '$$$MESSAGE(fixamb_solution): no more can be fixed '; goto 100
       endif
-      call sort_invx(MD, QN%invx, bias, q22)
+      call sort_invx(MD, QN, invx, bias, q22)
       call ambslv(QN%ncad, q22, bias, disall)
       chisq = (disall(1) + QN%vtpv)/(QN%frdm + QN%ncad)/QN%vtpv*QN%frdm
       ratio = disall(2)/disall(1)
