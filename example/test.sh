@@ -37,7 +37,6 @@ pride_pppar ${config} 20160101 20160101 Y
 mv 2016/001 ./results/static-fixed
 
 sed -i 's/\(^ \w\w\w\w\) S/\1 K/' ${config}
-
 echo -e "\n(3) kinematic float"
 pride_pppar ${config} 20160101 20160101 N
 mv 2016/001 ./results/kinematic-float
@@ -45,6 +44,17 @@ mv 2016/001 ./results/kinematic-float
 echo -e "\n(4) kinematic fixed"
 pride_pppar ${config} 20160101 20160101 Y
 mv 2016/001 ./results/kinematic-fixed
+
+sed -i '/Session time/s/86360/3600/' ${config}
+echo -e "\n(5) kinematic float 1h"
+pride_pppar ${config} 20160101 20160101 N
+mv 2016/001 ./results/kinematic-float-1h
+
+sed -i '/Remove bias/s/YES/NO/' ${config}
+sed -i '/Ambiguity fixing/s/FIX/LAMBDA/' ${config}
+echo -e "\n(6) kinematic fixed (LAMBDA) 1h"
+pride_pppar ${config} 20160101 20160101 Y
+mv 2016/001 ./results/kinematic-fixed-LAMBDA-1h
 
 rm -rf 2016
 
