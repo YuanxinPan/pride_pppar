@@ -47,6 +47,8 @@ subroutine read_dcb(dcb)
   do while (.true.)
     read (lfnp1, '(a)', end=50) line
     if (line(1:1) .eq. 'G' .and. line(2:3) .ne. '  ') then
+      read (line, '(1x,i2)') prn0
+      if (prn0 .gt. 32) cycle
       read (line, '(1x,i2,20x,f12.3)') prn0, dcb(prn0, 1)
     endif
   enddo
@@ -61,6 +63,8 @@ subroutine read_dcb(dcb)
   do while (.true.)
     read (lfnp2, '(a)', end=100) line
     if (line(1:1) .eq. 'G' .and. line(2:3) .ne. '  ') then
+      read (line, '(1x,i2)') prn0
+      if (prn0 .gt. 32) cycle
       read (line, '(1x,i2,20x,f12.3)') prn0, dcb(prn0, 2)
     endif
   enddo
