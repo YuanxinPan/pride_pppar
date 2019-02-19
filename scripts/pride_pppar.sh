@@ -408,7 +408,12 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
 
     erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
     erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-    CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
+    CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+    if [ $? -ne 0 ]; then
+        erp="COD${wkdow[0]}7.ERP.Z"
+        erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
+        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
+    fi
     uncompress -f ${erp}
 
     local sp3s tmpy
