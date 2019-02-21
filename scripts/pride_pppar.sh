@@ -259,7 +259,7 @@ ProcessSingleSite() { # purpose: process data of single site
     fi
 
     # Prepare initial site's position
-    local xyz=($(sed -n "/^ $site/ s/$site//p" "./sit.xyz"))
+    local xyz=($(sed -n "/^ $site/ {s/$site//p; q}" "./sit.xyz"))
     if [ ${#xyz[@]} -ne 3 ]; then
         echo -e "$MSGSTA Prepare initial position ${site}..."
         local initial_pos=($(ComputeInitialPos "$rinexobs" "$rinexnav"))
@@ -350,6 +350,7 @@ ComputeInitialPos() { # purpose: compute intial postion with rnx2rtkp
     local tmp_file=$(mktemp -u)
 
     rnx2rtkp -p 0 -ti 3600 -e -o ${tmp_file} ${rinexobs} ${rinexnav} || return 1
+    [ ! -e ${tmp_file} ] && return 1
     awk -v nam=$site '{
         if (substr($0,1,1) != "%") {
              printf("%16.4f%16.4f%16.4f\n",$3,$4,$5);
@@ -456,6 +457,7 @@ CopyOrDownloadProduct() { # purpose: copy or download a product
     else
         WgetDownload "$url" || return 1
         cp -f $(basename "$url") "$file"
+        return 0
     fi
 }
 
@@ -572,21 +574,21 @@ ydoy2ymd()
     local tmp1=$(($iyear%4))
     local tmp2=$(($iyear%100))
     local tmp3=$(($iyear%400))
-    if [ $tmp1 -eq 0 -a $tmp2 -ne 0 ] || [ $tmp3 -eq 0 ];then
-       let "days_in_month[1]=29"
+    if [ $tmp1 -eq 0 -a $tmp2 -ne 0 ] || [ $tmp3 -eq 0 ]; then
+       days_in_month[1]=29
     fi
     local id=$idoy
     local imon=0
     local days
     for days in ${days_in_month[*]}
     do
-        let "id=$id-$days"
-        let "imon=$imon+1"
-        if [ $id -gt 0 ];then
+        id=$(($id-$days))
+        imon=$(($imon+1))
+        if [ $id -gt 0 ]; then
             continue
         fi
-        let "iday=$id + $days"
-        break;
+        iday=$(($id + $days))
+        break
     done
     printf "%d %02d %02d\n" $iyear $imon $iday
 }

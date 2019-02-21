@@ -3,15 +3,15 @@
 #PBS -q batch
 #PSB -l nodes=1:ppn=1
 #PBS -l walltime=60:00:02
-#PBS -o ./output/2016/out
-#PBS -e ./output/2016/err
+#PBS -o ./output/2013/out
+#PBS -e ./output/2013/err
 
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-yr=16
+yr=13
 year=20$yr
 doy=`echo $PBS_ARRAYID | awk '{printf("%03d",$1)}'`
 mon=`jday $doy 20$yr | cut -c1-2`
@@ -38,7 +38,6 @@ config=${PBS_O_WORKDIR}/config_template    # configuration file
 
 sed '/^\*NAME / q' ${config} > ses.ppp
 for f in /home/yxpan/data/fcb/${year}/${doy}/rinex/*.${yr}o
-#for f in aber0010.16o abmf0010.16o
 do
     site=$(basename $f)
     site=$(cut -c 1-4 <<< $site)
