@@ -1,10 +1,26 @@
 C
       SUBROUTINE PLEPH ( ET, NTARG, NCENT, RRD )
 C
+C 
+C                   JPL PLANETARY AND LUNAR EPHEMERIDES
+C 
+C                            E M Standish, JPL
+C 
+C 
 C Copyright 1997, The Jet Propulsion Laboratory, California Institute of
 C Technology, All Rights Reserved.
+C 
+C Published by Willmann-Bell, Inc., P.O. Box 35025, Richmond, VA 23235.
+C 
+C The programs and data provided in this CD-ROM are based upon on a long-term and
+C ongoing scientific program of analysis and refinement. What is presented here
+C has been tested with care but is not guaranteed for any particular purpose.
+C Neither The Jet Propulsion Laboratory nor Willmann-Bell, Inc. offer any
+C warranties or representations, nor do they accept any liabilities with respect
+C to the contents of this CD-ROM.
 C
-C  For de405, set KSIZE to 2036  NOTE : Over the years, different versions of PLEPH have had a fifth argument:
+C  For de405, set KSIZE to 2036  NOTE : Over the years, different versions of
+C  PLEPH have had a fifth argument:
 C  sometimes, an error return statement number; sometimes, a logical denoting
 C  whether or not the requested
 C  For  de405, set KSIZE to 2036
