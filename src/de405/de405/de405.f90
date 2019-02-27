@@ -16,13 +16,13 @@
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !
 !!
-!! JPLEPH_de405 generator
+!! pupose   : Generate jpleph_de405
 !!
 !! parameter: lfn -- file unit
 !!            HD  -- rinex head structure, see `rinex_observation.h`
 !!            ierr -- error code
 !!
-!! author   : Xingyu Chen
+!! author   : X. Chen
 !!
 
        program de405

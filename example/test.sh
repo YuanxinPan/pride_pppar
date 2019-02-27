@@ -48,13 +48,13 @@ mv 2016/001 ./results/kinematic-fixed
 sed -i '/Session time/s/86360/3600/' ${config}
 echo -e "\n(5) kinematic float 1h"
 pride_pppar ${config} 20160101 20160101 N
-mv 2016/001 ./results/kinematic-float-1h
+mv 2016/001 ./results/kinematic-1h-float
 
 sed -i '/Remove bias/s/YES/NO/' ${config}
 sed -i '/Ambiguity fixing/s/FIX/LAMBDA/' ${config}
 echo -e "\n(6) kinematic fixed (LAMBDA) 1h"
 pride_pppar ${config} 20160101 20160101 Y
-mv 2016/001 ./results/kinematic-fixed-LAMBDA-1h
+mv 2016/001 ./results/kinematic-1h-fixed-LAMBDA
 
 rm -rf 2016
 

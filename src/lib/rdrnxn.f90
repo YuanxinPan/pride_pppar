@@ -15,8 +15,8 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! author: J.Geng X.Chen
-!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!! author: J. Geng, M. Ge
+!! tester: Y. Pan, X. Chen, J. Zhou, S. Mao
 !!
 !!! purpose   : read rinex navigation file.  choose only records
 !!             within thime (fjd0,fjd1) and duplicated records are

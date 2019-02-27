@@ -15,8 +15,8 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! author: J.Geng X.Chen
-!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!! author: J. Geng, M. Ge
+!! tester: Y. Pan, X. Chen, J. Zhou, S. Mao
 !!
 subroutine rot_enu2xyz(lat, lon, rotmat)
 ! purpose  : rotation matrix from local station system to earth-fixed system.

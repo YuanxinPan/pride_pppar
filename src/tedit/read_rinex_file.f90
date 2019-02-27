@@ -15,8 +15,8 @@
 !!    You should have received a copy of the GNU General Public License
 !!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
-!! author: J.Geng X.Chen
-!! tester: X.Chen Y.Pan S.Mao J.Zhou C.Li S.Yang
+!! author: J. Geng, M. Ge
+!! tester: Y. Pan, X. Chen, J. Zhou, S. Mao
 !!
 !! flnrnx ------------ rinex O_file
 ! tstart,sstart ----- start time: tstart(1):year, tstart(2):month, tstart(3):day, tstart(4):hour, tstart(5):minute, sstart:second.
