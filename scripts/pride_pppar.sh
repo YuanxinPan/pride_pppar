@@ -402,10 +402,14 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     CopyOrDownloadProduct "$products_dir/$dcb1" "$dcb1url" || return 1
     uncompress -f ${dcb1}
 
-    local dcb2="P2C2${year:2:2}${ymd[1]}_RINEX.DCB.Z"
+    local dcb2="P2C2${year:2:2}${ymd[1]}_RINEX.DCB.Z"  # not necessary
     local dcb2url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb2}"
-    CopyOrDownloadProduct "$products_dir/$dcb2" "$dcb2url" || return 1
-    uncompress -f ${dcb2}
+    CopyOrDownloadProduct "$products_dir/$dcb2" "$dcb2url"
+    if [ $? -ne 0 ]; then
+        echo -e "$MSGWAR PrepareProducts: $dcb2 download failed"
+    else
+        uncompress -f ${dcb2}
+    fi
 
     erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
     erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
@@ -436,7 +440,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     mv ${clk} sck_${ydoy[0]}${ydoy[1]} || return 1
     mv ${fcb} fcb_${ydoy[0]}${ydoy[1]} || return 1
     mv ${dcb1:0:18} P1C1.dcb           || return 1
-    mv ${dcb2:0:18} P2C2.dcb           || return 1
+    [ -e ${dcb2:0:18} ] && mv ${dcb2:0:18} P2C2.dcb
     mv ${erp:0:12} igserp              || return 1
 
     # Generate binary sp3

@@ -26,8 +26,11 @@ cd src && make && make install \
     && mkdir -p $install_dir \
     && cp -f ./bin/* $install_dir \
     && cp -f ./scripts/pride_pppar.sh $install_dir/pride_pppar \
-    && cp -f ./scripts/rtk2xyz.sh ./scripts/leap.sh $install_dir \
-    && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
+    && cp -f ./scripts/rtk2xyz.sh ./scripts/leap.sh $install_dir
+if [ $? -ne 0 ]; then
+	grep "^export PATH=$install_dir:\$PATH" ${HOME}/.bashrc
+    [ $? -eq 0 ] && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
+fi
 
 # Output
 if [ $? -eq 0 ]; then
