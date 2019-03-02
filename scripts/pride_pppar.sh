@@ -526,8 +526,10 @@ ymd2mjd()
         mon=$(($mon+12))
         year=$(($year-1))
     fi
-    local mjd=$(bc <<< "$year*365.25 - $year*365.25 % 1 - 679006")
-    mjd=$(bc <<< "($mjd + (30.6001*($mon+1))/1 + 2 - $year/100 + $year/400 + $day)/1")
+    local mjd=`echo $year | awk '{print $1*365.25-$1*365.25%1-679006}'`
+    mjd=`echo $mjd $year $mon $day | awk '{print $1+int(30.6001*($3+1))+2-int($2/100)+int($2/400)+$4}'`
+    #local mjd=$(bc <<< "$year*365.25 - $year*365.25 % 1 - 679006")
+    #mjd=$(bc <<< "($mjd + (30.6001*($mon+1))/1 + 2 - $year/100 + $year/400 + $day)/1")
     echo $mjd
 }
 
