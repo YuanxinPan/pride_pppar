@@ -117,7 +117,7 @@ subroutine lsq_init(LCF, SITE, SAT, OB, NM, PM)
       PM(ipar)%ipt = ipar
       PM(ipar)%pcode(1) = 1
       PM(ipar)%pcode(2) = 0
-      PM(ipar)%xini = 1.d3                       ! unit: m
+      PM(ipar)%xini = SITE%x(i)*1.d3       ! unit: m
       PM(ipar)%ptime(2) = LCF%jd0 + LCF%sod0/86400.d0
       PM(ipar)%map = 0.d0
       PM(ipar)%rw = 1.d0/SITE%dx0(i)
@@ -127,7 +127,7 @@ subroutine lsq_init(LCF, SITE, SAT, OB, NM, PM)
       NM%norx(ipar, ipar) = 1.d0/SITE%dx0(i)**2
       NM%iptp(ipar) = ipar
     enddo
-  else if (SITE%skd(1:1) .ne. 'F') then
+  else
     write (*, '(2a)') '***ERROR(lsq_init): unknown site type ', SITE%name//' '//SITE%skd
     call exit(1)
   endif

@@ -213,39 +213,12 @@ program lsq
       OB%omc(isat, 1:4) = 0.d0
     enddo
 !
-!! read kinematic position: if not found, use value at last epoch
-    if (SITE%skd(1:1) .eq. 'K' .and. count(OB%obs(1:LCF%nprn, 3) .ne. 0.d0) .gt. 0) then
-      call read_kinpos(SITE, jd, sod, deltax(1), deltax(2), deltax(3))
-      if (SITE%ixyz .eq. 0) then
-        ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
-        ipar = OB%ltog(ipar, 1)
-        PM(ipar)%xini = deltax(1)
-        PM(ipar + 1)%xini = deltax(2)
-        PM(ipar + 2)%xini = deltax(3)
-      endif
-    endif
-!
 !! iteration for more precise position
 202 ite = ite + 1
     do isat = 1, LCF%nprn
       OB%omc(isat, 1:4) = 0.d0
     enddo
     if (count(OB%obs(1:LCF%nprn, 3) .ne. 0.d0) .eq. 0) goto 40
-!
-!! prepare a priori information for kinematic station
-    if (SITE%skd(1:1) .eq. 'K' .or. SITE%ixyz .ne. 0) then
-      ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
-      do i = 0, 2
-        SITE%x(i + 1) = PM(OB%ltog(ipar + i, 1))%xini*1.d-3
-      enddo
-      call xyzblh(SITE%x(1:3)*1.d3, 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, SITE%geod)
-      SITE%geod(3) = SITE%geod(3)*1.d-3
-      call rot_enu2xyz(SITE%geod(1), SITE%geod(2), SITE%rot_l2f)
-      if (SITE%skd(1:1) .eq. 'K' .or. iepo .ne. 1) then
-      else
-        call oceanload_coef(SITE%name, SITE%geod(1), SITE%geod(2), SITE%rlat, SITE%rlon, SITE%olc)
-      endif
-    endif
 !
 !! prepare a priori receiver clock correction (unit: m)
     ipar = pointer_string(OB%npar, OB%pname, 'RECCLK')
@@ -274,7 +247,8 @@ program lsq
         if (OB%omc(isat, 1) .eq. 0.d0 .or. OB%omc(isat, 3) .eq. 0.d0) cycle
         if (OB%elev(isat) .lt. SITE%cutoff) then
           OB%omc(isat, 1:4) = 0.d0
-   write (*, '(a,i5,f8.1,a,i2,f6.2)') '###WARNING(lsq): low elev SIT at', jd, sod, ' for SAT', OB%prn(isat), OB%elev(isat)*180.d0/PI
+          write (*, '(a,i5,f8.1,a,i2,f6.2)') '###WARNING(lsq): low elev SIT at', jd, sod, &
+                                             ' for SAT', OB%prn(isat), OB%elev(isat)*180.d0/PI
           write (lfncid) 'de'
           write (lfnrem) 1, jd, sod, 1, isat
         endif
