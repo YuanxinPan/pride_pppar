@@ -17,7 +17,7 @@ OBJ := $(SRC:.f90=.o)
 OBJ := $(addprefix $(OBJ_PATH), $(OBJ))
 
 lsq : $(OBJ) $(LIBEPH) $(LIBCOM)
-	$(FTN) $(FFLAGS) $(OBJ) $(LIBEPH) $(LIBCOM) -o $@
+	$(FTN) $(FFLAGS) $(OBJ) $(LIBEPH) $(LIBCOM) -L../lib/ -lpride_pppar -o $@
 
 $(OBJ_PATH)%.o : %.f90
 	$(DIR_GUARD)

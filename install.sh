@@ -25,14 +25,18 @@ cd src && make && make install \
     && cd .. \
     && mkdir -p $install_dir \
     && cp -f ./bin/* $install_dir \
+    && cp -f ./src/lib/libpride_pppar.so $install_dir \
     && cp -f ./scripts/pride_pppar.sh $install_dir/pride_pppar \
     && cp -f ./scripts/rtk2xyz.sh ./scripts/leap.sh $install_dir
-if [ $? -ne 0 ]; then
-	grep "^export PATH=$install_dir:\$PATH" ${HOME}/.bashrc
-    [ $? -eq 0 ] && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
+if [ $? -eq 0 ]; then
+    grep "^export PATH=$install_dir:\$PATH" ${HOME}/.bashrc
+    [ $? -ne 0 ] && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
+    grep "^export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" ${HOME}/.bashrc
+    [ $? -ne 0 ] && echo "export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" >> ${HOME}/.bashrc
 fi
 
 # Output
+ls ${install_dir}/lsq > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     printf "${BLUE}::${NC} PRIDE-PPPAR installation successfully completed!\n"
     printf "${BLUE}::${NC} executable binaries are copy to $install_dir\n"

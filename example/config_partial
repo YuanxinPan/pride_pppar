@@ -6,8 +6,8 @@
 
 ## strategies
 Remove bias      = YES                         ! change to NO if AR method is LAMBDA
-HTG model        = PWC:720                     ! troposphere horizontal gradient. PWC, 720: 12h
 ZTD model        = PWC:60                      ! troposphere estimation. PWC: piece-wise constant, 60: 1 hour
+HTG model        = PWC:720                     ! troposphere horizontal gradient. PWC/NON
 
 ## ambiguity fixing options
 Ambiguity fixing    = FIX                      ! Ambiguity fixing: NO/FIX/LAMBDA

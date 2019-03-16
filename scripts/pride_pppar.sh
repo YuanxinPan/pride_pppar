@@ -389,13 +389,15 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     local wkdow=($(mjd2wkdow $mjd_mid))
     local year=${ydoy[0]}
 
-    local clk="cck${wkdow[0]}${wkdow[1]}.clk"
-    local clk_url="ftp://192.168.111.19/${clk}"
+    local clk="whp${wkdow[0]}${wkdow[1]}.clk.Z"
+    local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/${clk}"
     CopyOrDownloadProduct "$products_dir/$clk" "$clk_url" || return 1
+    uncompress -f ${clk}
 
-    local fcb="WHU0IGSFIN_${year}${ydoy[1]}0000_01D_01D_ABS.BIA";
-    local fcb_url="ftp://192.168.111.19/${fcb}"
+    local fcb="WHU0IGSFIN_${year}${ydoy[1]}0000_01D_01D_ABS.BIA.Z"
+    local fcb_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/${fcb}"
     CopyOrDownloadProduct "$products_dir/$fcb" "$fcb_url" || return 1
+    uncompress -f ${fcb}
 
     local dcb1="P1C1${year:2:2}${ymd[1]}_RINEX.DCB.Z"
     local dcb1url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb1}"
@@ -433,15 +435,15 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy}/${sp3}"
         CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
         uncompress -f ${sp3}
-        sp3s[$((i++))]="COD${wkdow[0]}${wkdow[1]}.EPH"
+        sp3s[$((i++))]=${sp3%.Z}
     done
 
     # rename products
-    mv ${clk} sck_${ydoy[0]}${ydoy[1]} || return 1
-    mv ${fcb} fcb_${ydoy[0]}${ydoy[1]} || return 1
-    mv ${dcb1:0:18} P1C1.dcb           || return 1
-    [ -e ${dcb2:0:18} ] && mv ${dcb2:0:18} P2C2.dcb
-    mv ${erp:0:12} igserp              || return 1
+    mv ${clk%.Z} sck_${ydoy[0]}${ydoy[1]} || return 1
+    mv ${fcb%.Z} fcb_${ydoy[0]}${ydoy[1]} || return 1
+    mv ${dcb1%.Z} P1C1.dcb           || return 1
+    [ -e ${dcb2%.Z} ] && mv ${dcb2%.Z} P2C2.dcb
+    mv ${erp%.Z} igserp              || return 1
 
     # Generate binary sp3
     local cmd="mergesp3 ${sp3s[*]} orb_temp"

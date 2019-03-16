@@ -18,7 +18,7 @@ OBJ := $(SRC:.f90=.o)
 OBJ := $(addprefix $(OBJ_PATH), $(OBJ))
 
 arsig : $(OBJ) $(LIBCOM) $(LIBLAMBDA)
-	$(FTN) $(FFLAGS) $(OBJ) $(LIBCOM) $(LIBLAMBDA) -o $@
+	$(FTN) $(FFLAGS) $(OBJ) $(LIBCOM) $(LIBLAMBDA) -L../lib/ -lpride_pppar -o $@
 
 $(LIB) : $(OBJ)
 	ar -rv $(LIB) $(OBJ)
