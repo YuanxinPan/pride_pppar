@@ -7,5 +7,5 @@ type satellite
 !! satellite attitude
   real*8 xscf(3),yscf(3),zscf(3)
 !! clock correction
-  real*8 sclock,dclk0
+  real*8 sclock
 end type

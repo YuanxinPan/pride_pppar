@@ -169,8 +169,6 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT)
     SAT(LCF%nprn)%yscf(1:3) = 0.d0
     SAT(LCF%nprn)%zscf(1:3) = 0.d0
     SAT(LCF%nprn)%sclock = 0.d0
-!! satellite clock
-    read (key(4:), *, err=200) SAT(LCF%nprn)%dclk0
   enddo
   close (iunit)
 !
