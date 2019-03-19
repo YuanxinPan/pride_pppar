@@ -276,12 +276,12 @@ ProcessSingleSite() { # purpose: process data of single site
     echo -e "$MSGSTA Data pre-processing..."
     # Data preprocess
     local interval=$(get_ctrl "$ctrl_file" "Interval")
-    local positon_mode=$(grep "^ $site [FKS]" "$ctrl_file" | awk '{print $2}') # Static/Kinematic/Fixed
-    local cutoff_elev=$( grep "^ $site [FKS]" "$ctrl_file" | awk '{print $5}') # int, degree
+    local positon_mode=$(grep "^ $site [KS]" "$ctrl_file" | awk '{print $2}') # Static/Kinematic
+    local cutoff_elev=$( grep "^ $site [KS]" "$ctrl_file" | awk '{print $5}') # int, degree
     local rhd_file="rhd_${year}${doy}_${site}"
     local ymd=($(ydoy2ymd $year $doy))
     local cmd=""
-    if [ "$positon_mode" == S -o "$positon_mode" == F ]; then
+    if [ "$positon_mode" == S ]; then
         cmd="tedit ${rinexobs} -int ${interval} -rnxn ${rinexnav} -xyz ${xyz[*]} \
             -len 86400 -short 1200 -lc_check only -rhd ${rhd_file} -pc_check 300 \
             -elev ${cutoff_elev} -time ${ymd[*]} 0 0 0"
@@ -300,7 +300,7 @@ ProcessSingleSite() { # purpose: process data of single site
     local tmp_ctrl=$(basename `mktemp -u`)
     tmp_ctrl=${tmp_ctrl/tmp/config}
     sed '/^\*NAME/ q' $ctrl_file > ${tmp_ctrl}
-    grep "^ ${site} [FKS]" "$ctrl_file" >> ${tmp_ctrl}
+    grep "^ ${site} [KS]" "$ctrl_file" >> ${tmp_ctrl}
     echo "-Station used" >> ${tmp_ctrl}
 
     # Data clean (iteration)
