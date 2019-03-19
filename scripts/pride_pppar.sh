@@ -146,6 +146,9 @@ CheckExecutables() { # purpose: check whether all needed executables are callabl
     if [ rnx2rtkp --help > /dev/null 2>&1 ]; then
         echo -e "$MSGERR rnx2rtkp not found" && return 1
     fi
+    if [ awk --help > /dev/null 2>&1 ]; then
+        echo -e "$MSGERR awk not found" && return 1
+    fi
     if [ which wget > /dev/null 2>&1 ]; then
         echo -e "$MSGERR wget not found" && return 1
     fi
@@ -281,14 +284,11 @@ ProcessSingleSite() { # purpose: process data of single site
     local rhd_file="rhd_${year}${doy}_${site}"
     local ymd=($(ydoy2ymd $year $doy))
     local cmd=""
-    if [ "$positon_mode" == S ]; then
+    if [ "$positon_mode" == S -o "$positon_mode" == K ]; then
         cmd="tedit ${rinexobs} -int ${interval} -rnxn ${rinexnav} -xyz ${xyz[*]} \
             -len 86400 -short 1200 -lc_check only -rhd ${rhd_file} -pc_check 300 \
             -elev ${cutoff_elev} -time ${ymd[*]} 0 0 0"
-    elif [ "$positon_mode" == K ]; then
-        cmd="tedit ${rinexobs} -int ${interval} -rnxn ${rinexnav} -xyz ${xyz[*]} \
-            -short 1 -lc_check no -rhd ${rhd_file} -len 86400 -time ${ymd[*]} 0 0 0"
-    else 
+    else
         echo -e "$MSGERR ProcessSingleSite: unknown position mode: $site $positon_mode"
         return 1
     fi
@@ -390,12 +390,12 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     local year=${ydoy[0]}
 
     local clk="whp${wkdow[0]}${wkdow[1]}.clk.Z"
-    local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/${clk}"
+    local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/clock/${clk}"
     CopyOrDownloadProduct "$products_dir/$clk" "$clk_url" || return 1
     uncompress -f ${clk}
 
     local fcb="WHU0IGSFIN_${year}${ydoy[1]}0000_01D_01D_ABS.BIA.Z"
-    local fcb_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/${fcb}"
+    local fcb_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/bias/${fcb}"
     CopyOrDownloadProduct "$products_dir/$fcb" "$fcb_url" || return 1
     uncompress -f ${fcb}
 

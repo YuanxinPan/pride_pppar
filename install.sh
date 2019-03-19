@@ -33,6 +33,8 @@ if [ $? -eq 0 ]; then
     [ $? -ne 0 ] && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
     grep "^export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" ${HOME}/.bashrc
     [ $? -ne 0 ] && echo "export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" >> ${HOME}/.bashrc
+    grep "^export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" ${HOME}/.bash_profile
+    [ $? -ne 0 ] && echo "export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" >> ${HOME}/.bash_profile
 fi
 
 # Output

@@ -36,6 +36,7 @@
 			<Target title="arsig">
 				<Option output="../bin/arsig" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".obj" />
+				<Option external_deps="../src/lib/libpride_pppar.so;" />
 				<Option type="1" />
 				<Option compiler="gfortran" />
 				<Option use_console_runner="0" />
@@ -45,12 +46,14 @@
 				<Linker>
 					<Add library="bin/libcom.a" />
 					<Add library="bin/liblambda.a" />
+					<Add library="bin/libpride_pppar.so" />
 					<Add directory="bin" />
 				</Linker>
 			</Target>
 			<Target title="lsq">
 				<Option output="../bin/lsq" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".obj" />
+				<Option external_deps="../src/lib/libpride_pppar.so;" />
 				<Option type="1" />
 				<Option compiler="gfortran" />
 				<Option use_console_runner="0" />
@@ -60,6 +63,7 @@
 				<Linker>
 					<Add library="bin/libcom.a" />
 					<Add library="bin/libde405.a" />
+					<Add library="bin/libpride_pppar.so" />
 					<Add directory="bin" />
 				</Linker>
 			</Target>
@@ -110,17 +114,6 @@
 					<Add directory="bin" />
 				</Linker>
 			</Target>
-			<Target title="mergeerp">
-				<Option output="../bin/mergeerp" prefix_auto="1" extension_auto="1" />
-				<Option object_output=".obj" />
-				<Option type="1" />
-				<Option compiler="gfortran" />
-				<Option use_console_runner="0" />
-				<Linker>
-					<Add library="bin/libcom.a" />
-					<Add directory="bin" />
-				</Linker>
-			</Target>
 			<Target title="get_ctrl">
 				<Option output="../bin/get_ctrl" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".obj" />
@@ -134,7 +127,7 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="all" targets="libcom;libde405;liblambda;arsig;lsq;redig;tedit;sp3orb;mergesp3;mergeerp;get_ctrl;" />
+			<Add alias="all" targets="libcom;libde405;liblambda;arsig;lsq;redig;tedit;sp3orb;mergesp3;get_ctrl;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-w" />
@@ -307,10 +300,6 @@
 			<Option target="libcom" />
 		</Unit>
 		<Unit filename="../src/lib/cfa.f90">
-			<Option weight="0" />
-			<Option target="libcom" />
-		</Unit>
-		<Unit filename="../src/lib/check_amb_depend.f90">
 			<Option weight="0" />
 			<Option target="libcom" />
 		</Unit>
@@ -752,10 +741,6 @@
 			<Option weight="0" />
 			<Option target="lsq" />
 		</Unit>
-		<Unit filename="../src/lsq/lsq_rmv_prmt.f90">
-			<Option weight="0" />
-			<Option target="lsq" />
-		</Unit>
 		<Unit filename="../src/lsq/lsq_slv_prmt.f90">
 			<Option weight="0" />
 			<Option target="lsq" />
@@ -767,10 +752,6 @@
 			<Option weight="0" />
 			<Option target="lsq" />
 		</Unit>
-		<Unit filename="../src/orbit/get_erp_args.f90">
-			<Option weight="0" />
-			<Option target="mergeerp" />
-		</Unit>
 		<Unit filename="../src/orbit/get_sp3_args.f90">
 			<Option weight="0" />
 			<Option target="mergesp3" />
@@ -778,10 +759,6 @@
 		<Unit filename="../src/orbit/get_sp3orb_args.f90">
 			<Option weight="0" />
 			<Option target="sp3orb" />
-		</Unit>
-		<Unit filename="../src/orbit/mergeerp.f90">
-			<Option weight="0" />
-			<Option target="mergeerp" />
 		</Unit>
 		<Unit filename="../src/orbit/mergesp3.f90">
 			<Option weight="0" />
