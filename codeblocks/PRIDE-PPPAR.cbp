@@ -315,10 +315,6 @@
 			<Option weight="0" />
 			<Option target="libcom" />
 		</Unit>
-		<Unit filename="../src/lib/codspp.f90">
-			<Option weight="0" />
-			<Option target="libcom" />
-		</Unit>
 		<Unit filename="../src/lib/cross.f90">
 			<Option weight="0" />
 			<Option target="libcom" />
@@ -555,10 +551,6 @@
 			<Option weight="0" />
 			<Option target="libcom" />
 		</Unit>
-		<Unit filename="../src/lib/read_kinpos.f90">
-			<Option weight="0" />
-			<Option target="libcom" />
-		</Unit>
 		<Unit filename="../src/lib/read_meteo.f90">
 			<Option weight="0" />
 			<Option target="libcom" />
@@ -734,6 +726,10 @@
 			<Option target="lsq" />
 		</Unit>
 		<Unit filename="../src/lsq/lsq_rcv_prmt.f90">
+			<Option weight="0" />
+			<Option target="lsq" />
+		</Unit>
+		<Unit filename="../src/lsq/lsq_rmv_normal.f90">
 			<Option weight="0" />
 			<Option target="lsq" />
 		</Unit>

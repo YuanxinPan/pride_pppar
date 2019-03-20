@@ -1,7 +1,7 @@
 type station
   character*4 name
   character*2 skd
-  integer*4 iunit,imet,ikin,iion,itrp,iptatx,ixyz
+  integer*4 iunit,imet,ikin,iion,itrp,iptatx
   real*8 x(6),dx0(3),geod(3)
 !
 !! related file names

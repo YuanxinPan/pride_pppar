@@ -222,11 +222,9 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT)
     SITE%rlon = 0.d0
     call read_position(LCF%flnpos, SITE%name, LCF%jd0, LCF%sod0, seslen, SITE%x, ierr)
     if (all(SITE%x(1:3) .eq. 1.d0)) then
-      SITE%ixyz = 2
       write (*, '(a,a4)') '###WARNING(get_lsq_args): no position ', SITE%name
       call exit(1)
     else
-      SITE%ixyz = 0
       call xyzblh(SITE%x(1:3)*1.d3, 1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, SITE%geod)
       SITE%geod(3) = SITE%geod(3)*1.d-3
       call rot_enu2xyz(SITE%geod(1), SITE%geod(2), SITE%rot_l2f)

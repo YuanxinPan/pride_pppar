@@ -37,7 +37,7 @@
 !!            ierr -- error code, end of file or read fil error
 !!
 !!
-!! last mod.: 29-03-2003 by Xingyu Chen, rinex 3
+!! last mod.: 29-03-2018 by Xingyu Chen, rinex 3
 !
 subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   implicit none

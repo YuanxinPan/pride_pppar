@@ -272,15 +272,13 @@ subroutine gpsmod(jd, sod, LCF, SITE, OB, SAT)
   enddo
 !
 !! receiver clock offset
-  if (SITE%ixyz .eq. 0) then
-    k = count(OB%omc(1:LCF%nprn, 3) .ne. 0.d0)
-    drecclk = sum(OB%omc(1:LCF%nprn, 3))
-    if (k .ge. 1) drecclk = drecclk/(k*FREQ1)
-    if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock .eq. 0.d0)) then
-      SITE%rclock = SITE%rclock + drecclk*VLIGHT
-      drecclk = SITE%rclock/VLIGHT
-      goto 100
-    endif
+  k = count(OB%omc(1:LCF%nprn, 3) .ne. 0.d0)
+  drecclk = sum(OB%omc(1:LCF%nprn, 3))
+  if (k .ge. 1) drecclk = drecclk/(k*FREQ1)
+  if (dabs(drecclk) .gt. 1.d-6 .or. (k .ge. 1 .and. SITE%rclock .eq. 0.d0)) then
+    SITE%rclock = SITE%rclock + drecclk*VLIGHT
+    drecclk = SITE%rclock/VLIGHT
+    goto 100
   endif
 
   return

@@ -46,7 +46,7 @@ program lsq
   type(prmt), pointer :: PM(:)
 !!
   integer*4 i, j, k, jd, jdc, isit, isat, iepo, ipar, iamb, iy, imon, id, ih, im, ierr
-  integer*4 ite, lfncid, lfnobs, lfnrem, lfnres, lfnpos, lfnamb, lfnneq, nbias, ibias(MAXPAR)
+  integer*4 lfncid, lfnobs, lfnrem, lfnres, lfnpos, lfnamb, lfnneq, nbias, ibias(MAXPAR)
   real*8 dwnd, sod, sec, sodc, dsatclk, dsatclkrat, deltax(5), sos, dcb(MAXSAT, 2), xsat(6)
   real*8 bias(MAXSAT, 4)
   character*20 antnum
@@ -208,13 +208,11 @@ program lsq
 !
 !! +++++++++++++++++++++++++++SITE LOOP+++++++++++++++++++++++++++++++++++
 !! add observation equations
-    ite = 0
     do isat = 1, LCF%nprn
       OB%omc(isat, 1:4) = 0.d0
     enddo
 !
 !! iteration for more precise position
-202 ite = ite + 1
     do isat = 1, LCF%nprn
       OB%omc(isat, 1:4) = 0.d0
     enddo
@@ -228,32 +226,17 @@ program lsq
     call read_meteo(jd, sod, SITE%imet, SITE%map, SITE%geod, SITE%p0, SITE%t0, SITE%hr0, SITE%undu)
     call gpsmod(jd, sod, LCF, SITE, OB, SAT)
 !
-!! range positioning to obtain a priori position
-    if (SITE%ixyz .ne. 0) then
-      call codspp(lfncid, lfnrem, jd, sod, OB, ite, SITE%ixyz, deltax)
-      if (deltax(5) .gt. 1.d0 .or. dabs(deltax(4)/VLIGHT) .gt. 1.d-6) then
-        ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
-        do i = 0, 3
-          PM(OB%ltog(ipar + i, 1))%xini = PM(OB%ltog(ipar + i, 1))%xini + deltax(i + 1)
-        enddo
-        goto 202
-      endif
-      SITE%ixyz = 0
-    endif
-!
 !! check elevation & cutoff angle
-    if (SITE%ixyz .eq. 0) then
-      do isat = 1, LCF%nprn
-        if (OB%omc(isat, 1) .eq. 0.d0 .or. OB%omc(isat, 3) .eq. 0.d0) cycle
-        if (OB%elev(isat) .lt. SITE%cutoff) then
-          OB%omc(isat, 1:4) = 0.d0
-          write (*, '(a,i5,f8.1,a,i2,f6.2)') '###WARNING(lsq): low elev SIT at', jd, sod, &
-                                             ' for SAT', OB%prn(isat), OB%elev(isat)*180.d0/PI
-          write (lfncid) 'de'
-          write (lfnrem) 1, jd, sod, 1, isat
-        endif
-      enddo
-    endif
+    do isat = 1, LCF%nprn
+      if (OB%omc(isat, 1) .eq. 0.d0 .or. OB%omc(isat, 3) .eq. 0.d0) cycle
+      if (OB%elev(isat) .lt. SITE%cutoff) then
+        OB%omc(isat, 1:4) = 0.d0
+        write (*, '(a,i5,f8.1,a,i2,f6.2)') '###WARNING(lsq): low elev SIT at', jd, sod, &
+                                            ' for SAT', OB%prn(isat), OB%elev(isat)*180.d0/PI
+        write (lfncid) 'de'
+        write (lfnrem) 1, jd, sod, 1, isat
+      endif
+    enddo
 !
 !! save a priori receiver clock correction
     ipar = pointer_string(OB%npar, OB%pname, 'RECCLK')
