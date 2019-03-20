@@ -180,6 +180,7 @@ program lsq
     k = 0
     if (SITE%iunit .eq. 0) cycle
     if (HD%ver .eq. 3) then
+      ! not tested
       call rdrnxoi3(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, dcb, bias, ierr)
     else
       call rdrnxoi(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, dcb, bias, ierr)
@@ -208,11 +209,6 @@ program lsq
 !
 !! +++++++++++++++++++++++++++SITE LOOP+++++++++++++++++++++++++++++++++++
 !! add observation equations
-    do isat = 1, LCF%nprn
-      OB%omc(isat, 1:4) = 0.d0
-    enddo
-!
-!! iteration for more precise position
     do isat = 1, LCF%nprn
       OB%omc(isat, 1:4) = 0.d0
     enddo
