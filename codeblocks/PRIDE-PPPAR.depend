@@ -11,8 +11,6 @@
 
 1551259284 source:c:\users\yxpan\desktop\pppar_os\src\lib\cfa.f90
 
-1551259284 source:c:\users\yxpan\desktop\pppar_os\src\lib\check_amb_depend.f90
-
 1551259284 source:c:\users\yxpan\desktop\pppar_os\src\lib\chi2.f90
 
 1551259284 source:c:\users\yxpan\desktop\pppar_os\src\lib\chitst.f90
@@ -276,8 +274,6 @@
 1551259284 source:c:\users\yxpan\desktop\pppar_os\src\lsq\lsq_rcv_prmt.f90
 
 1551259284 source:c:\users\yxpan\desktop\pppar_os\src\lsq\lsq_rmv_normal.f90
-
-1551259284 source:c:\users\yxpan\desktop\pppar_os\src\lsq\lsq_rmv_prmt.f90
 
 1551259284 source:c:\users\yxpan\desktop\pppar_os\src\lsq\lsq_slv_prmt.f90
 

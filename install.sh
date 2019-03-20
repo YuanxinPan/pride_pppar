@@ -40,6 +40,7 @@ fi
 # Output
 ls ${install_dir}/lsq > /dev/null 2>&1
 if [ $? -eq 0 ]; then
+    echo -e "$RED" && cat ./doc/logo && echo -e "$NC"
     printf "${BLUE}::${NC} PRIDE-PPPAR installation successfully completed!\n"
     printf "${BLUE}::${NC} executable binaries are copy to $install_dir\n"
     printf "${BLUE}::${NC} $install_dir added to PATH\n"

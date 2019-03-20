@@ -737,10 +737,6 @@
 			<Option weight="0" />
 			<Option target="lsq" />
 		</Unit>
-		<Unit filename="../src/lsq/lsq_rmv_normal.f90">
-			<Option weight="0" />
-			<Option target="lsq" />
-		</Unit>
 		<Unit filename="../src/lsq/lsq_slv_prmt.f90">
 			<Option weight="0" />
 			<Option target="lsq" />
