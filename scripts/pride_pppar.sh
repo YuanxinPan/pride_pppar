@@ -305,7 +305,7 @@ ProcessSingleSite() { # purpose: process data of single site
 
     # Data clean (iteration)
     echo -e "$MSGSTA Data cleaning..."
-    local short=$((600/$interval))
+    local short=$(echo $interval | awk '{printf("%.0f\n", 600/$1)}')
     local jumps=(400 200 100 50 50) # (500 300 200 100 50)
     for jump in ${jumps[*]}
     do
