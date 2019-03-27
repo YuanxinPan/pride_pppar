@@ -37,7 +37,7 @@
 !!            ierr -- error code, end of file or read fil error
 !!
 !!
-!! last mod.: 29-03-2018 by Xingyu Chen, rinex 3
+!! last mod.: 29-03-2003 by Xingyu Chen, rinex 3
 !
 subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   implicit none
@@ -67,6 +67,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   integer*4 modified_julday
 
   obs_prio = 'NMYXLSCWP'
+  obs_prio_index = 0
   ierr = 0
   line = ' '
   prn = 0
@@ -80,7 +81,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
   endif
 !
 !! number of satellite
-  read (line(30:32), '(i3)', iostat=ioerr) nprn
+  read (line(33:35), '(i3)', iostat=ioerr) nprn
   if (ioerr .ne. 0) then
     msg = 'read satellite number error.'
   endif
@@ -162,7 +163,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
 !! read data. if more than 10 type 3 line should be merged to one
   do i = 1, nprn
 !  if(sysid(i).eq.' ') sysid(i)='G'
-    read (lfn, '(a320)', err=100, end=200) string
+    read (lfn, '(a)', err=100, end=200) string
     if (string(1:1) .eq. 'G') then
       ii = ii + 1
       !
@@ -204,23 +205,24 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
               OB%lli(i0, 2) = lli(j)
               if (dabs(obs(j)) .lt. 1.d-3) OB%ssi(i0, 2) = 1
             endif
-          elseif (HD%obstyp(j) (1:2) .eq. 'P1') then
+          elseif (HD%obstyp(j) (1:2) .eq. 'C1') then
             prio_index = index(obs_prio, HD%obstyp(j) (3:3))
             if (obs_prio_index(3) .lt. prio_index) then
               obs_prio_index(3) = prio_index
               OB%obs(i0, 3) = obs(j) - bias(prn0(i0), 3)
               if (obs_prio_index(3) .gt. index(obs_prio, 'C')) prior_p1 = .true.
             endif
-          elseif (HD%obstyp(j) (1:2) .eq. 'P2') then
+          elseif (HD%obstyp(j) (1:2) .eq. 'C2') then
             prio_index = index(obs_prio, HD%obstyp(j) (3:3))
-            if (obs_prio_index(3) .lt. prio_index) then
-              obs_prio_index(3) = prio_index
-              OB%obs(i0, 3) = obs(j) - bias(prn0(i0), 4)
-              if (obs_prio_index(3) .gt. index(obs_prio, 'C')) prior_p1 = .true.
+            if (obs_prio_index(4) .lt. prio_index) then
+              obs_prio_index(4) = prio_index
+              OB%obs(i0, 4) = obs(j) - bias(prn0(i0), 4)
+              if (obs_prio_index(4) .gt. index(obs_prio, 'C')) prior_p1 = .true.
             endif
           endif
         enddo
 !! if one of the phases is zero, or the data is removed before
+        !write(317,'(i2,x,4f14.3)') prn(ii), OB%obs(i0,1:4)
         if (any(OB%obs(i0, 1:4) .eq. 0.d0)) then
           OB%obs(i0, 1:4) = 0.d0
         elseif (nprn0 .gt. 0) then  ! correct for P1C1 or P2C2 biases

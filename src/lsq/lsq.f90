@@ -180,7 +180,6 @@ program lsq
     k = 0
     if (SITE%iunit .eq. 0) cycle
     if (HD%ver .eq. 3) then
-      ! not tested
       call rdrnxoi3(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, dcb, bias, ierr)
     else
       call rdrnxoi(SITE%iunit, jd, sod, dwnd, LCF%nprn, LCF%prn, HD, OB, dcb, bias, ierr)

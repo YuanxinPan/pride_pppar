@@ -6,9 +6,9 @@
 ##                                                                           ##
 ##  AUTHOR : Yuanxin Pan    yxpan@whu.edu.cn                                 ##
 ##                                                                           ##
-##  VERSION: ver 1.00       Jan-25-2019                                      ##
+##  VERSION: ver 1.1        Mar-25-2019                                      ##
 ##                                                                           ##
-##  DATE   : Jan-25, 2019                                                    ##
+##  DATE   : Mar-25, 2019                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2018               ##
 ##                                                                           ##
@@ -483,8 +483,7 @@ UncompressFile() { # purpose: uncompress a file automatically
     # file $file
 }
 
-Execute()
-{
+Execute() {
     local cmd="$1"
     # echo $cmd
     time=`date +'%Y-%m-%d %H:%M:%S'`
@@ -498,8 +497,7 @@ Execute()
     fi
 }
 
-ExecuteWithoutOutput()
-{
+ExecuteWithoutOutput() {
     local cmd="$1"
     # echo $cmd
     time=`date +'%Y-%m-%d %H:%M:%S'`

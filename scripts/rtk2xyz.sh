@@ -6,9 +6,9 @@
 ##                                                                           ##
 ##  AUTHOR : Yuanxin Pan    yxpan@whu.edu.cn                                 ##
 ##                                                                           ##
-##  VERSION: ver 1.00       Jan-25-2019                                      ##
+##  VERSION: ver 1.1        Mar-25-2019                                      ##
 ##                                                                           ##
-##  DATE   : Jan-25, 2019                                                    ##
+##  DATE   : Mar-25, 2019                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2018               ##
 ##                                                                           ##
