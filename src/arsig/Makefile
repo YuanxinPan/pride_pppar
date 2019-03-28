@@ -11,14 +11,13 @@ FTN = gfortran
 FFLAGS = -g -O3
 
 LIBCOM = ../lib/libcom.a
-LIBLAMBDA = ../lambda/liblambda.a
 
 SRC := $(wildcard *.f90)
 OBJ := $(SRC:.f90=.o)
 OBJ := $(addprefix $(OBJ_PATH), $(OBJ))
 
 arsig : $(OBJ) $(LIBCOM) $(LIBLAMBDA)
-	$(FTN) $(FFLAGS) $(OBJ) $(LIBCOM) $(LIBLAMBDA) -L../lib/ -lpride_pppar -o $@
+	$(FTN) $(FFLAGS) $(OBJ) $(LIBCOM) -L../lib/ -lpride_pppar -o $@
 
 $(LIB) : $(OBJ)
 	ar -rv $(LIB) $(OBJ)

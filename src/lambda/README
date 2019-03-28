@@ -1,0 +1,9 @@
+The copyright of this package is protected by GNU General Public License (version 3).
+Only a few source code are not open to the public due to technical restrictions and
+conflicts with existing commercial packages, and thus will be available as a dynamic
+link library. We note that the LAMBDA and DE405 module are provided as dynamic link
+libraries as well because of some potential or possible redistribution restrictions 
+by their authors. Those who are interested in these two modules and want to know more
+information on them can refer to TUDelft 
+(https://www.tudelft.nl/citg/over-faculteit/afdelingen/geoscience-remote-sensing/research/lambda/lambda/)
+and NASA JPL (ftp://ssd.jpl.nasa.gov/pub/eph/planets/fortran/).

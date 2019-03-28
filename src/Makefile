@@ -1,7 +1,5 @@
 
 SUBDIR = lib \
-		 de405 \
-		 lambda \
 		 orbit \
 		 lsq \
 		 arsig \
