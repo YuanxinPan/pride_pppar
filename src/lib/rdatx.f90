@@ -102,7 +102,7 @@ subroutine rdatx(fjd_beg, fjd_end, ATX)
       else if (index(line, '# OF FREQUENCIES') .eq. 61) then
         read (line, *, err=200) ATX%nfreq
         if (ATX%nfreq .gt. 2) then
-          write (*, '(a)') '###Warning(rdatx): num. of frequency greater than 2'
+          !write (*, '(a)') '###Warning(rdatx): num. of frequency greater than 2'
           ATX%nfreq = 2
         endif
       endif

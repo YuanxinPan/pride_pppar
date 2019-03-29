@@ -59,7 +59,7 @@ Critical search     = 2 4 1.8 3.0
 # User can add more station in the following table. Stations will be processed one by one.
 # Available positiioning mode: S -- static
 #                              K -- kinematic
-# Ohter arguments can be kept.
+# Other arguments can be kept.
 
 ## Station list
 +Station used
