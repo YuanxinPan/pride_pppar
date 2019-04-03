@@ -76,7 +76,7 @@ main()
         mkdir -p ./${ydoy[0]}/${ydoy[1]}
         cd ./${ydoy[0]}/${ydoy[1]}
         if [ $? -eq 0 ]; then
-            ProcessSingleDay $mjd "$ctrl_file" || echo -e "$MSGWAR ${ydoy[*]} processing failed"
+            ProcessSingleDay $mjd "$ctrl_file" ${AR} || echo -e "$MSGWAR ${ydoy[*]} processing failed"
         else
             echo -e "$MSGERR no such directory: ${work_dir}/$year/$doy"
             echo -e "$MSGWAR skip processing: $year $doy"
@@ -173,9 +173,10 @@ PRIDE_PPPAR_Help() { # purpose: print usage for PRIDE_PPPAR
 }
 
 ProcessSingleDay() { # purpose: process data of single day
-                     # usage  : ProcessSingleDay mjd ctrl_file
+                     # usage  : ProcessSingleDay mjd ctrl_file AR(y/n)
     local mjd=$1
     local ctrl_file="$2"
+    local AR=$3
 
     local ydoy=($(mjd2ydoy $mjd))
     local year=${ydoy[0]}
@@ -201,7 +202,7 @@ ProcessSingleDay() { # purpose: process data of single day
     local table_dir=$(get_ctrl "$ctrl_file" "Table directory")
     local product_dir=$(get_ctrl "$ctrl_file" "Sp3 directory")
     CopyTables "$table_dir" || return 1
-    PrepareProducts $mjd "$product_dir" ${ctrl_file}
+    PrepareProducts $mjd "$product_dir" ${ctrl_file} ${AR}
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR PrepareProducts failed"
         return 1
@@ -376,10 +377,11 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
 }
 
 PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working directory
-                    # usage  : PrepareProducts mjd products_dir
+                    # usage  : PrepareProducts mjd products_dir AR(y/n)
     local mjd_mid=$1
     local products_dir="$2"
     local ctrl_file="$3"
+    local AR=${4:0:1}
     [ -d $products_dir ] || mkdir -p "$products_dir"
 
     echo -e "$MSGSTA PrepareProducts..."
@@ -396,8 +398,13 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
 
     local fcb="WHU0IGSFIN_${year}${ydoy[1]}0000_01D_01D_ABS.BIA.Z"
     local fcb_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/bias/${fcb}"
-    CopyOrDownloadProduct "$products_dir/$fcb" "$fcb_url" || return 1
-    uncompress -f ${fcb}
+    CopyOrDownloadProduct "$products_dir/$fcb" "$fcb_url"
+    if [ $? -ne 0 ]; then
+        echo -e "$MSGWAR PrepareProducts: $fcb download failed"
+        [ $AR == y -o $AR == Y ] && echo -e "$MSGERR no phase bias product: $fcb" && return 1
+    else
+        uncompress -f ${fcb}
+    fi
 
     local dcb1="P1C1${year:2:2}${ymd[1]}_RINEX.DCB.Z"
     local dcb1url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb1}"
@@ -440,7 +447,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
 
     # rename products
     mv ${clk%.Z} sck_${ydoy[0]}${ydoy[1]} || return 1
-    mv ${fcb%.Z} fcb_${ydoy[0]}${ydoy[1]} || return 1
+    [ -e ${fcb%.Z} ] && mv ${fcb%.Z} fcb_${ydoy[0]}${ydoy[1]}
     mv ${dcb1%.Z} P1C1.dcb           || return 1
     [ -e ${dcb2%.Z} ] && mv ${dcb2%.Z} P2C2.dcb
     mv ${erp%.Z} igserp              || return 1

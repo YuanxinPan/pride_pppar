@@ -44,8 +44,9 @@ subroutine read_snx(flnfcb, bias)
   lfn = get_valid_unit(500)
   open (lfn, file=flnfcb, status='old', iostat=ierr)
   if (ierr .ne. 0) then
-    write (*, '(2a)') '***ERROR(read_fcb): open file ', trim(flnfcb)
-    call exit(1)
+    write (*, '(2a)') '***WARNING(read_fcb): open file ', trim(flnfcb)
+    bias=0.d0
+    return
   endif
 !
 !! read header
