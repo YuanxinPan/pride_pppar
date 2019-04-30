@@ -18,16 +18,12 @@
 !! author: J. Geng, M. Ge
 !! tester: Y. Pan, X. Chen, J. Zhou, S. Mao
 !!
-!
 !! purpose    :  inversion of a matrix by means of gauss....
 !!
 !! parameters : a : matrix to be inverted
 !!           ndim : dimension of a matrix
 !!              n : dimension of a to be invert
 !!              d : value of determinant a
-!!
-!!              Tsinghua University
-!!              Beijing 100084
 !!
 
 subroutine matinv(a, ndim, n, d)

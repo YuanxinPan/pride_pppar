@@ -15,7 +15,7 @@ type lsqcfg
 !
 !! common file
   character*20 flnorb,flnsck,flnrck,flnpos,flnneq,flnerp
-  character*20 flnztd,flnamb,flnres,flncon,flnhtg,flnfcb
+  character*20 flnztd,flnamb,flnres,flncon,flnhtg,flnvmf,flnfcb
 !
 !! keep bias
   logical*1 lrmbias

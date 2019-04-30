@@ -91,6 +91,7 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT)
   call file_name(.false., 'res', ' ', iy, imon, id, ih, LCF%flnres)
   call file_name(.false., 'con', ' ', iy, imon, id, ih, LCF%flncon)
   call file_name(.false., 'neq', ' ', iy, imon, id, ih, LCF%flnneq)
+  call file_name(.false., 'vmf', ' ', iy, imon, id, ih, LCF%flnvmf)
   call file_name(.false., 'fcb', ' ', iy, imon, id, ih, LCF%flnfcb)
 !
 !! erp filename
@@ -232,6 +233,7 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT)
                           SITE%geod(1), SITE%geod(2), SITE%rlat, &
                           SITE%rlon, SITE%olc)
     endif
+    if(SITE%map(1:3) .eq. 'VM1') call vmf1_grid(LCF%flnvmf, SITE)
 !
 !! check availability of station
     call read_obsrhd(0, LCF%dintv, LCF%nprn, LCF%prn, OB)

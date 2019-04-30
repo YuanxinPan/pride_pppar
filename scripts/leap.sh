@@ -6,7 +6,7 @@
 ##                                                                           ##
 ##  AUTHOR : Yuanxin Pan    yxpan@whu.edu.cn                                 ##
 ##                                                                           ##
-##  VERSION: ver 1.1        Mar-25-2019                                      ##
+##  VERSION: ver 1.2        May-01-2019                                      ##
 ##                                                                           ##
 ##  DATE   : Mar-25, 2019                                                    ##
 ##                                                                           ##

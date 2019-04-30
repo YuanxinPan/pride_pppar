@@ -6,9 +6,9 @@
 ##                                                                           ##
 ##  AUTHOR : Yuanxin Pan    yxpan@whu.edu.cn                                 ##
 ##                                                                           ##
-##  VERSION: ver 1.1        Mar-25-2019                                      ##
+##  VERSION: ver 1.2        May-01-2019                                      ##
 ##                                                                           ##
-##  DATE   : Mar-25, 2019                                                    ##
+##  DATE   : May-01, 2019                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2018               ##
 ##                                                                           ##
@@ -364,7 +364,7 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
                # usage  : CopyTables table_dir
     echo -e "$MSGSTA CopyTables..."
     local table_dir="$1"
-    local tables=(file_name abs_igs.atx jpleph_de405 leap.sec oceanload sit.xyz)
+    local tables=(file_name abs_igs.atx jpleph_de405 leap.sec oceanload orography_ell sit.xyz)
     for table in ${tables[*]}
     do
         if [ ! -f "$table_dir/$table" ]; then
@@ -444,6 +444,36 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         uncompress -f ${sp3}
         sp3s[$((i++))]=${sp3%.Z}
     done
+
+    grep '^ \w\w\w\w .*VM1' ${ctrl_file} 2>&1 > /dev/null
+    if [ $? -eq 0 ]; then
+        echo -e "$MSGSTA Downloading VMF1 GRID..."
+        local vmf vmf_url hour
+        # Current Day (for interpolation)
+        for hour in `seq 0 6 18 | awk '{printf("%02d\n",$1)}'`
+        do
+            vmf="VMFG_${ymd[0]}${ymd[1]}${ymd[2]}.H${hour}"
+            vmf_url="http://ggosatm.hg.tuwien.ac.at/DELAY/GRID/VMFG/${ydoy[0]}/${vmf}"
+            CopyOrDownloadProduct "$products_dir/$vmf" "$vmf_url" || return 1
+        done
+
+        # Previous Day (for interpolation)
+        tmpy=($(mjd2ydoy $((mjd_mid-1))))
+        tmpy=($(ydoy2ymd ${tmpy[*]}))
+        vmf="VMFG_${tmpy[0]}${tmpy[1]}${tmpy[2]}.H18"
+        vmf_url="http://ggosatm.hg.tuwien.ac.at/DELAY/GRID/VMFG/${tmpy[0]}/${vmf}"
+        CopyOrDownloadProduct "$products_dir/$vmf" "$vmf_url" || return 1
+
+        # Next Day (for interpolation)
+        tmpy=($(mjd2ydoy $((mjd_mid+1))))
+        tmpy=($(ydoy2ymd ${tmpy[*]}))
+        vmf="VMFG_${tmpy[0]}${tmpy[1]}${tmpy[2]}.H00"
+        vmf_url="http://ggosatm.hg.tuwien.ac.at/DELAY/GRID/VMFG/${tmpy[0]}/${vmf}"
+        CopyOrDownloadProduct "$products_dir/$vmf" "$vmf_url" || return 1
+
+        cat VMFG_* > vmf_${ydoy[0]}${ydoy[1]} || return 1
+        echo -e "$MSGSTA Downloading VMF1 GRID done"
+    fi
 
     # rename products
     mv ${clk%.Z} sck_${ydoy[0]}${ydoy[1]} || return 1
