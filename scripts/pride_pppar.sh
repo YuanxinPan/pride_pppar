@@ -82,9 +82,6 @@ main()
             echo -e "$MSGWAR skip processing: $year $doy"
         fi
     done
-
-    # Done
-    echo -e "$MSGINF PRIDE-PPPAR executed successfully"
 }
 
 CheckCmdArgs() { # purpose: chech whether command line arguments are right

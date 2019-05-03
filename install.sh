@@ -53,6 +53,7 @@ cd src && make && make install \
     && mkdir -p $install_dir \
     && cp -f ./bin/* $install_dir \
     && cp -f ./src/lib/libpride_pppar.so $install_dir \
+    && chmod 755 ./scripts/*.sh \
     && cp -f ./scripts/pride_pppar.sh $install_dir/pride_pppar \
     && cp -f ./scripts/rtk2xyz.sh ./scripts/leap.sh $install_dir
 if [ $? -eq 0 ]; then
