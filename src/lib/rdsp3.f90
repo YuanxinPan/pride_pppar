@@ -72,7 +72,7 @@ subroutine rdsp3h(fln, jd0, sod0, jd1, sod1, dintv, nprn, prn)
       read (lfn, '(3x,i4,17x,f14.8,1x,i5,1x,f15.13)') nwk, dintv, mjd, fmjd
 !
 !! third to 12th lines with satellite prns
-      read (lfn, '(4x,i2,3x,17(a1,i2),4(/,9x,17(a1,i2)))') nprn0, (sys(i), prn0(i), i=1, MAXSAT*2)
+      read (lfn, '(2x,i4,3x,17(a1,i2),4(/,9x,17(a1,i2)))') nprn0, (sys(i), prn0(i), i=1, MAXSAT*2)
       if (nprn0 .gt. MAXSAT*2) then
         write (*, '(a,i3)') '***ERROR(rdsp3h): too many satellites in SP3 file ', nprn0
         call exit(1)
