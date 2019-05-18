@@ -44,6 +44,7 @@ MSGWAR="${YELLOW}warning:$NC"
 MSGINF="${BLUE}::$NC"
 MSGSTA="${BLUE}===>$NC"
 
+USECACHE=NO # YES/NO (upcase!)
 
 ######################################################################
 ##                     Funciton definations                         ##
@@ -88,7 +89,7 @@ CheckCmdArgs() { # purpose: chech whether command line arguments are right
                  # usage  : CheckCmdArgs "$@"
     if [ $# -ne 4 ]; then
         PRIDE_PPPAR_Help
-        return 1 
+        return 1
     else
         local ctrl_file="$1"
         local ymd_start="$2"
@@ -387,8 +388,10 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     local ymd=($(ydoy2ymd ${ydoy[*]}))
     local wkdow=($(mjd2wkdow $mjd_mid))
     local year=${ydoy[0]}
+    local doy=${ydoy[1]}
 
     local clk="whp${wkdow[0]}${wkdow[1]}.clk.Z"
+    [ $year -gt 2018 ] && clk="WHU5IGSFIN_${year}${ydoy[1]}0000_01D_30S_ABS.CLK.Z"
     local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/clock/${clk}"
     CopyOrDownloadProduct "$products_dir/$clk" "$clk_url" || return 1
     uncompress -f ${clk}
@@ -403,13 +406,21 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         uncompress -f ${fcb}
     fi
 
+    local lastmon=(`LastYearMonth ${ymd[*]}`)
     local dcb1="P1C1${year:2:2}${ymd[1]}_RINEX.DCB.Z"
-    local dcb1url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb1}"
-    CopyOrDownloadProduct "$products_dir/$dcb1" "$dcb1url" || return 1
-    uncompress -f ${dcb1}
-
     local dcb2="P2C2${year:2:2}${ymd[1]}_RINEX.DCB.Z"  # not necessary
+    local dcb1url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb1}"
     local dcb2url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb2}"
+    CopyOrDownloadProduct "$products_dir/$dcb1" "$dcb1url"
+    if [ $? -ne 0 ]; then
+        dcb1="P1C1${lastmon[0]:2:2}${lastmon[1]}_RINEX.DCB.Z"
+        dcb2="P2C2${lastmon[0]:2:2}${lastmon[1]}_RINEX.DCB.Z"
+        dcb1url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb1}"
+        dcb2url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb2}"
+        CopyOrDownloadProduct "$products_dir/$dcb1" "$dcb1url" || return 1
+    fi
+
+    uncompress -f ${dcb1}
     CopyOrDownloadProduct "$products_dir/$dcb2" "$dcb2url"
     if [ $? -ne 0 ]; then
         echo -e "$MSGWAR PrepareProducts: $dcb2 download failed"
@@ -417,29 +428,44 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         uncompress -f ${dcb2}
     fi
 
-    erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
-    erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-    CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
-    if [ $? -ne 0 ]; then
-        erp="COD${wkdow[0]}7.ERP.Z"
-        erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
+    if [ $year -lt 2019 ]; then
+        local erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
+        local erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
+        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+        if [ $? -ne 0 ]; then
+            erp="COD${wkdow[0]}7.ERP.Z"
+            erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
+            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
+        fi
+        uncompress -f ${erp}
     fi
-    uncompress -f ${erp}
 
-    local sp3s tmpy
+    local sp3s erps tmpy
     local sp3 sp3_url i=0
     for mjd in $((mjd_mid-1)) mjd_mid $((mjd_mid+1))
     do
-        tmpy=($(mjd2ydoy $mjd)) && tmpy=${tmpy[0]}
-        # ymd=($(ydoy2ymd ${ydoy[*]}))
+        tmpy=($(mjd2ydoy $mjd))
         wkdow=($(mjd2wkdow $mjd))
 
-        sp3="COD${wkdow[0]}${wkdow[1]}.EPH.Z"
-        sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy}/${sp3}"
-        CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
-        uncompress -f ${sp3}
-        sp3s[$((i++))]=${sp3%.Z}
+        if [ $year -gt 2018 ]; then
+            erp="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_01D_ERP.ERP.gz"
+            erp_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$erp"
+            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+            gunzip -f ${erp}
+            erps[$((i))]=${erp%.gz}
+
+            sp3="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_15M_ORB.SP3.gz"
+            sp3_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$sp3"
+            CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
+            gunzip -f ${sp3}
+            sp3s[$((i++))]=${sp3%.gz}
+        else
+            sp3="COD${wkdow[0]}${wkdow[1]}.EPH.Z"
+            sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}/${sp3}"
+            CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
+            uncompress -f ${sp3}
+            sp3s[$((i++))]=${sp3%.Z}
+        fi
     done
 
     grep '^ \w\w\w\w .*VM1' ${ctrl_file} 2>&1 > /dev/null
@@ -477,7 +503,14 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     [ -e ${fcb%.Z} ] && mv ${fcb%.Z} fcb_${ydoy[0]}${ydoy[1]}
     mv ${dcb1%.Z} P1C1.dcb           || return 1
     [ -e ${dcb2%.Z} ] && mv ${dcb2%.Z} P2C2.dcb
-    mv ${erp%.Z} igserp              || return 1
+
+    # Generate igserp
+    if [ $year -gt 2018 ]; then
+        cat ${erps[0]} > igserp && tail -1 ${erps[1]} >> \
+            igserp && tail -1 ${erps[2]} >> igserp || return 1
+    else
+        mv ${erp%.Z} igserp || return 1
+    fi
 
     # Generate binary sp3
     local cmd="mergesp3 ${sp3s[*]} orb_temp"
@@ -492,7 +525,7 @@ CopyOrDownloadProduct() { # purpose: copy or download a product
                           # usage  : CopyOrDownloadProduct file url
     local file="$1"
     local url="$2"
-    if [ -f "$file" ]; then
+    if [ ${USECACHE} = "YES" -a -f "$file" ]; then
         cp -f "$file" .
     else
         WgetDownload "$url" || return 1
@@ -508,6 +541,14 @@ WgetDownload() { # purpose: download a file with wget
     cmd="wget ${args} ${url}"
     $cmd
     [ -e $(basename "${url}") ] && return 0 || return 1
+}
+
+LastYearMonth() { # purpose: get last year-month
+                  # usage  : LastYearMonth year month
+    local year=$1
+    local doy=$2
+    [ $((mon-1)) -lt 1  ] && mon=12 && year=$((year-1)) || mon=$((mon-1))
+    printf "%4d %02d\n" $year $mon
 }
 
 UncompressFile() { # purpose: uncompress a file automatically
