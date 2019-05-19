@@ -144,8 +144,8 @@ subroutine rdsp3h(fln, jd0, sod0, jd1, sod1, dintv, nprn, prn)
       read (lfn, '(a)', end=100) line
       if (line(1:1) .ne. 'P') cycle
       read (line(2:), '(a1,i2)') cid, j
-      read (line(5:), '(3f14.6)') x, y, z
       if (cid .ne. 'G' .and. cid .ne. ' ') cycle
+      read (line(5:), '(3f14.6)') x, y, z
 !
 !! nprn <= 0, get all the satellite in the file, otherwise, get data of the requested satellites
       if (nprn .gt. 0) then
