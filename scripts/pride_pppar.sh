@@ -44,7 +44,7 @@ MSGWAR="${YELLOW}warning:$NC"
 MSGINF="${BLUE}::$NC"
 MSGSTA="${BLUE}===>$NC"
 
-USECACHE=NO # YES/NO (upcase!)
+USECACHE=NO # YES/NO (uppercase!)
 
 ######################################################################
 ##                     Funciton definations                         ##
@@ -199,7 +199,7 @@ ProcessSingleDay() { # purpose: process data of single day
     # Prepare products & tables
     local table_dir=$(get_ctrl "$ctrl_file" "Table directory")
     local product_dir=$(get_ctrl "$ctrl_file" "Sp3 directory")
-    CopyTables "$table_dir" || return 1
+    CopyTables "$table_dir" $mjd || return 1
     PrepareProducts $mjd "$product_dir" ${ctrl_file} ${AR}
     if [ $? -ne 0 ]; then
         echo -e "$MSGERR PrepareProducts failed"
@@ -359,10 +359,11 @@ ComputeInitialPos() { # purpose: compute intial postion with rnx2rtkp
 }
 
 CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
-               # usage  : CopyTables table_dir
+               # usage  : CopyTables table_dir mjd
     echo -e "$MSGSTA CopyTables..."
     local table_dir="$1"
-    local tables=(file_name abs_igs.atx jpleph_de405 leap.sec oceanload orography_ell sit.xyz)
+    local mjd=$2
+    local tables=(file_name jpleph_de405 leap.sec oceanload orography_ell sit.xyz)
     for table in ${tables[*]}
     do
         if [ ! -f "$table_dir/$table" ]; then
@@ -371,6 +372,19 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
         fi
         cp -f "$table_dir/$table" .
     done
+
+    # IGS ATX
+    local abs_atx=null
+    if [ $mjd -lt 55668 ]; then
+        abs_atx="igs05_1627.atx"
+    elif [ $mjd -lt 57782 ]; then
+        abs_atx="igs08_1930.atx"
+    else
+        abs_atx="igs14_2045.atx"
+    fi
+    cp "$table_dir/$abs_atx" ./abs_igs.atx
+    [ $? -ne 0 ] && echo -e "$MSGERR CopyTables: no such file: $table_dir/$abs_atx" && return 1
+
     echo -e "$MSGSTA CopyTables done"
 }
 
