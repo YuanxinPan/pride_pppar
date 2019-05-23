@@ -6,9 +6,9 @@
 ##                                                                           ##
 ##  AUTHOR : Yuanxin Pan    yxpan@whu.edu.cn                                 ##
 ##                                                                           ##
-##  VERSION: ver 1.1        Mar-25-2019                                      ##
+##  VERSION: ver 1.3        May-23-2019                                      ##
 ##                                                                           ##
-##  DATE   : Mar-25, 2019                                                    ##
+##  DATE   : May-23, 2019                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2018               ##
 ##                                                                           ##
@@ -69,7 +69,7 @@ fi
 ls ${install_dir}/lsq > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo -e "\033[1;31m" && cat ./doc/logo && echo -e "$NC"
-    printf "${BLUE}::${NC} PRIDE-PPPAR installation successfully completed!\n"
+    printf "${BLUE}::${NC} PRIDE-PPPAR (v1.3) installation successfully completed!\n"
     printf "${BLUE}::${NC} executable binaries are copy to $install_dir\n"
     printf "${BLUE}::${NC} $install_dir added to PATH\n"
 else
