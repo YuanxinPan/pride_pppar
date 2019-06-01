@@ -405,7 +405,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     local doy=${ydoy[1]}
 
     local clk="whp${wkdow[0]}${wkdow[1]}.clk.Z"
-    [ $year -gt 2018 ] && clk="WHU5IGSFIN_${year}${ydoy[1]}0000_01D_30S_ABS.CLK.Z"
+    [ $year -gt 2018 ] && clk="WHU5IGSFIN_${year}${ydoy[1]}0000_01D_30S_CLK.CLK.Z"
     local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/clock/${clk}"
     CopyOrDownloadProduct "$products_dir/$clk" "$clk_url" || return 1
     uncompress -f ${clk}

@@ -17,6 +17,7 @@ src/orbit/mergesp3
 src/orbit/sp3orb
 src/redig/redig
 src/tedit/tedit
+src/utils/xyz2enu
 src/protected/
 
 example/config.*
