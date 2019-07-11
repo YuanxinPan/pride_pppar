@@ -454,6 +454,10 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         uncompress -f ${erp}
     fi
 
+    sed -n '8 p' ${fcb%.Z} | grep "rapid" > /dev/null 2>&1
+    local rapid=$?  # whether use rapid products
+    [ $rapid ] && echo -e "$MSGINF NOTE: Rapid Products Used"
+
     local sp3s erps tmpy
     local sp3 sp3_url i=0
     for mjd in $((mjd_mid-1)) mjd_mid $((mjd_mid+1))
@@ -462,17 +466,29 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         wkdow=($(mjd2wkdow $mjd))
 
         if [ $year -gt 2018 ]; then
-            erp="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_01D_ERP.ERP.gz"
-            erp_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$erp"
-            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
-            gunzip -f ${erp}
-            erps[$((i))]=${erp%.gz}
+            if [ $rapid ]; then
+                erp="COD${wkdow[0]}${wkdow[1]}.ERP_R"
+                erp_url="ftp://ftp.aiub.unibe.ch/CODE/$erp"
+                CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+                erps[$((i))]=${erp}
 
-            sp3="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_15M_ORB.SP3.gz"
-            sp3_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$sp3"
-            CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
-            gunzip -f ${sp3}
-            sp3s[$((i++))]=${sp3%.gz}
+                sp3="COD${wkdow[0]}${wkdow[1]}.EPH_R"
+                sp3_url="ftp://ftp.aiub.unibe.ch/CODE/$sp3"
+                CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
+                sp3s[$((i++))]=${sp3}
+            else
+                erp="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_01D_ERP.ERP.gz"
+                erp_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$erp"
+                CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+                gunzip -f ${erp}
+                erps[$((i))]=${erp%.gz}
+
+                sp3="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_15M_ORB.SP3.gz"
+                sp3_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$sp3"
+                CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
+                gunzip -f ${sp3}
+                sp3s[$((i++))]=${sp3%.gz}
+            fi
         else
             sp3="COD${wkdow[0]}${wkdow[1]}.EPH.Z"
             sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}/${sp3}"
