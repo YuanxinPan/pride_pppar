@@ -6,9 +6,9 @@
 ##                                                                           ##
 ##  AUTHOR : Yuanxin Pan    yxpan@whu.edu.cn                                 ##
 ##                                                                           ##
-##  VERSION: ver 1.3        May-23-2019                                      ##
+##  VERSION: ver 1.4                                                         ##
 ##                                                                           ##
-##  DATE   : May-23, 2019                                                    ##
+##  DATE   : Jul-16, 2019                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2018               ##
 ##                                                                           ##
@@ -222,7 +222,7 @@ ProcessSingleDay() { # purpose: process data of single day
         fi
     fi
 
-    sites=($(awk '/^ \w\w\w\w [FKS]/ {print $1}' "$ctrl_file"))
+    sites=($(awk '/^ [0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z] [KS]/ {print $1}' "$ctrl_file"))
     [ ${#sites[@]} -eq 0 ] && echo -e "$MSGWAR ${year} ${doy}: no site to be processed" && return 1
     for site in ${sites[*]}
     do
@@ -504,7 +504,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         fi
     done
 
-    grep '^ \w\w\w\w .*VM1' ${ctrl_file} 2>&1 > /dev/null
+    grep '^ [0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z] .*VM1' ${ctrl_file} 2>&1 > /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGSTA Downloading VMF1 GRID..."
         local vmf vmf_url hour

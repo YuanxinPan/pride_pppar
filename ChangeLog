@@ -17,3 +17,14 @@
 
 5. 2019-06-01 (v1.3)
  - Add src/utils/xyz2enu
+
+6. 2019-07-12 (v1.3)
+ - Support rapid phasebias product
+
+7. 2019-07-16 (v1.4)
+ - Add function: receiver clock jump check & recover
+ - Print table valid time by pride_pppar
+ - Compatibility fixing for pride_pppar.sh
+ - If 'rnx2rtkp' doesn't work, please download the source code through
+   'https://github.com/tomojitakasu/RTKLIB/tree/rtklib_2.4.3' and compile it by yourself.
+   The binary we provided is a 32-bit version.
