@@ -188,6 +188,7 @@ program lsq
     if (ierr .eq. 0) then
       k = k + 1
       call read_obsrhd(jd, sod, LCF%nprn, LCF%prn, OB)
+      if(SITE%lfnjmp .ne. 0) call read_clkjmp(jd, sod, SITE%lfnjmp, LCF%nprn, OB)
     endif
     if (k .eq. 0) then
       write (*, '(a)') '###WARNING(lsq): no more data to be processed'
@@ -423,6 +424,7 @@ program lsq
   endif
 !
 !! clean
+  if (SITE%lfnjmp .ne. 0) close(SITE%lfnjmp)
   deallocate (PM)
   deallocate (NM%norx)
   deallocate (NM%iptx)

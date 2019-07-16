@@ -59,7 +59,7 @@ program tedit
                              turbo_edit, use_brdeph, use_rinex_flag, check_pc, keep_end, &
                              tstart, sstart, session_length, length_gap, length_short, cutoff_elevation, &
                              max_mean_namb, min_percent, min_mean_nprn, interval, lclimit, pclimit, &
-                             lglimit, lgrmslimit, x, y, z)
+                             lglimit, lgrmslimit, stanam, x, y, z)
   debug_tb = .true.
   debug_sd = .false.
 

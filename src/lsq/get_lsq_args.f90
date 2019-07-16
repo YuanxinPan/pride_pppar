@@ -48,7 +48,7 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT)
   real*8 is, seslen
   character*30 sesfil
   character*256 msg, key, rnxpath
-  character*256 obsfil1, obsfil2, obsfil3
+  character*256 path
   integer*4 flag, rename
   type(orbhdr) OH
 !
@@ -218,6 +218,15 @@ subroutine get_lsq_args(LCF, SITE, OB, SAT)
       write (*, '(2a)') '###WARNING(get_lsq_args): observation not exist ', SITE%obsfil(1:i)
       call exit(1)
     endif
+!! receiver clock jump file
+    SITE%lfnjmp = 0
+    path = '.'//SITE%name//'.jmp'
+    inquire(file=path, exist=lexist)
+    if (lexist) then
+      SITE%lfnjmp = get_valid_unit(10)
+      open(SITE%lfnjmp, file=path, status='old')
+      write(*,'(2a)') '###INFO(get_lsq_args): read clock jump file: ', path
+    end if
 !! read position
     SITE%rlat = 0.d0
     SITE%rlon = 0.d0

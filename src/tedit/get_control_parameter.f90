@@ -24,12 +24,13 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
                                  keep_end, tstart, sstart, session_length, length_gap, &
                                  length_short, cutoff_elevation, max_mean_namb, min_percent, &
                                  min_mean_nprn, interval, lclimit, pclimit, lglimit, lgrmslimit, &
-                                 x1, x2, x3)
+                                 stanam, x1, x2, x3)
   implicit none
   include '../header/const.h'
 
   logical*1 use_rinex_flag, check_pc, check_lc, use_brdeph, turbo_edit, keep_end
   character*256 flnrnx, flneph, flnrhd, flnman, flnsta
+  character*4   stanam
   integer*4 tstart(5), session_length, length_gap, length_short
   real*8 sstart, cutoff_elevation, interval, pclimit, lclimit, lglimit, lgrmslimit, &
     limit_man, max_mean_namb, min_percent, min_mean_nprn, x1, x2, x3
@@ -132,6 +133,7 @@ subroutine get_control_parameter(flnrnx, flneph, flnrhd, &
     else if (arg(ipar, 1) (1:4) .eq. '-rhd') then
       display_help = nval(ipar) .lt. 1
       if (.not. display_help) flnrhd = arg(ipar, nval(ipar))
+      if (.not. display_help) stanam = flnrhd(13:16)
     else if (arg(ipar, 1) (1:5) .eq. '-time') then
       display_help = nval(ipar) .ne. 7
       do j = 1, nval(ipar) - 2

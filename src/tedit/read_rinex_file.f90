@@ -66,9 +66,14 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
   integer*4 flg_pmb(MAXSAT)
   real*8 pmb(MAXSAT)
 
+! receiver clock jump check
+  real*8        jumpsum(2), jumpval(2), rangeval(2, MAXSAT), deltap, deltal
+  real*8        tmp(2), ratio, sec, obsval(2, 4, MAXSAT), chkval(2, MAXSAT)
+  integer*4     lfnjmp, nvalid, njump, cnt, jumpflag  ! 1:range, 2:phase
+
 ! funtion called
   logical*1 istrue
-  integer*4 modified_julday, set_flag
+  integer*4 modified_julday, set_flag, get_valid_unit
   real*8 timdif
 
   g = 7.7d0/6.0d0
@@ -80,6 +85,10 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
 
   lglimit = 50.d0
   nwlimit = 50.d0
+
+  lfnjmp = 0
+  jumpsum = 0.d0
+  obsval = 0.d0
 
   dcb = 0.d0
   bias = 0.d0
@@ -175,6 +184,8 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
 
     if (ierr .eq. 0) then
       sumepo = sumepo + 1
+      obsval(1,:,:) = obsval(2,:,:)
+      obsval(2,:,:) = 0.d0
       ti(iepo) = tobs
       if (OB%nprn .ne. 0) ti(iepo) = ti(iepo) - timdif(jd0, tobs, OB%jd, OB%tsec)
       do ichn = 1, OB%nprn
@@ -186,7 +197,6 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
 ! 12/17/2006. Geng. remove satellite without broadcast information
         if (use_brdeph) then
           ieph = 0
-
 ! range --------- the distance between satellite and reciver
 ! dtsat --------- clock correction, units: meter
 ! vv    --------- true anomaly
@@ -199,43 +209,24 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
         if (dabs(OB%obs(ichn, 1)) .gt. 1.d-3 .and. dabs(OB%obs(ichn, 2)) .gt. 1.d-3 .and. &
             dabs(OB%obs(ichn, 3)) .gt. 1.d-3 .and. dabs(OB%obs(ichn, 4)) .gt. 1.d-3) then
           flagall(iepo, j) = 0
+          obsval(2,1,j) = OB%obs(ichn, 3) ! P1
+          obsval(2,3,j) = OB%obs(ichn, 4) ! P2
+          obsval(2,2,j) = OB%obs(ichn, 1)*lambda1 ! L1
+          obsval(2,4,j) = OB%obs(ichn, 2)*lambda2 ! L2
+          rangeval(1,j) = rangeval(2,j)
+          rangeval(2,j) = range
           ! geometry-free : ionosphere observations
           obs(iepo, j, 1) = (lambda1*OB%obs(ichn, 1) - lambda2*OB%obs(ichn, 2))/(lambda2 - lambda1)
-          ! Melbourne-Wubbena (N1 - N2)
-          obs(iepo, j, 2) = OB%obs(ichn, 1) - OB%obs(ichn, 2) - (g*OB%obs(ichn, 3) + OB%obs(ichn, 4))/(1.d0 + g)/lambdaw
-          ! ionosphere-free (pp37 LC)
-          obs(iepo, j, 3) = c1*OB%obs(ichn, 1) + g*c2*OB%obs(ichn, 2)
-          if (use_brdeph) then
-            ieph = 0
-
-            call elevation(neph, ephem, j, jd0, ti(iepo), x, y, z, elev, range, dtsat, vv, ieph, .false.)
-            v(iepo, j) = vv/PI*180.0
-            ! (sit-sat distance from PC)-(sit-sat distance from broadcast) to check recv clock
-            obs(iepo, j, 6) = c1*OB%obs(ichn, 3) + c2*OB%obs(ichn, 4) - (range - dtsat)
-
-            ! ******************************************* !
-            !              check elevation                !
-            ! ******************************************* !
-            if (elev .lt. cutoff_elevation) then
-              flagall(iepo, j) = set_flag(flagall(iepo, j), 'lowele')
-            endif
-          endif
           ! **************************************************************** !
-          !        check geometry-free(lg) and Melbourne-Wubbenamw           !
+          !                       check geometry-free(lg)                    !
           ! **************************************************************** !
           if (ilast(j) .ne. 0) then
             lgdif = dabs(obs(iepo, j, 1) - obs(ilast(j), j, 1))/(ti(iepo) - ti(ilast(j)))
-            nwdif = dabs(obs(iepo, j, 2) - obs(ilast(j), j, 2))
             if (lgdif .gt. lglimit) then
               flagall(iepo, j) = set_flag(flagall(iepo, j), 'lgjump')
 !            write(*,'(a,i6,i4,f12.1)') ' bad ionosphere',iepo,j,lgdif
             endif
-            if (nwdif .gt. nwlimit) then
-              flagall(iepo, j) = set_flag(flagall(iepo, j), 'lwjump')
-!            write(*,'(a,i6,i4,4f15.1)') ' bad widelane  ',iepo,j,nwdif
-            endif
           endif
-          ilast(j) = iepo
         else
           flagall(iepo, j) = set_flag(0, 'no4')
         endif
@@ -244,11 +235,117 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
 !        write(*,'(a,i6,i4,f12.1)') ' flag in rinex ',iepo,j
         endif
       enddo
+
+      ! **************************************************************** !
+      !               check & recover receiver clock jump                !
+      !              Author:       Yuanxin Pan, 2019-07-15               !
+      ! **************************************************************** !
+      nvalid = 0 ! number of satellites with flag 'ok'
+      njump = 0
+      cnt = 0
+      jumpval = 0.d0
+      deltap = 0.d0
+      deltal = 0.d0
+      do ichn = 1, OB%nprn
+        j = OB%prn(ichn)
+        if (j .eq. 0) cycle
+        if (.not.istrue(flagall(iepo,j), 'ok')) cycle
+        if (dabs(obsval(1, 1, j)).lt.1.d-3 .or. dabs(obsval(2, 1, j)).lt.1.d-3) cycle
+        nvalid = nvalid + 1
+        chkval(1,j) = obsval(2,1,j)-obsval(1,1,j) - (obsval(2,2,j)-obsval(1,2,j)) ! f1
+        chkval(2,j) = obsval(2,3,j)-obsval(1,3,j) - (obsval(2,4,j)-obsval(1,4,j)) ! f2
+        if (dabs(chkval(1, j)).gt.20.d0 .and. dabs(chkval(2, j)).gt.20.d0) then ! 0.1 us jump: 30.d0
+          njump = njump + 1
+          if (rangeval(1, j).gt.1.d0 .and. rangeval(1, j).gt.1.d0) then
+            cnt = cnt + 1
+            tmp(1) = (obsval(2,1,j)-obsval(1,1,j) + obsval(2,3,j)-obsval(1,3,j))/2.d0 - (rangeval(2,j) - rangeval(1,j))
+            tmp(2) = (obsval(2,2,j)-obsval(1,2,j) + obsval(2,4,j)-obsval(1,4,j))/2.d0 - (rangeval(2,j) - rangeval(1,j))
+            deltap = deltap + tmp(1)
+            deltal = deltal + tmp(2)
+          endif
+          jumpval(1) = jumpval(1) + chkval(1,j)
+          jumpval(2) = jumpval(2) + chkval(2,j)
+        endif
+      enddo
+
+      if (nvalid.ne.0 .and. nvalid.eq.njump) then
+        jumpval = jumpval/(nvalid)
+        deltap = deltap/cnt  ! P: range jump value
+        deltal = deltal/cnt  ! L: phase jump value
+        ratio = dabs(deltap/deltal)
+        !sec = anint((jumpval(1)+jumpval(2))/2/vlight*1.d3) ! unit: ms
+        sec = (jumpval(1)+jumpval(2))/2.d0  ! clk jmp unit: m
+        ! inverse fix
+        if(ratio < 1.d0) then ! phase jump
+          jumpflag = 1
+          jumpsum(1) = jumpsum(1) + sec!/1.d3*vlight ! range
+        else
+          jumpflag = 2
+          jumpsum(2) = jumpsum(2) + sec!/1.d3*vlight ! phase
+        end if
+        !write(lfnjmp,'(f8.1,x,2f8.3,x,f20.1,x,i1,x,f28.14)') cd.ti(iepo), deltap/vlight*1.d3, deltal/vlig
+        if (lfnjmp.eq.0) then
+          lfnjmp = get_valid_unit(10)
+          open(lfnjmp,file='.'//stanam//'.jmp',status='replace')
+        end if
+        write(lfnjmp,'(f8.1,2x,i1,x,f28.14)') ti(iepo), jumpflag, sec
+      end if
+
+      do ichn = 1, OB%nprn
+        j = OB%prn(ichn)
+        if (j .eq. 0) cycle
+        if (nsat .lt. j) nsat = j
+        if (use_brdeph) then
+          ieph = 0
+          call elevation(neph, ephem, j, jd0, ti(iepo), x, y, z, elev, range, dtsat, vv, ieph, .false.)
+          if (range .lt. 0.d0) then
+            flagall(iepo, j) = set_flag(0, 'no4')
+            cycle
+          endif
+        endif
+        if (dabs(OB%obs(ichn, 1)) .gt. 1.d-3 .and. dabs(OB%obs(ichn, 2)) .gt. 1.d-3 .and. &
+            dabs(OB%obs(ichn, 3)) .gt. 1.d-3 .and. dabs(OB%obs(ichn, 4)) .gt. 1.d-3) then
+          OB%obs(ichn, 3:4) = OB%obs(ichn, 3:4) + jumpsum(1) ! P1 & P2
+          OB%obs(ichn, 1) = OB%obs(ichn, 1) + jumpsum(2)/lambda1
+          OB%obs(ichn, 2) = OB%obs(ichn, 2) + jumpsum(2)/lambda2
+          ! Melbourne-Wubbena (N1 - N2)
+          obs(iepo, j, 2) = OB%obs(ichn, 1) - OB%obs(ichn, 2) - (g*OB%obs(ichn, 3) + OB%obs(ichn, 4))/(1.d0 + g)/lambdaw
+          ! ionosphere-free (pp37 LC)
+          obs(iepo, j, 3) = c1*OB%obs(ichn, 1) + g*c2*OB%obs(ichn, 2)
+          if (use_brdeph) then
+            ieph = 0
+            call elevation(neph, ephem, j, jd0, ti(iepo), x, y, z, elev, range, dtsat, vv, ieph, .false.)
+            v(iepo, j) = vv/PI*180.0
+            ! (sit-sat distance from PC)-(sit-sat distance from broadcast) to check recv clock
+            obs(iepo, j, 6) = c1*OB%obs(ichn, 3) + c2*OB%obs(ichn, 4) - (range - dtsat)
+            ! ******************************************* !
+            !              check elevation                !
+            ! ******************************************* !
+            if (elev .lt. cutoff_elevation) then
+              flagall(iepo, j) = set_flag(flagall(iepo, j), 'lowele')
+            endif
+          endif
+          ! **************************************************************** !
+          !                        check Melbourne-Wubbenamw                 !
+          ! **************************************************************** !
+          if (ilast(j) .ne. 0) then
+            nwdif = dabs(obs(iepo, j, 2) - obs(ilast(j), j, 2))
+            if (nwdif .gt. nwlimit) then
+              flagall(iepo, j) = set_flag(flagall(iepo, j), 'lwjump')
+  !            write(*,'(a,i6,i4,4f15.1)') ' bad widelane  ',iepo,j,nwdif
+            endif
+          endif
+          ilast(j) = iepo
+        else
+          flagall(iepo, j) = set_flag(0, 'no4')
+        endif
+      enddo
       iepo = iepo + 1
       tobs = tobs + interval
     endif
   enddo
   close (10)
+  if (lfnjmp .ne. 0) close(lfnjmp)
 !
 !! check receiver clock
   iepo = 1
