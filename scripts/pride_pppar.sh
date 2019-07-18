@@ -462,7 +462,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
 
     sed -n '8 p' ${fcb%.Z} | grep "rapid" > /dev/null 2>&1
     local rapid=$?  # whether use rapid products
-    [ $rapid ] && echo -e "$MSGINF NOTE: Rapid Products Used"
+    [ $rapid -eq 0 ] && echo -e "$MSGINF NOTE: Rapid Products Used"
 
     local sp3s erps tmpy
     local sp3 sp3_url i=0
