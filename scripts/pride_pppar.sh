@@ -473,19 +473,21 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
 
         if [ $year -gt 2018 ]; then
             if [ $rapid ]; then
-                erp="COD${wkdow[0]}${wkdow[1]}.ERP_R"
-                erp_url="ftp://ftp.aiub.unibe.ch/CODE/$erp"
-                CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
-                erps[$((i))]=${erp}
+                erp="COD${wkdow[0]}${wkdow[1]}.ERP_M.Z"
+                erp_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}_M/$erp"
+                CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
+                uncompress -f ${erp}
+                erps[$((i))]=${erp%.Z}
 
-                sp3="COD${wkdow[0]}${wkdow[1]}.EPH_R"
-                sp3_url="ftp://ftp.aiub.unibe.ch/CODE/$sp3"
+                sp3="COD${wkdow[0]}${wkdow[1]}.EPH_M.Z"
+                sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}_M/$sp3"
                 CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
-                sp3s[$((i++))]=${sp3}
+                uncompress -f ${sp3}
+                sp3s[$((i++))]=${sp3%.Z}
             else
                 erp="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_01D_ERP.ERP.gz"
                 erp_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$erp"
-                CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+                CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
                 gunzip -f ${erp}
                 erps[$((i))]=${erp%.gz}
 
