@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 1.4                                                         ##
 ##                                                                           ##
-##  DATE   : Jul-16, 2019                                                    ##
+##  DATE   : Sept-1, 2019                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2018               ##
 ##                                                                           ##
@@ -380,7 +380,7 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
     elif [ $mjd -lt 57782 ]; then
         abs_atx="igs08_1930.atx"
     else
-        abs_atx="igs14_2045.atx"
+        abs_atx="igs14_2062.atx"
     fi
     cp "$table_dir/$abs_atx" ./abs_igs.atx
     [ $? -ne 0 ] && echo -e "$MSGERR CopyTables: no such file: $table_dir/$abs_atx" && return 1
@@ -388,8 +388,8 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
     # Check valid time of table
     local mjd=`tail -2 leap.sec | head -1 | awk '{print $1}'`
     local ydoy=(`mjd2ydoy $((mjd))`)
-    echo -e "$MSGINF leap.sec     is valid until ${ydoy[*]} (update by leap.sh)"
-    echo -e "$MSGINF jpleph_de405 is valid until 2019 365 (update by PRIDELab website)"
+    echo -e "$MSGINF leap.sec     is valid until ${ydoy[*]} (updated by leap.sh)"
+    echo -e "$MSGINF jpleph_de405 is valid until 2019 365 (updated by PRIDELab website)"
 
     echo -e "$MSGSTA CopyTables done"
 }
@@ -448,55 +448,29 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         uncompress -f ${dcb2}
     fi
 
-    if [ $year -lt 2019 ]; then
-        local erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
-        local erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
-        if [ $? -ne 0 ]; then
-            erp="COD${wkdow[0]}7.ERP.Z"
-            erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
-        fi
-        uncompress -f ${erp}
-    fi
-
     sed -n '8 p' ${fcb%.Z} | grep "rapid" > /dev/null 2>&1
     local rapid=$?  # whether use rapid products
     [ $rapid -eq 0 ] && echo -e "$MSGINF NOTE: Rapid Products Used"
 
     local sp3s erps tmpy
-    local sp3 sp3_url i=0
+    local sp3 erp sp3_url erp_url i=0
     for mjd in $((mjd_mid-1)) mjd_mid $((mjd_mid+1))
     do
         tmpy=($(mjd2ydoy $mjd))
         wkdow=($(mjd2wkdow $mjd))
 
-        if [ $year -gt 2018 ]; then
-            if [ $rapid ]; then
-                erp="COD${wkdow[0]}${wkdow[1]}.ERP_M.Z"
-                erp_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}_M/$erp"
-                CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
-                uncompress -f ${erp}
-                erps[$((i))]=${erp%.Z}
+        if [ $rapid -eq 0 ]; then
+            erp="COD${wkdow[0]}${wkdow[1]}.ERP_M.Z"
+            erp_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}_M/$erp"
+            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
+            uncompress -f ${erp}
+            erps[$((i))]=${erp%.Z}
 
-                sp3="COD${wkdow[0]}${wkdow[1]}.EPH_M.Z"
-                sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}_M/$sp3"
-                CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
-                uncompress -f ${sp3}
-                sp3s[$((i++))]=${sp3%.Z}
-            else
-                erp="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_01D_ERP.ERP.gz"
-                erp_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$erp"
-                CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
-                gunzip -f ${erp}
-                erps[$((i))]=${erp%.gz}
-
-                sp3="WUM0MGXFIN_${tmpy[0]}${tmpy[1]}0000_01D_15M_ORB.SP3.gz"
-                sp3_url="ftp://igs.gnsswhu.cn/pub/gnss/products/mgex/${wkdow[0]}/$sp3"
-                CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
-                gunzip -f ${sp3}
-                sp3s[$((i++))]=${sp3%.gz}
-            fi
+            sp3="COD${wkdow[0]}${wkdow[1]}.EPH_M.Z"
+            sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}_M/$sp3"
+            CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
+            uncompress -f ${sp3}
+            sp3s[$((i++))]=${sp3%.Z}
         else
             sp3="COD${wkdow[0]}${wkdow[1]}.EPH.Z"
             sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}/${sp3}"
@@ -505,6 +479,18 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
             sp3s[$((i++))]=${sp3%.Z}
         fi
     done
+
+    if [ $rapid -ne 0 ]; then
+        erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
+        erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
+        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+        if [ $? -ne 0 ]; then
+            erp="COD${wkdow[0]}7.ERP.Z"
+            erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
+            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
+        fi
+        uncompress -f ${erp}
+    fi
 
     grep '^ [0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z] .*VM1' ${ctrl_file} 2>&1 > /dev/null
     if [ $? -eq 0 ]; then
@@ -543,7 +529,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     [ -e ${dcb2%.Z} ] && mv ${dcb2%.Z} P2C2.dcb
 
     # Generate igserp
-    if [ $year -gt 2018 ]; then
+    if [ $rapid -eq 0 ]; then
         cat ${erps[0]} > igserp && tail -1 ${erps[1]} >> \
             igserp && tail -1 ${erps[2]} >> igserp || return 1
     else

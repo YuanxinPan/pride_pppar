@@ -137,9 +137,7 @@ subroutine rdrnxoi(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
       OB%nprn = 0
       return
     else if (ds .gt. dwnd) then
-      i = 0
-      if (nprn .gt. 12) i = i + 1
-      if (nprn .gt. 24) i = i + 1
+      i = int((nprn-1)/12.d0)
       i = i + ((HD%nobstyp - 1)/5 + 1)*nprn
       do j = 1, i
         read (lfn, '(a)') line
