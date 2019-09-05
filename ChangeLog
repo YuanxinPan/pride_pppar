@@ -28,3 +28,7 @@
  - If 'rnx2rtkp' doesn't work, please download the source code through
    'https://github.com/tomojitakasu/RTKLIB/tree/rtklib_2.4.3' and compile it by yourself.
    The binary we provided is a 32-bit version.
+
+8. 2019-09-05 (v1.4)
+ - pride_pppar.sh: small bugs fixed
+ - table: igs14.atx updated

@@ -570,7 +570,7 @@ WgetDownload() { # purpose: download a file with wget
 LastYearMonth() { # purpose: get last year-month
                   # usage  : LastYearMonth year month
     local year=$1
-    local doy=$2
+    local mon=$((10#$2))
     [ $((mon-1)) -lt 1  ] && mon=12 && year=$((year-1)) || mon=$((mon-1))
     printf "%4d %02d\n" $year $mon
 }
