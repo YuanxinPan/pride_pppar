@@ -256,7 +256,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
         chkval(2,j) = obsval(2,3,j)-obsval(1,3,j) - (obsval(2,4,j)-obsval(1,4,j)) ! f2
         if (dabs(chkval(1, j)).gt.20.d0 .and. dabs(chkval(2, j)).gt.20.d0) then ! 0.1 us jump: 30.d0
           njump = njump + 1
-          if (rangeval(1, j).gt.1.d0 .and. rangeval(1, j).gt.1.d0) then
+          if (rangeval(1, j).gt.1.d0 .and. rangeval(2, j).gt.1.d0) then
             cnt = cnt + 1
             tmp(1) = (obsval(2,1,j)-obsval(1,1,j) + obsval(2,3,j)-obsval(1,3,j))/2.d0 - (rangeval(2,j) - rangeval(1,j))
             tmp(2) = (obsval(2,2,j)-obsval(1,2,j) + obsval(2,4,j)-obsval(1,4,j))/2.d0 - (rangeval(2,j) - rangeval(1,j))
