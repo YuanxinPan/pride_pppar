@@ -452,6 +452,18 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     local rapid=$?  # whether use rapid products
     [ $rapid -eq 0 ] && echo -e "$MSGINF NOTE: Rapid Products Used"
 
+    if [ $rapid -ne 0 ]; then
+        erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
+        erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
+        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+        if [ $? -ne 0 ]; then
+            erp="COD${wkdow[0]}7.ERP.Z"
+            erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
+            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
+        fi
+        uncompress -f ${erp}
+    fi
+
     local sp3s erps tmpy
     local sp3 erp sp3_url erp_url i=0
     for mjd in $((mjd_mid-1)) mjd_mid $((mjd_mid+1))
@@ -479,18 +491,6 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
             sp3s[$((i++))]=${sp3%.Z}
         fi
     done
-
-    if [ $rapid -ne 0 ]; then
-        erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
-        erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
-        if [ $? -ne 0 ]; then
-            erp="COD${wkdow[0]}7.ERP.Z"
-            erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
-        fi
-        uncompress -f ${erp}
-    fi
 
     grep '^ [0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z] .*VM1' ${ctrl_file} 2>&1 > /dev/null
     if [ $? -eq 0 ]; then
