@@ -452,6 +452,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     local rapid=$?  # whether use rapid products
     [ $rapid -eq 0 ] && echo -e "$MSGINF NOTE: Rapid Products Used"
 
+    local erp erp_url
     if [ $rapid -ne 0 ]; then
         erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
         erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
@@ -465,7 +466,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     fi
 
     local sp3s erps tmpy
-    local sp3 erp sp3_url erp_url i=0
+    local sp3 sp3_url i=0
     for mjd in $((mjd_mid-1)) mjd_mid $((mjd_mid+1))
     do
         tmpy=($(mjd2ydoy $mjd))
