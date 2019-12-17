@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 1.4                                                         ##
 ##                                                                           ##
-##  DATE   : Sept-1, 2019                                                    ##
+##  DATE   : Dec-17, 2019                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2018               ##
 ##                                                                           ##
@@ -380,7 +380,7 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
     elif [ $mjd -lt 57782 ]; then
         abs_atx="igs08_1930.atx"
     else
-        abs_atx="igs14_2062.atx"
+        abs_atx="igs14_2082.atx"
     fi
     cp "$table_dir/$abs_atx" ./abs_igs.atx
     [ $? -ne 0 ] && echo -e "$MSGERR CopyTables: no such file: $table_dir/$abs_atx" && return 1
@@ -389,7 +389,7 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
     local mjd=`tail -2 leap.sec | head -1 | awk '{print $1}'`
     local ydoy=(`mjd2ydoy $((mjd))`)
     echo -e "$MSGINF leap.sec     is valid until ${ydoy[*]} (updated by leap.sh)"
-    echo -e "$MSGINF jpleph_de405 is valid until 2019 365 (updated by PRIDELab website)"
+    echo -e "$MSGINF jpleph_de405 is valid until 2040 007 (updated by PRIDELab website)"
 
     echo -e "$MSGSTA CopyTables done"
 }
@@ -501,7 +501,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         for hour in `seq 0 6 18 | awk '{printf("%02d\n",$1)}'`
         do
             vmf="VMFG_${ymd[0]}${ymd[1]}${ymd[2]}.H${hour}"
-            vmf_url="http://ggosatm.hg.tuwien.ac.at/DELAY/GRID/VMFG/${ydoy[0]}/${vmf}"
+            vmf_url="http://vmf.geo.tuwien.ac.at/trop_products/GRID/2.5x2/VMF1/VMF1_OP/${ydoy[0]}/${vmf}"
             CopyOrDownloadProduct "$products_dir/$vmf" "$vmf_url" || return 1
         done
 
@@ -509,14 +509,14 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         tmpy=($(mjd2ydoy $((mjd_mid-1))))
         tmpy=($(ydoy2ymd ${tmpy[*]}))
         vmf="VMFG_${tmpy[0]}${tmpy[1]}${tmpy[2]}.H18"
-        vmf_url="http://ggosatm.hg.tuwien.ac.at/DELAY/GRID/VMFG/${tmpy[0]}/${vmf}"
+        vmf_url="http://vmf.geo.tuwien.ac.at/trop_products/GRID/2.5x2/VMF1/VMF1_OP/${tmpy[0]}/${vmf}"
         CopyOrDownloadProduct "$products_dir/$vmf" "$vmf_url" || return 1
 
         # Next Day (for interpolation)
         tmpy=($(mjd2ydoy $((mjd_mid+1))))
         tmpy=($(ydoy2ymd ${tmpy[*]}))
         vmf="VMFG_${tmpy[0]}${tmpy[1]}${tmpy[2]}.H00"
-        vmf_url="http://ggosatm.hg.tuwien.ac.at/DELAY/GRID/VMFG/${tmpy[0]}/${vmf}"
+        vmf_url="http://vmf.geo.tuwien.ac.at/trop_products/GRID/2.5x2/VMF1/VMF1_OP/${tmpy[0]}/${vmf}"
         CopyOrDownloadProduct "$products_dir/$vmf" "$vmf_url" || return 1
 
         cat VMFG_* > vmf_${ydoy[0]}${ydoy[1]} || return 1
@@ -592,7 +592,7 @@ Execute() {
         echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed ok" # | tee -a $log
         return 0
     else
-        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed failed"  #| tee -a $log
+        echo -e "${RED}($time)${NC} ${CYAN}$cmd${NC} executed failed"  #| tee -a $log
         return 1
     fi
 }
@@ -606,7 +606,9 @@ ExecuteWithoutOutput() {
         echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed ok" # | tee -a $log
         return 0
     else
-        echo -e "${GREEN}($time)${NC} ${CYAN}$cmd${NC} executed failed"  #| tee -a $log
+        echo -e "${RED}($time)${NC} ${CYAN}$cmd${NC} executed failed"  #| tee -a $log
+        echo -e "$MSGINF Here is the output:\n"
+        $cmd
         return 1
     fi
 }

@@ -32,3 +32,9 @@
 8. 2019-09-05 (v1.4)
  - pride_pppar.sh: small bugs fixed
  - table: igs14.atx updated
+
+9. 2019-12-15 (v1.4)
+ - install.sh: add install tips for src/lib/libpridepppar.so
+ - pride_pppar.sh: fix known bugs & add error replay for debug
+ - table: jpleph_de405 updated (valid until 2040-007)
+ - table: update IGS14.atx (igs14_2082.atx)

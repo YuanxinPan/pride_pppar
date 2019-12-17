@@ -8,7 +8,7 @@
 ##                                                                           ##
 ##  VERSION: ver 1.4                                                         ##
 ##                                                                           ##
-##  DATE   : Jul-16, 2019                                                    ##
+##  DATE   : Dec-17, 2019                                                    ##
 ##                                                                           ##
 ##              @ GNSS RESEARCH CENTER, WUHAN UNIVERSITY, 2018               ##
 ##                                                                           ##
@@ -74,4 +74,6 @@ if [ $? -eq 0 ]; then
     printf "${BLUE}::${NC} $install_dir added to PATH\n"
 else
     printf "${RED}errror:${NC} PRIDE-PPPAR installation failed!\n"
+    printf "${BLUE}Note:${NC} try replacing src/lib/libpride_pppar.so with .so file in src/lib/shared/\n"
+    printf "      according to your OS and gfortran version\n"
 fi
