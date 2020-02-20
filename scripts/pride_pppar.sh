@@ -44,7 +44,7 @@ MSGWAR="${YELLOW}warning:$NC"
 MSGINF="${BLUE}::$NC"
 MSGSTA="${BLUE}===>$NC"
 
-USECACHE=NO # YES/NO (uppercase!)
+USECACHE=YES # YES/NO (uppercase!)
 
 ######################################################################
 ##                     Funciton definations                         ##
@@ -69,7 +69,7 @@ main()
     # Processing day-by-day
     readonly local mjd_start=$(ymd2mjd ${ymd_start[*]})
     readonly local mjd_end=$(ymd2mjd ${ymd_end[*]})
-    local work_dir=$(pwd) ydoy
+    local work_dir=$(pwd) ydoy mjd
     for mjd in $(seq $mjd_start $mjd_end)
     do
         cd "${work_dir}"
@@ -117,42 +117,28 @@ CheckCmdArgs() { # purpose: chech whether command line arguments are right
 CheckExecutables() { # purpose: check whether all needed executables are callable
                      # usage  : CheckExecutables
     echo -e "$MSGSTA CheckExecutables..."
-    #local shell=$(ps -p $$ | awk 'NR==2 {print $4}')
-    #echo $shell
-    #if [ "$shell" != "bash" ]; then
-    #    echo -e "$MSGERR pride_pppar should be executed with bash"
-    #    return 1
-    #fi
-    if [ which lsq > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR lsq not found" && return 1
-    fi
-    if [ which arsig > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR arsig not found" && return 1
-    fi
-    if [ which tedit > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR tedit not found" && return 1
-    fi
-    if [ which redig > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR redig not found" && return 1
-    fi
-    if [ which get_ctrl > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR get_ctrl not found" && return 1
-    fi
-    if [ which mergesp3 > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR mergesp3 not found" && return 1
-    fi
-    if [ rnx2rtkp --help > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR rnx2rtkp not found" && return 1
-    fi
-    if [ awk --help > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR awk not found" && return 1
-    fi
-    if [ which wget > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR wget not found" && return 1
-    fi
-    if [ which readlink > /dev/null 2>&1 ]; then
-        echo -e "$MSGERR readlink not found" && return 1
-    fi
+
+    which lsq > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR lsq not found" && return 1
+    which arsig > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR arsig not found" && return 1
+    which tedit > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR tedit not found" && return 1
+    which redig > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR redig not found" && return 1
+    which get_ctrl > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR get_ctrl not found" && return 1
+    which mergesp3 > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR mergesp3 not found" && return 1
+    rnx2rtkp --help > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR rnx2rtkp not found" && return 1
+    awk --help > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR awk not found" && return 1
+    which wget > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR wget not found" && return 1
+    which readlink > /dev/null 2>&1
+    [ $? -ne 0 ] && echo -e "$MSGERR readlink not found" && return 1
+
     echo -e "$MSGSTA CheckExecutables done"
 }
 
@@ -164,7 +150,7 @@ PRIDE_PPPAR_Help() { # purpose: print usage for PRIDE_PPPAR
     echo "                   -- ctrl_file : configuration file of PRIDE-PPPAR"
     echo "                   -- start_date: start date for processing, format: YYYYMMDD"
     echo "                   -- end_date  : end date for procesing, format: YYYYMMDD"
-    echo "                   -- AR(Y/N)   : Swithc of Ambiguity Resolution"
+    echo "                   -- AR(Y/N)   : Switch of Ambiguity Resolution"
     echo "  Example  :    pride_pppar config 20160101 20160101 Y"
     echo "  Copyright:    GNSS Research Center, Wuhan University, 2018"
     echo " -----------------------------------------------------------------------"
@@ -222,7 +208,7 @@ ProcessSingleDay() { # purpose: process data of single day
         fi
     fi
 
-    sites=($(awk '/^ [0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z] [KS]/ {print $1}' "$ctrl_file"))
+    local site sites=($(awk '/^ [0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z] [KS]/ {print $1}' "$ctrl_file"))
     [ ${#sites[@]} -eq 0 ] && echo -e "$MSGWAR ${year} ${doy}: no site to be processed" && return 1
     for site in ${sites[*]}
     do
@@ -305,7 +291,7 @@ ProcessSingleSite() { # purpose: process data of single site
     # Data clean (iteration)
     echo -e "$MSGSTA Data cleaning..."
     local short=$(echo $interval | awk '{printf("%.0f\n", 600/$1)}')
-    local jumps=(400 200 100 50 50) # (500 300 200 100 50)
+    local jump jumps=(400 200 100 50 50) # (500 300 200 100 50)
     for jump in ${jumps[*]}
     do
         cmd="lsq ${tmp_ctrl}"
@@ -363,7 +349,7 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
     echo -e "$MSGSTA CopyTables..."
     local table_dir="$1"
     local mjd=$2
-    local tables=(file_name jpleph_de405 leap.sec oceanload orography_ell sit.xyz)
+    local table tables=(file_name jpleph_de405 leap.sec oceanload orography_ell sit.xyz)
     for table in ${tables[*]}
     do
         if [ ! -f "$table_dir/$table" ]; then
@@ -465,7 +451,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         uncompress -f ${erp}
     fi
 
-    local sp3s erps tmpy
+    local sp3s erps tmpy mjd
     local sp3 sp3_url i=0
     for mjd in $((mjd_mid-1)) mjd_mid $((mjd_mid+1))
     do
