@@ -372,8 +372,17 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
     [ $? -ne 0 ] && echo -e "$MSGERR CopyTables: no such file: $table_dir/$abs_atx" && return 1
 
     # Check valid time of table
-    local mjd=`tail -2 leap.sec | head -1 | awk '{print $1}'`
-    local ydoy=(`mjd2ydoy $((mjd))`)
+    local mjd_leap=`tail -2 leap.sec | head -1 | awk '{print $1}'`
+    if [ $mjd -ge $mjd_leap ]; then
+        echo -e "$MSGINF Update $table_dir/leap.sec ..."
+        cmd="leap.sh"
+        Execute "$cmd" || return 1
+        cp -f leap.sec $table_dir || return 1
+        echo -e "$MSGINF Update $table_dir/leap.sec done"
+        mjd_leap=`tail -2 leap.sec | head -1 | awk '{print $1}'`
+    fi
+
+    local ydoy=(`mjd2ydoy $((mjd_leap))`)
     echo -e "$MSGINF leap.sec     is valid until ${ydoy[*]} (updated by leap.sh)"
     echo -e "$MSGINF jpleph_de405 is valid until 2040 007 (updated by PRIDELab website)"
 
