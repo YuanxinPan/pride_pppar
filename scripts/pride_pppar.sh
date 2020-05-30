@@ -462,7 +462,7 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
 
     local sp3s erps tmpy mjd
     local sp3 sp3_url i=0
-    for mjd in $((mjd_mid-1)) mjd_mid $((mjd_mid+1))
+    for mjd in $((mjd_mid-1)) $mjd_mid $((mjd_mid+1))
     do
         tmpy=($(mjd2ydoy $mjd))
         wkdow=($(mjd2wkdow $mjd))
