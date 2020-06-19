@@ -237,7 +237,7 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
       enddo
 
       ! **************************************************************** !
-      !               check & recover receiver clock jump                !
+      !               check & restore receiver clock jump                !
       !              Author:       Yuanxin Pan, 2019-07-15               !
       ! **************************************************************** !
       nvalid = 0 ! number of satellites with flag 'ok'
@@ -273,10 +273,29 @@ subroutine read_rinex_file(flnrnx, tstart, sstart, session_length, interval, &
         deltap = deltap/cnt  ! P: range jump value
         deltal = deltal/cnt  ! L: phase jump value
         ratio = dabs(deltap/deltal)
+
+        if (dabs(jumpval(1)) .gt. vlight*1E-3-15) then
+          sec = (jumpval(1) + jumpval(2))/2.d0/vlight*1E3 ! ms
+          if (dabs(sec - nint(sec)) .lt. 1E-5) then
+            sec = nint(sec)*1E-3*vlight ! m
+          else
+            sec = 0
+          endif
+        else if (dabs(jumpval(1)) .gt. 1E-7*vlight-15 .and. dabs(jumpval(1)) .lt. 1E-5*vlight+15) then
+          sec = (jumpval(1)+jumpval(2))/2.d0/vlight*1E6 ! us
+          if (sec .gt. 10) then
+            sec = 0
+          else
+            sec = sec*1E-6*vlight ! m
+          endif
+        else
+          sec = 0
+        endif
         !sec = anint((jumpval(1)+jumpval(2))/2/vlight*1.d3) ! unit: ms
-        sec = (jumpval(1)+jumpval(2))/2.d0  ! clk jmp unit: m
-        ! inverse fix
-        if(ratio < 1.d0) then ! phase jump
+        !sec = (jumpval(1)+jumpval(2))/2.d0  ! clk jmp unit: m
+
+        ! inverse fixing
+        if (ratio < 1.d0) then ! phase jump
           jumpflag = 1
           jumpsum(1) = jumpsum(1) + sec!/1.d3*vlight ! range
         else
