@@ -430,8 +430,8 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     if [ $? -ne 0 ]; then
         dcb1="P1C1${lastmon[0]:2:2}${lastmon[1]}_RINEX.DCB.Z"
         dcb2="P2C2${lastmon[0]:2:2}${lastmon[1]}_RINEX.DCB.Z"
-        dcb1url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb1}"
-        dcb2url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${dcb2}"
+        dcb1url="ftp://ftp.aiub.unibe.ch/CODE/${lastmon[0]}/${dcb1}"
+        dcb2url="ftp://ftp.aiub.unibe.ch/CODE/${lastmon[0]}/${dcb2}"
         CopyOrDownloadProduct "$products_dir/$dcb1" "$dcb1url" || return 1
     fi
 
