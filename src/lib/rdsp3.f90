@@ -68,7 +68,7 @@ subroutine rdsp3h(fln, jd0, sod0, jd1, sod1, dintv, nprn, prn)
 !
 !! second line with interval
       read (lfn, '(a)', end=33) line
-      if (line(1:2) .ne. '#c') cycle ! look for headers of sp3
+      if (line(1:2).ne.'#c' .and. line(1:2).ne.'#d') cycle ! look for headers of sp3
       read (lfn, '(3x,i4,17x,f14.8,1x,i5,1x,f15.13)') nwk, dintv, mjd, fmjd
 !
 !! third to 12th lines with satellite prns
