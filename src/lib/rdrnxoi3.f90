@@ -66,7 +66,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
 !! function used
   integer*4 modified_julday
 
-  obs_prio = 'NMYXLSCWP'
+  obs_prio = ' NMYXLSCWP'
   obs_prio_index = 0
   ierr = 0
   line = ' '

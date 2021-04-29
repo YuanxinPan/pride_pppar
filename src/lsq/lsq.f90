@@ -369,11 +369,13 @@ program lsq
   if (SITE%skd(1:2) .eq. 'S ') then
     ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
     ipar = OB%ltog(ipar, 1)
-    write (lfnpos, '(3(a4,3f15.4,/),a4,i15,/)') &
+    write (lfnpos, '(3(a4,3f15.4,/),a4,i15,2(/,a4,3e12.3))') &
       SITE%name, PM(ipar)%xini, PM(ipar + 1)%xini, PM(ipar + 2)%xini, &
       'CORR', PM(ipar)%xcor, PM(ipar + 1)%xcor, PM(ipar + 2)%xcor, &
       'SIGM', PM(ipar)%xsig, PM(ipar + 1)%xsig, PM(ipar + 2)%xsig, &
-      'NOBS', PM(ipar)%iobs
+      'NOBS', PM(ipar)%iobs, &
+      'VAR', NM%norx(1,1), NM%norx(2,2), NM%norx(3,3), &
+      'COV', NM%norx(1,2), NM%norx(1,3), NM%norx(2,3)
   endif
   close (lfnpos)
 !
