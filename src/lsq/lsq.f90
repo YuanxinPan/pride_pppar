@@ -355,27 +355,26 @@ program lsq
   close (lfncid, status='delete')
   close (lfnobs, status='delete')
   close (lfnrem, status='delete')
-  k = 1
-  do while (k .le. LCF%nsit)
-    if (SITE%skd(1:2) .eq. 'S ') exit          ! whether static stations exist
-    k = k + 1
-  enddo
-  inquire (file=LCF%flnpos, opened=lopen, number=openid) !add by zwx 20141031,sometimes io conflict when running scripts
-  if (lopen) close (openid)
-  lfnpos = get_valid_unit(10)
-  open (lfnpos, file=LCF%flnpos)
-  write (lfnpos, '(a,a3,f11.4,/)') '%%% Position Correction : ', 'XYZ', &
-    LCF%jd0 + (LCF%sod0 + timdif(LCF%jd1, LCF%sod1, LCF%jd0, LCF%sod0)/2.d0)/86400.d0
   if (SITE%skd(1:2) .eq. 'S ') then
+    inquire (file=LCF%flnpos, opened=lopen, number=openid) !add by zwx 20141031,sometimes io conflict when running scripts
+    if (lopen) close (openid)
+    lfnpos = get_valid_unit(10)
+    open (lfnpos, file=LCF%flnpos)
     ipar = pointer_string(OB%npar, OB%pname, 'STAPX')
     ipar = OB%ltog(ipar, 1)
-    write (lfnpos, '(3(a4,3f15.4,/),a4,i15,2(/,a4,3e12.3))') &
-      SITE%name, PM(ipar)%xini, PM(ipar + 1)%xini, PM(ipar + 2)%xini, &
-      'CORR', PM(ipar)%xcor, PM(ipar + 1)%xcor, PM(ipar + 2)%xcor, &
-      'SIGM', PM(ipar)%xsig, PM(ipar + 1)%xsig, PM(ipar + 2)%xsig, &
-      'NOBS', PM(ipar)%iobs, &
-      'VAR', NM%norx(1,1), NM%norx(2,2), NM%norx(3,3), &
-      'COV', NM%norx(1,2), NM%norx(1,3), NM%norx(2,3)
+    ! write (lfnpos, '(a,a3,f11.4,/)') '%%% Position Correction : ', 'XYZ', &
+    !   LCF%jd0 + (LCF%sod0 + timdif(LCF%jd1, LCF%sod1, LCF%jd0, LCF%sod0)/2.d0)/86400.d0
+    ! write (lfnpos, '(3(a4,3f15.4,/),a4,i15,2(/,a4,3e12.3))') &
+    !   SITE%name, PM(ipar)%xini, PM(ipar + 1)%xini, PM(ipar + 2)%xini, &
+    !   'CORR', PM(ipar)%xcor, PM(ipar + 1)%xcor, PM(ipar + 2)%xcor, &
+    !   'SIGM', PM(ipar)%xsig, PM(ipar + 1)%xsig, PM(ipar + 2)%xsig, &
+    !   'NOBS', PM(ipar)%iobs, &
+    !   'VAR', NM%norx(1,1), NM%norx(2,2), NM%norx(3,3), &
+    !   'COV', NM%norx(1,2), NM%norx(1,3), NM%norx(2,3)
+    write (lfnpos, '(a4,f12.4,3f15.4,6e12.4,f12.4,i8)') &
+      SITE%name, LCF%jd0 + (LCF%sod0 + timdif(LCF%jd1, LCF%sod1, LCF%jd0, LCF%sod0)/2.d0)/86400.d0, &
+      PM(ipar)%xini+PM(ipar)%xcor, PM(ipar + 1)%xini+PM(ipar + 1)%xcor, PM(ipar + 2)%xini+PM(ipar + 2)%xcor, &
+      NM%norx(1,1), NM%norx(2,2), NM%norx(3,3), NM%norx(1,2), NM%norx(1,3), NM%norx(2,3), NM%sig0*vlight/freq1, PM(ipar)%iobs
   endif
   close (lfnpos)
 !

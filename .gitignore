@@ -18,8 +18,10 @@ src/orbit/sp3orb
 src/redig/redig
 src/tedit/tedit
 src/utils/xyz2enu
+src/utils/enucov
 src/protected/
 
 example/config.*
 example/products/
 example/results/
+example/2016/

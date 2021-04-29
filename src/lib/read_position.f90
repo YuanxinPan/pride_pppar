@@ -71,10 +71,12 @@ subroutine read_position(flnpos, name, jd, sod, seslen, x, flag)
       name1 = upper_string(line(1:4))
       name = upper_string(name)
       if (name1 .eq. name) then
-        read (line(5:), *) (x(i), i=1, 3)
-        read (lfnpos, '(a)') line
-        read (line(5:), *) (v(i), i=1, 3)
-        x(1:3) = (x(1:3) + v(1:3))*1.d-3
+        ! read (line(5:), *) (x(i), i=1, 3)
+        read (line(17:), *) (x(i), i=1, 3)
+        x = x*1.d-3
+        ! read (lfnpos, '(a)') line
+        ! read (line(5:), *) (v(i), i=1, 3)
+        ! x(1:3) = (x(1:3) + v(1:3))*1.d-3
         exit
       endif
     enddo
