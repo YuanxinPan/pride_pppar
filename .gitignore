@@ -18,7 +18,7 @@ src/orbit/sp3orb
 src/redig/redig
 src/tedit/tedit
 src/utils/xyz2enu
-src/utils/enucov
+src/utils/enucov.e
 src/protected/
 
 example/config.*

@@ -54,14 +54,13 @@ cd src && make && make install \
     && cp -f ./bin/* $install_dir \
     && chmod 755 ./scripts/*.sh \
     && cp -f ./scripts/pride_pppar.sh $install_dir/pride_pppar \
+    && cp -f ./scripts/enucov.sh $install_dir/enucov \
     && cp -f ./scripts/rtk2xyz.sh ./scripts/leap.sh $install_dir
 if [ $? -eq 0 ]; then
     grep "^export PATH=$install_dir:\$PATH" ${HOME}/.bashrc > /dev/null 2>&1
     [ $? -ne 0 ] && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
     # grep "^export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" ${HOME}/.bashrc > /dev/null 2>&1
     # [ $? -ne 0 ] && echo "export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" >> ${HOME}/.bashrc
-    # grep "^export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" ${HOME}/.bash_profile > /dev/null 2>&1
-    # [ $? -ne 0 ] && echo "export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" >> ${HOME}/.bash_profile
 fi
 
 # Output

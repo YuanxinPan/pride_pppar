@@ -16,7 +16,7 @@ $(SUBDIR) :
 install :
 	@mkdir -p ../bin/
 	cp arsig/arsig  lsq/lsq tedit/tedit redig/redig orbit/sp3orb \
-		orbit/mergesp3 get_ctrl/get_ctrl utils/xyz2enu ../bin/
+		orbit/mergesp3 get_ctrl/get_ctrl utils/xyz2enu utils/enucov.e ../bin/
 
 .PHONY : all $(SUBDIR) install
 

@@ -35,11 +35,8 @@ program main
     read(lfnpos, '(a)', iostat=ierr) buf
     if (ierr .ne. 0) exit
     if (len_trim(buf) .eq. 0) cycle
-    read(buf, '(a4,f12.4,3f15.4,6e12.4,f12.4,i8)') site, mjd, xyz, &
-         xyzcov(1,1),xyzcov(2,2),xyzcov(3,3),xyzcov(1,2),xyzcov(1,3),xyzcov(2,3), &
-         sig0, nobs
-    ! write(*, '(a4,f12.4,3f15.4,6e12.4,f12.4,i8)') site, mjd, xyz, &
-    !      xyzcov(1,1),xyzcov(2,2),xyzcov(3,3),xyzcov(1,2),xyzcov(1,3),xyzcov(2,3),sig0,nobs
+    read(buf, *) site, mjd, xyz, xyzcov(1,1),xyzcov(2,2),xyzcov(3,3), &
+         xyzcov(1,2),xyzcov(1,3),xyzcov(2,3), sig0, nobs
 
     if (lfirst) then
       lfirst = .false.
@@ -63,7 +60,7 @@ program main
     call matmpy(enucov, rot, enucov, 3, 3, 3)
     enucov = sig0*sig0*enucov;
     
-    write(lfncov, '(a4,f12.4,3f15.4,6e12.3,i8)') site, mjd, enu, enucov(1,1), enucov(2,2), &
+    write(lfncov, '(a4,f12.4,3f15.4,6e25.14,i15)') site, mjd, enu, enucov(1,1), enucov(2,2), &
           enucov(3,3), enucov(1,2), enucov(1,3), enucov(2,3), nobs
   enddo
 
