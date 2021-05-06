@@ -366,7 +366,7 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
     elif [ $mjd -lt 57782 ]; then
         abs_atx="igs08_1930.atx"
     else
-        abs_atx="igs14_2082.atx"
+        abs_atx="igs14_2148.atx"
     fi
     cp "$table_dir/$abs_atx" ./abs_igs.atx
     [ $? -ne 0 ] && echo -e "$MSGERR CopyTables: no such file: $table_dir/$abs_atx" && return 1

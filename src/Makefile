@@ -1,12 +1,14 @@
 
 SUBDIR = lib \
-		 orbit \
-		 lsq \
-		 arsig \
-		 tedit \
-		 redig \
-		 get_ctrl \
-		 utils
+         de405 \
+         lambda \
+         orbit \
+         lsq \
+         arsig \
+         tedit \
+         redig \
+         get_ctrl \
+         utils
 
 all : $(SUBDIR)
 

@@ -374,7 +374,7 @@ program lsq
     write (lfnpos, '(a4,f12.4,3f15.4,6e12.4,f12.4,i8)') &
       SITE%name, LCF%jd0 + (LCF%sod0 + timdif(LCF%jd1, LCF%sod1, LCF%jd0, LCF%sod0)/2.d0)/86400.d0, &
       PM(ipar)%xini+PM(ipar)%xcor, PM(ipar + 1)%xini+PM(ipar + 1)%xcor, PM(ipar + 2)%xini+PM(ipar + 2)%xcor, &
-      NM%norx(1,1), NM%norx(2,2), NM%norx(3,3), NM%norx(1,2), NM%norx(1,3), NM%norx(2,3), NM%sig0*vlight/freq1, PM(ipar)%iobs
+      NM%norx(1,1), NM%norx(2,2), NM%norx(3,3), NM%norx(1,2), NM%norx(1,3), NM%norx(2,3), NM%sig0, PM(ipar)%iobs
   endif
   close (lfnpos)
 !
