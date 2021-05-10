@@ -217,7 +217,7 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
             if (obs_prio_index(4) .lt. prio_index) then
               obs_prio_index(4) = prio_index
               OB%obs(i0, 4) = obs(j) - bias(prn0(i0), 4)
-              if (obs_prio_index(4) .gt. index(obs_prio, 'C')) prior_p1 = .true.
+              if (obs_prio_index(4) .gt. index(obs_prio, 'C')) prior_p2 = .true.
             endif
           endif
         enddo
