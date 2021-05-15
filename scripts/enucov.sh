@@ -4,7 +4,7 @@
 
 [ ! -f "$1" ] && echo "no such file: $1" && exit 1
 
-for site in `awk '{print $1}' $1`
+for site in `awk '{print $1}' $1 | sort -u`
 do
     echo $site
     grep $site "$1" > tmp_$site
