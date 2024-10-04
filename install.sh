@@ -59,8 +59,6 @@ cd src && make && make install \
 if [ $? -eq 0 ]; then
     grep "^export PATH=$install_dir:\$PATH" ${HOME}/.bashrc > /dev/null 2>&1
     [ $? -ne 0 ] && echo "export PATH=$install_dir:\$PATH" >> ${HOME}/.bashrc
-    # grep "^export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" ${HOME}/.bashrc > /dev/null 2>&1
-    # [ $? -ne 0 ] && echo "export LD_LIBRARY_PATH=$install_dir:\$LD_LIBRARY_PATH" >> ${HOME}/.bashrc
 fi
 
 # Output
@@ -72,6 +70,4 @@ if [ $? -eq 0 ]; then
     printf "${BLUE}::${NC} $install_dir added to PATH\n"
 else
     printf "${RED}errror:${NC} PRIDE-PPPAR installation failed!\n"
-    # printf "${BLUE}Note:${NC} try replacing src/lib/libpride_pppar.so with .so file in src/lib/shared/\n"
-    printf "      according to your OS and gfortran version\n"
 fi

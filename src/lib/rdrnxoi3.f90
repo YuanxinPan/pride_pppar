@@ -52,13 +52,13 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
 !! local
   logical*1 prior_p1, prior_p2
   integer*4 ioerr, iy, im, id, ih, imi, nprn, prn(MAXSAT)
-  integer*4 iflag, i, j, i0, nline, lli(MAXSAT), ssi(MAXSAT), ii, nobstype
+  integer*4 iflag, i, j, i0, nline, lli(MAXTYP), ssi(MAXTYP), ii, nobstype
   real*8 sec, ds, dt, c1, c2, p1, p2, obs(MAXTYP), dcb(MAXSAT, 2), bias(MAXSAT, 4)
   character*1 sysid(MAXSAT)
-  character*80 line, cline, msg, name
+  character*80 line, msg, name
 !
 !! RINEX-3 Signal Priority
-  character*9 obs_prio
+  character*16 obs_prio
   integer*4 obs_prio_index(4)
   integer*4 prio_index
   character*1024 string
@@ -166,9 +166,16 @@ subroutine rdrnxoi3(lfn, jd0, sod0, dwnd, nprn0, prn0, HD, OB, dcb, bias, ierr)
     read (lfn, '(a)', err=100, end=200) string
     if (string(1:1) .eq. 'G') then
       ii = ii + 1
+      do j = 1, maxtyp
+        obs(j) = 0.d0
+        lli(j) = 0.d0
+        ssi(j) = 0.d0
+      enddo
       !
       !! check if the sallite is requested
-      read (string, '(a1,i2,20(f14.3,i1,i1))', err=100) sysid(ii), prn(ii), (obs(j), lli(j), ssi(j), j=1, min(HD%nobstyp, maxtyp))
+      read (string, '(a1,i2,20(f14.3,i1,i1))', err=100, end=333) &
+        sysid(ii), prn(ii), (obs(j), lli(j), ssi(j), j=1, min(HD%nobstyp, maxtyp))
+333 continue
       i0 = 0
       if (nprn0 .gt. 0) then
         do j = 1, nprn0

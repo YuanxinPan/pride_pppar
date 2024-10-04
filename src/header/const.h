@@ -14,7 +14,7 @@ real*8, parameter   :: gpstai=19.d0,taitdt=32.184d0,gpstdt=gpstai+taitdt,mjd2jd=
 integer*4,parameter :: maxsit=900,maxsat=64,maxepo=432000
 !
 !! maxtyp : observation types
-integer*4,parameter :: maxeph=maxsat*48,maxtyp=32
+integer*4,parameter :: maxeph=maxsat*48,maxtyp=64
 !
 integer*4,parameter :: maxpar_sta=10,maxow_st=maxsat*10,maxpar=maxsit*(maxpar_sta+6)+maxsit*maxow_st
 integer*4,parameter :: maxsd_sit=maxsat*400
