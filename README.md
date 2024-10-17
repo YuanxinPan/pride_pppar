@@ -1,6 +1,6 @@
 # PRIDE PPP-AR
 
-This repository contains the GNS-only version (v1) of the [PRIDE PPP-AR](https://github.com/PrideLab/PRIDE-PPPAR)
+This repository contains the GPS-only version (v1) of the [PRIDE PPP-AR](https://github.com/PrideLab/PRIDE-PPPAR)
 software. It was originally released by the PRIDELab group in 2019, and maintained by me at Wuhan University until 2021. 
 
 
@@ -11,7 +11,7 @@ There are specific reasons why you might prefer this older version (v1) over the
 1. **Robustness**: The latest version (v3) may encounter
    issues with certain RINEX observation files (especially RINEX-2), while this older version handles them properly.
 2. **Batch processing**: The v1 script `pride_pppar` includes a batch processing feature,
-   allowing you to process multiple stations and multiple days at once. In contrast, the newer v3
+   allowing you to process multiple stations and multiple days with one call. In contrast, the newer v3
    script `pdp3` processes only one RINEX file per call.
 
 If you do not face any of these specific issues, it is recommended to use the latest version of the software.
