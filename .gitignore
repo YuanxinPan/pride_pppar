@@ -21,6 +21,7 @@ src/utils/xyz2enu
 src/utils/enucov.e
 src/protected/
 
+example/*
 example/config.*
 example/products/
 example/results/

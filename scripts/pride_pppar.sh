@@ -203,8 +203,11 @@ ProcessSingleDay() { # purpose: process data of single day
             uncompress -f ${rinexnav}.Z && mv ${rinexnav} ${rinex_dir}
             [ -f ${rinex_dir}/${rinexnav} ] && echo -e "$MSGSTA Downloading ${rinexnav} done" || return 1
         else
-            echo -e "$MSGERR download rinexnav failed: ${rinex_dir}/${rinexnav}"
-            return 1
+            urlnav="ftp://igs.gnsswhu.cn/pub/gps/data/daily/${year}/$doy/${year:2:2}n/${rinexnav}.gz"
+            WgetDownload "$urlnav"
+            [ $? -ne 0 ] && echo -e "$MSGERR download rinexnav failed: ${rinex_dir}/${rinexnav}" && return 1
+            uncompress -f ${rinexnav}.gz && mv ${rinexnav} ${rinex_dir}
+            [ -f ${rinex_dir}/${rinexnav} ] && echo -e "$MSGSTA Downloading ${rinexnav} done" || return 1
         fi
     fi
 
@@ -334,7 +337,7 @@ ComputeInitialPos() { # purpose: compute intial postion with rnx2rtkp
     local site=$(basename "$rinexobs"); site=${site:0:4}
     local tmp_file=$(mktemp -u)
 
-    rnx2rtkp -p 0 -ti 3600 -e -o ${tmp_file} ${rinexobs} ${rinexnav} || return 1
+    rnx2rtkp -p 0 -e -o ${tmp_file} ${rinexobs} ${rinexnav} || return 1
     [ ! -e ${tmp_file} ] && return 1
     awk -v nam=$site '{
         if (substr($0,1,1) != "%") {
@@ -356,7 +359,7 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
              echo -e "$MSGERR CopyTables: no such file: $table_dir/$table"
              return 1
         fi
-        cp -f "$table_dir/$table" .
+        cp -fs "$table_dir/$table" .
     done
 
     # IGS ATX
@@ -365,10 +368,12 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
         abs_atx="igs05_1627.atx"
     elif [ $mjd -lt 57782 ]; then
         abs_atx="igs08_1930.atx"
-    else
+    elif [ $mjd -lt 59910 ]; then
         abs_atx="igs14_2148.atx"
+    else
+        abs_atx="igs20.atx"
     fi
-    cp "$table_dir/$abs_atx" ./abs_igs.atx
+    cp -fs "$table_dir/$abs_atx" ./abs_igs.atx
     [ $? -ne 0 ] && echo -e "$MSGERR CopyTables: no such file: $table_dir/$abs_atx" && return 1
 
     # Check valid time of table
@@ -377,7 +382,7 @@ CopyTables() { # purpose: copy PRIDE-PPPAR needed tables to working directory
         echo -e "$MSGINF Update $table_dir/leap.sec ..."
         cmd="leap.sh"
         Execute "$cmd" || return 1
-        cp -f leap.sec $table_dir || return 1
+        cp -fs leap.sec $table_dir || return 1
         echo -e "$MSGINF Update $table_dir/leap.sec done"
         mjd_leap=`tail -2 leap.sec | head -1 | awk '{print $1}'`
     fi
@@ -405,20 +410,19 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
     local year=${ydoy[0]}
     local doy=${ydoy[1]}
 
-    local clk="whp${wkdow[0]}${wkdow[1]}.clk.Z"
-    [ $year -gt 2018 ] && clk="WHU5IGSFIN_${year}${ydoy[1]}0000_01D_30S_CLK.CLK.Z"
-    local clk_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/clock/${clk}"
+    local clk="COD${wkdow[0]}${wkdow[1]}.CLK.Z"
+    [ $mjd_mid -gt 59909 ] && clk="COD0OPSFIN_${year}${doy}0000_01D_30S_CLK.CLK.gz"
+    local clk_url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${clk}"
     CopyOrDownloadProduct "$products_dir/$clk" "$clk_url" || return 1
     uncompress -f ${clk}
 
-    local fcb="WHU0IGSFIN_${year}${ydoy[1]}0000_01D_01D_ABS.BIA.Z"
-    local fcb_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/${year}/bias/${fcb}"
-    CopyOrDownloadProduct "$products_dir/$fcb" "$fcb_url"
-    if [ $? -ne 0 ]; then
-        echo -e "$MSGWAR PrepareProducts: $fcb download failed"
-        [ $AR == y -o $AR == Y ] && echo -e "$MSGERR no phase bias product: $fcb" && return 1
-    else
-        uncompress -f ${fcb}
+    local fcb="COD${wkdow[0]}${wkdow[1]}.BIA.Z"
+    [ $mjd_mid -gt 59909 ] && fcb="COD0OPSFIN_${year}${doy}0000_01D_01D_OSB.BIA.gz"
+    local fcb_url="ftp://ftp.aiub.unibe.ch/CODE/${year}/${fcb}"
+    if [ $AR == y -o $AR == Y ]; then
+        CopyOrDownloadProduct "$products_dir/$fcb" "$fcb_url"
+        [ $? -ne 0 ] && echo -e "$MSGERR PrepareProducts: $fcb download failed" \
+            && return 1 || uncompress -f ${fcb}
     fi
 
     local lastmon=(`LastYearMonth ${ymd[*]}`)
@@ -443,23 +447,19 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         uncompress -f ${dcb2}
     fi
 
-    sed -n '8 p' ${fcb%.Z} | grep "rapid" > /dev/null 2>&1
-    local rapid=$?  # whether use rapid products
-    [ $rapid -eq 0 ] && echo -e "$MSGINF NOTE: Rapid Products Used"
-
     local erp erp_url
-    if [ $rapid -ne 0 ]; then
-        erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
+    erp="COD${wkdow[0]}${wkdow[1]}.ERP.Z"
+    [ $mjd_mid -gt 59909 ] && erp="COD0OPSFIN_${year}${doy}0000_01D_01D_ERP.ERP.gz"
+    erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
+    CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
+    if [ $? -ne 0 ]; then
+        erp="COD${wkdow[0]}7.ERP.Z"
         erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url"
-        if [ $? -ne 0 ]; then
-            erp="COD${wkdow[0]}7.ERP.Z"
-            erp_url="ftp://ftp.aiub.unibe.ch/CODE/${ydoy[0]}/${erp}"
-            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
-        fi
-        uncompress -f ${erp}
+        CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
     fi
+    uncompress -f ${erp}
 
+    local sufix=.Z
     local sp3s erps tmpy mjd
     local sp3 sp3_url i=0
     for mjd in $((mjd_mid-1)) $mjd_mid $((mjd_mid+1))
@@ -467,25 +467,13 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         tmpy=($(mjd2ydoy $mjd))
         wkdow=($(mjd2wkdow $mjd))
 
-        if [ $rapid -eq 0 ]; then
-            erp="COD${wkdow[0]}${wkdow[1]}.ERP_M.Z"
-            erp_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}_M/$erp"
-            CopyOrDownloadProduct "$products_dir/$erp" "$erp_url" || return 1
-            uncompress -f ${erp}
-            erps[$((i))]=${erp%.Z}
-
-            sp3="COD${wkdow[0]}${wkdow[1]}.EPH_M.Z"
-            sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}_M/$sp3"
-            CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
-            uncompress -f ${sp3}
-            sp3s[$((i++))]=${sp3%.Z}
-        else
-            sp3="COD${wkdow[0]}${wkdow[1]}.EPH.Z"
-            sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}/${sp3}"
-            CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
-            uncompress -f ${sp3}
-            sp3s[$((i++))]=${sp3%.Z}
-        fi
+        [ $mjd -gt 59909 ] && sufix=.gz
+        sp3="COD${wkdow[0]}${wkdow[1]}.EPH.Z"
+        [ $mjd_mid -gt 59909 ] && sp3="COD0OPSFIN_${tmpy[0]}${tmpy[1]}0000_01D_05M_ORB.SP3.gz"
+        sp3_url="ftp://ftp.aiub.unibe.ch/CODE/${tmpy[0]}/${sp3}"
+        CopyOrDownloadProduct "$products_dir/$sp3" "$sp3_url" || return 1
+        uncompress -f ${sp3}
+        sp3s[$((i++))]=${sp3%$sufix}
     done
 
     grep '^ [0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z] .*VM1' ${ctrl_file} 2>&1 > /dev/null
@@ -518,19 +506,16 @@ PrepareProducts() { # purpose: prepare PRIDE-PPPAR needed products in working di
         echo -e "$MSGSTA Downloading VMF1 GRID done"
     fi
 
+    sufix=.Z
+    [ $mjd -gt 59909 ] && sufix=.gz
     # rename products
-    mv ${clk%.Z} sck_${ydoy[0]}${ydoy[1]} || return 1
-    [ -e ${fcb%.Z} ] && mv ${fcb%.Z} fcb_${ydoy[0]}${ydoy[1]}
-    mv ${dcb1%.Z} P1C1.dcb           || return 1
+    mv ${clk%$sufix} sck_${ydoy[0]}${ydoy[1]} || return 1
+    [ -e ${fcb%$sufix} ] && mv ${fcb%$sufix} fcb_${ydoy[0]}${ydoy[1]}
+    mv ${dcb1%.Z} P1C1.dcb  || return 1
     [ -e ${dcb2%.Z} ] && mv ${dcb2%.Z} P2C2.dcb
 
     # Generate igserp
-    if [ $rapid -eq 0 ]; then
-        cat ${erps[0]} > igserp && tail -1 ${erps[1]} >> \
-            igserp && tail -1 ${erps[2]} >> igserp || return 1
-    else
-        mv ${erp%.Z} igserp || return 1
-    fi
+    mv ${erp%$sufix} igserp || return 1
 
     # Generate binary sp3
     local cmd="mergesp3 ${sp3s[*]} orb_temp"

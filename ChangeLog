@@ -37,3 +37,8 @@
  - pride_pppar.sh: fix known bugs & add error replay for debug
  - table: jpleph_de405 updated (valid until 2040-007)
  - table: update IGS14.atx (igs14_2082.atx)
+
+ 10. 2024-10-17
+ - pride_pppar.sh: update product download url and atx rule
+ - pride_pppar.sh: make soft links to tables instead of copy
+ - table: add igs20.atx and igsR3_2135.atx

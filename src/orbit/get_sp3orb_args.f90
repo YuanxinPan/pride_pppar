@@ -82,7 +82,7 @@ subroutine get_sp3orb_args(sescfg, sp3fil, orbfil, erpfil, OH)
   do while (.true.)
     read (lfn, '(a)', end=50) line
     if (mjderp0 .eq. 0.d0) read (line, *) mjderp0
-    read (line, *) mjderp1
+    read (line, *, end=50) mjderp1
   enddo
 50 close (lfn)
 !
